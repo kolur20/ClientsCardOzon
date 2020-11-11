@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace iikoCardClients
 {
-    static class Program
+    static class program
     {
         /// <summary>
         /// Главная точка входа для приложения.
@@ -16,7 +16,7 @@ namespace iikoCardClients
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Main());
         }
     }
 }
