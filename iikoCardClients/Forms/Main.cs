@@ -2,6 +2,7 @@
 using iikoCardClients.Managers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -38,7 +39,7 @@ namespace iikoCardClients
             try
             {
                 string status = string.Empty;
-                var manager = new CsvManager(strFilePath, 
+                var manager = new ManagerCsv(strFilePath, 
                     string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':','.')}"),
                     cb_isDeleted.Checked);
                 manager.CreateClients();
@@ -193,16 +194,30 @@ namespace iikoCardClients
 
         private void btn_UploadCustomers_Click(object sender, EventArgs e)
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             try
             {
-                var csvManager = new CsvManager(strFilePath);
-                var list = csvManager.GetClients()
-                    .Select(data => new ShortCustomerInfo()
-                    {
-                        Name = data.Name,
-                        Card = data.Number
-                    })
-                    .ToArray();
+                IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
+                if (strFilePath.Contains(".csv"))
+                {
+                    var csvManager = new ManagerCsv(strFilePath);
+                    list = csvManager.GetClients()
+                        .Select(data => new ShortCustomerInfo()
+                        {
+                            Name = data.Name,
+                            Card = data.Number
+                        })
+                        .ToArray();
+                }
+                else if (strFilePath.Contains(".xls"))
+                {
+                    var excelManager = new ManagerExcel(strFilePath);
+                    list = excelManager.GetClients().ToArray();
+                }
+                if (tb_LoginAPI.Text == "" || tb_PasswordAPI.Text == "")
+                    throw new NullReferenceException(message:"Не заполнены данные пользователя API");
+
                 var deliveryAPI = new Managers.ManagerAPI(tb_LoginAPI.Text, tb_PasswordAPI.Text);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
                 var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
@@ -221,17 +236,20 @@ namespace iikoCardClients
                     deliveryAPI);
                 managerCustomers.UploadCustomers(list, tb_CustomersBalance.Text);
 
+
+                stopWatch.Stop();
                 MessageBox.Show(
                     $"Гостей обработано {managerCustomers.GetCountAll} \r\n" +
                     $"Гостей выгружено {managerCustomers.GetCountUpload} \r\n" +
                     $"У гостей обработан баланс {managerCustomers.GetCountBalance} \r\n" +
-                    $"Гостей не обработано {managerCustomers.GetCountFail} \r\n",
+                    $"Гостей не обработано {managerCustomers.GetCountFail} \r\n" +
+                    $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.",
                     "Выгружено"
                     );
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
+                MessageBox.Show($"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.\r\n Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
             }
         }
     }

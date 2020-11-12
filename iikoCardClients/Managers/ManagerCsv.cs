@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace iikoCardClients.Managers
 {
-    class CsvManager
+    class ManagerCsv
     {
         const string path = @"import\";
         string organization;
         string strFilePath;
         bool isDeleted;
-        public CsvManager(string file, string name, bool deleted)
+        public ManagerCsv(string file, string name, bool deleted)
         {
             strFilePath = file;
 
@@ -26,7 +26,7 @@ namespace iikoCardClients.Managers
             isDeleted = deleted;
         }
         
-        public CsvManager(string file)
+        public ManagerCsv(string file)
         {
             strFilePath = file;
         }
@@ -35,10 +35,9 @@ namespace iikoCardClients.Managers
         {
             var clientList = new List<Client>();
             Encoding encoding = Encoding.GetEncoding(866);
-            if (strFilePath.Contains(".csv"))
-                encoding = Encoding.GetEncoding(866);
-            if (strFilePath.Contains(".xlsx"))
-                encoding = Encoding.GetEncoding(1251);
+            if (!strFilePath.Contains(".csv"))
+                return null;
+            
             using (StreamReader sr = new StreamReader(strFilePath, encoding))
             {
                 //пропускаем первую строку заголовков
