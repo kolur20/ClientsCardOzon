@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using iikoCardClients.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iikoCardClients.Data
+namespace iikoCardClients.Managers
 {
     class CsvManager
     {
@@ -24,7 +25,58 @@ namespace iikoCardClients.Data
            
             isDeleted = deleted;
         }
+        
+        public CsvManager(string file)
+        {
+            strFilePath = file;
+        }
 
+        public IEnumerable<Client> GetClients()
+        {
+            var clientList = new List<Client>();
+            Encoding encoding = Encoding.GetEncoding(866);
+            if (strFilePath.Contains(".csv"))
+                encoding = Encoding.GetEncoding(866);
+            if (strFilePath.Contains(".xlsx"))
+                encoding = Encoding.GetEncoding(1251);
+            using (StreamReader sr = new StreamReader(strFilePath, encoding))
+            {
+                //пропускаем первую строку заголовков
+                sr.ReadLine();
+                while (!sr.EndOfStream)
+                {
+                    var client = new Client();
+                    //client.isDeleted = isDeleted ? "1" : "0";
+
+                    //делим строку
+                    string[] rows = sr.ReadLine().Replace("  ", " ").Split(';');
+                    client.Name = rows[0];
+
+
+                    if (rows[2].Contains("/"))
+                    {
+                        string[] card = rows[2].Split(' ');
+                        card[0] = "000".Remove(0, card[0].Count()) + card[0];
+                        card[2] = "00000".Remove(0, card[2].Count()) + card[2];
+                        client.Number = client.Track = card[0] + card[2];
+
+                    }
+                    else
+                    {
+                        client.Number = client.Track = rows[2];
+                    }
+
+
+                    if (clientList
+                        .Select(data => data.Number)
+                        .Contains(client.Number))
+                        continue;
+
+                    clientList.Add(client);
+                }
+            }
+            return clientList.ToArray();
+        }
         public void CreateClients()
         {
             Directory.CreateDirectory(path);
