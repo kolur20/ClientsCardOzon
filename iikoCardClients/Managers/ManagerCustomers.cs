@@ -9,14 +9,14 @@ namespace iikoCardClients.Managers
 {
     class ManagerCustomers
     {
-        int CountAll = 0;
-        int CountUpload = 0;
-        int CountFail = 0;
-        int CountBalance = 0;
-        public int GetCountAll { get { return CountAll; } }
-        public int GetCountUpload { get { return CountUpload; } }
-        public int GetCountFail { get { return CountFail; } }
-        public int GetCountBalance { get { return CountBalance; } }
+        static int CountAll = 0;
+        static int CountUpload = 0;
+        static int CountFail = 0;
+        static int CountBalance = 0;
+        static public int GetCountAll { get { return CountAll; } }
+        static public int GetCountUpload { get { return CountUpload; } }
+        static public int GetCountFail { get { return CountFail; } }
+        static public int GetCountBalance { get { return CountBalance; } }
 
         Organization _organization;
         Categories _categories;
@@ -29,6 +29,7 @@ namespace iikoCardClients.Managers
             _categories = categories;
             _corporateNutritions = corporateNutritions;
             deliveryAPI = managerAPI;
+            RefreshCounter();
         }
 
         public void RefreshCounter()

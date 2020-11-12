@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -192,60 +193,121 @@ namespace iikoCardClients
             }
         }
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        delegate void Delegate(string org, string cat, string cor, string api, string login, string file, string balance);
+        Delegate del = new Delegate(UpdateCustomers);
+        static Stopwatch stopWatch = new Stopwatch();
+        static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance)
+        {
+            stopWatch.Start();
+            IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
+            ManagerCustomers managerCustomers;
+            if (file.Contains(".csv"))
+            {
+                var csvManager = new ManagerCsv(file);
+                list = csvManager.GetClients()
+                    .Select(data => new ShortCustomerInfo()
+                    {
+                        Name = data.Name,
+                        Card = data.Number
+                    })
+                    .ToArray();
+            }
+            else if (file.Contains(".xls"))
+            {
+                var excelManager = new ManagerExcel(file);
+                list = excelManager.GetClients().ToArray();
+            }
+            if (api == "" || login == "")
+                throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+
+            var deliveryAPI = new Managers.ManagerAPI(api, login);
+            var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
+            var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+            var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+
+            managerCustomers = new ManagerCustomers(
+                organizations.Where(data => data.Name == org).FirstOrDefault(),
+                categories.Where(data => data.Name == cat).FirstOrDefault(),
+                corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
+                deliveryAPI);
+            managerCustomers.UploadCustomers(list, balance);
+        }
+
+        void CallBackFunc(IAsyncResult aRes)
+        {
+            del.EndInvoke(aRes);
+            pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
+            stopWatch.Stop();
+            MessageBox.Show(
+                $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
+                $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
+                $"У гостей обработан баланс {ManagerCustomers.GetCountBalance} \r\n" +
+                $"Гостей не обработано {ManagerCustomers.GetCountFail} \r\n" +
+                $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.",
+                "Выгружено"
+                );
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         private void btn_UploadCustomers_Click(object sender, EventArgs e)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            
+           
+            
             try
             {
-                IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
-                if (strFilePath.Contains(".csv"))
-                {
-                    var csvManager = new ManagerCsv(strFilePath);
-                    list = csvManager.GetClients()
-                        .Select(data => new ShortCustomerInfo()
-                        {
-                            Name = data.Name,
-                            Card = data.Number
-                        })
-                        .ToArray();
-                }
-                else if (strFilePath.Contains(".xls"))
-                {
-                    var excelManager = new ManagerExcel(strFilePath);
-                    list = excelManager.GetClients().ToArray();
-                }
-                if (tb_LoginAPI.Text == "" || tb_PasswordAPI.Text == "")
-                    throw new NullReferenceException(message:"Не заполнены данные пользователя API");
-
-                var deliveryAPI = new Managers.ManagerAPI(tb_LoginAPI.Text, tb_PasswordAPI.Text);
-                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
-
-
-
+                
                 var org = cb_organizations.SelectedItem.ToString();
                 var cat = cb_Categories.SelectedItem.ToString();
                 var cor = cb_CorporateNutritions.SelectedItem.ToString();
+                var api = tb_LoginAPI.Text;
+                var login = tb_PasswordAPI.Text;
+                var balance = tb_CustomersBalance.Text;
+                pb_load.Enabled = pb_load.Visible = true;
 
-                var managerCustomers = new ManagerCustomers(
-                    organizations.Where(data => data.Name == org).FirstOrDefault(),
-                    categories.Where(data => data.Name == cat).FirstOrDefault(),
-                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                    deliveryAPI);
-                managerCustomers.UploadCustomers(list, tb_CustomersBalance.Text);
+                del.BeginInvoke(org, cat, cor, api, login, strFilePath, balance, new AsyncCallback(CallBackFunc), null);
+
+                //IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
+                //ManagerCustomers managerCustomers;
+                //if (strFilePath.Contains(".csv"))
+                //{
+                //    var csvManager = new ManagerCsv(strFilePath);
+                //    list = csvManager.GetClients()
+                //        .Select(data => new ShortCustomerInfo()
+                //        {
+                //            Name = data.Name,
+                //            Card = data.Number
+                //        })
+                //        .ToArray();
+                //}
+                //else if (strFilePath.Contains(".xls"))
+                //{
+                //    var excelManager = new ManagerExcel(strFilePath);
+                //    list = excelManager.GetClients().ToArray();
+                //}
+                //if (api == "" || login == "")
+                //    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+
+                //var deliveryAPI = new Managers.ManagerAPI(api, login);
+                //var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
+                //var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+                //var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+
+                //managerCustomers = new ManagerCustomers(
+                //    organizations.Where(data => data.Name == org).FirstOrDefault(),
+                //    categories.Where(data => data.Name == cat).FirstOrDefault(),
+                //    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
+                //    deliveryAPI);
+                //managerCustomers.UploadCustomers(list, tb_CustomersBalance.Text);
 
 
-                stopWatch.Stop();
-                MessageBox.Show(
-                    $"Гостей обработано {managerCustomers.GetCountAll} \r\n" +
-                    $"Гостей выгружено {managerCustomers.GetCountUpload} \r\n" +
-                    $"У гостей обработан баланс {managerCustomers.GetCountBalance} \r\n" +
-                    $"Гостей не обработано {managerCustomers.GetCountFail} \r\n" +
-                    $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.",
-                    "Выгружено"
-                    );
+
+                
+                
             }
             catch (Exception ex)
             {
