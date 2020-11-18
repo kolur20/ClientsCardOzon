@@ -51,7 +51,8 @@ namespace iikoCardClients.Managers
                     }
                     else
                     {
-                        card = row[2].ToString();
+                        card = "00000000".Remove(0, row[2].ToString().Count()) + row[2].ToString();
+                        
                     }
                     if (clientList
                         .Select(data => data.Card)

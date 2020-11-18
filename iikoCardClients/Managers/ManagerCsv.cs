@@ -62,7 +62,7 @@ namespace iikoCardClients.Managers
                     }
                     else
                     {
-                        client.Number = client.Track = rows[2];
+                        client.Number = client.Track = "00000000".Remove(0,rows[2].Count()) + rows[2];
                     }
 
 
