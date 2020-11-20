@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("iikoCardClients")]
-[assembly: AssemblyCopyright("Grin©  2020")]
+[assembly: AssemblyCopyright("Grin© Flagman 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
