@@ -51,10 +51,19 @@ namespace iikoCardClients.Managers
                     }
                     else
                     {
-                        card = "00000000".Remove(0, row[2].ToString().Count()) + row[2].ToString();
+                        try
+                        {
+                            if (row[2].ToString().Trim() == "")
+                                throw new Exception();
+                            card = "00000000".Remove(0, row[2].ToString().Count()) + row[2].ToString();
+                        }
+                        catch (Exception)
+                        {
+                            card = "";
+                        }
                         
                     }
-                    if (clientList
+                    if (card == "" || clientList
                         .Select(data => data.Card)
                         .Contains(card))
                         continue;
@@ -65,7 +74,7 @@ namespace iikoCardClients.Managers
                     });
                 }
                 reader.Close();
-                clientList.RemoveAt(0);
+                //clientList.RemoveAt(0);
 
             }
 

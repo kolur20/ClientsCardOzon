@@ -200,39 +200,46 @@ namespace iikoCardClients
         static Stopwatch stopWatch = new Stopwatch();
         static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance)
         {
-            stopWatch.Start();
-            IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
-            ManagerCustomers managerCustomers;
-            if (file.Contains(".csv"))
+            try
             {
-                var csvManager = new ManagerCsv(file);
-                list = csvManager.GetClients()
-                    .Select(data => new ShortCustomerInfo()
-                    {
-                        Name = data.Name,
-                        Card = data.Number
-                    })
-                    .ToArray();
+                stopWatch.Start();
+                IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
+                ManagerCustomers managerCustomers;
+                if (file.Contains(".csv"))
+                {
+                    var csvManager = new ManagerCsv(file);
+                    list = csvManager.GetClients()
+                        .Select(data => new ShortCustomerInfo()
+                        {
+                            Name = data.Name,
+                            Card = data.Number
+                        })
+                        .ToArray();
+                }
+                else if (file.Contains(".xls"))
+                {
+                    var excelManager = new ManagerExcel(file);
+                    list = excelManager.GetClients().ToArray();
+                }
+                if (api == "" || login == "")
+                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+
+                var deliveryAPI = new Managers.ManagerAPI(api, login);
+                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
+                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+
+                managerCustomers = new ManagerCustomers(
+                    organizations.Where(data => data.Name == org).FirstOrDefault(),
+                    categories.Where(data => data.Name == cat).FirstOrDefault(),
+                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
+                    deliveryAPI);
+                managerCustomers.UploadCustomers(list, balance);
             }
-            else if (file.Contains(".xls"))
+            catch (Exception ex)
             {
-                var excelManager = new ManagerExcel(file);
-                list = excelManager.GetClients().ToArray();
+                MessageBox.Show(ex.Message, "Ошибка");
             }
-            if (api == "" || login == "")
-                throw new NullReferenceException(message: "Не заполнены данные пользователя API");
-
-            var deliveryAPI = new Managers.ManagerAPI(api, login);
-            var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-            var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-            var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
-
-            managerCustomers = new ManagerCustomers(
-                organizations.Where(data => data.Name == org).FirstOrDefault(),
-                categories.Where(data => data.Name == cat).FirstOrDefault(),
-                corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                deliveryAPI);
-            managerCustomers.UploadCustomers(list, balance);
         }
 
         void CallBackFunc(IAsyncResult aRes)

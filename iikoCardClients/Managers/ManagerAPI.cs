@@ -300,16 +300,17 @@ namespace iikoCardClients.Managers
             {
                 token = Task.Run(() => GetToken()).Result;
 
-                var json = new JObject()
-                {
-                   
-                    { "name", name },
-                    { "magnetCardTrack", card },
-                    { "magnetCardNumber", card },
-                    
-                
-                };
-              
+                var json = name != null ? new JObject()
+                    {
+                        { "name", name },
+                        { "magnetCardTrack", card },
+                        { "magnetCardNumber", card },
+                    } :
+                    new JObject()
+                    {
+                        { "magnetCardTrack", card },
+                        { "magnetCardNumber", card },
+                    };
                 var response = await client.PostAsync(
                     $"customers/create_or_update?access_token={token}&organization={ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
                     new StringContent("{ \"customer\" : " + json.ToString() + "}", Encoding.UTF8, "application/json"));

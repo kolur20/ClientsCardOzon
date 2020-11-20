@@ -62,24 +62,32 @@ namespace iikoCardClients.Managers
         void UploadCustomer(string Name, string Card, string Balance)
         {
             decimal balance = 0;
+            bool guest = false;
+            var customer = new ShortCustomerInfo();
             try
             {
                 balance = Task.Run(() => deliveryAPI.GetCastomerBalance(Card, _corporateNutritions, _organization)).Result;
+                guest = true;
+                customer = new ShortCustomerInfo()
+                {
+                    Id = Task.Run(() => deliveryAPI.CreateCustomer(null, Card, _organization)).Result
+                };
                 throw new Exception();
             }
             catch (Exception)
             {
-                var customer = new ShortCustomerInfo()
-                {
-                    Id = Task.Run(() => deliveryAPI.CreateCustomer(Name, Card, _organization)).Result
-                };
+                if (guest == false)
+                    customer = new ShortCustomerInfo()
+                    {
+                        Id = Task.Run(() => deliveryAPI.CreateCustomer(Name, Card, _organization)).Result
+                    };
                 
-                Task.Run(() => deliveryAPI.SetCategoryByCustomer(customer, _categories,_organization));
-                Task.Run(() => deliveryAPI.SetCorporateNutritionByCustomer(customer, _corporateNutritions, _organization));
+                var b = Task.Run(() => deliveryAPI.SetCategoryByCustomer(customer, _categories,_organization)).Result;
+                b = Task.Run(() => deliveryAPI.SetCorporateNutritionByCustomer(customer, _corporateNutritions, _organization)).Result;
                 CountUpload++;
                 if (balance.ToString() != Balance)
                 {
-                    if (balance < Convert.ToDecimal(Balance))
+                    if (balance == 0 || balance < Convert.ToDecimal(Balance))
                         Task.Run(() => deliveryAPI.AddBalanceByCustomer(
                             customer, 
                             _corporateNutritions, 
