@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.pb_load = new System.Windows.Forms.PictureBox();
             this.btn_CreateCustomer = new System.Windows.Forms.Button();
             this.tb_CardCustomer = new System.Windows.Forms.TextBox();
             this.tb_NameCustomer = new System.Windows.Forms.TextBox();
@@ -63,11 +64,10 @@
             this.cb_isDeleted = new System.Windows.Forms.CheckBox();
             this.btn_Convert = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.pb_load = new System.Windows.Forms.PictureBox();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -103,6 +103,19 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Выгрузка";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // pb_load
+            // 
+            this.pb_load.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pb_load.Enabled = false;
+            this.pb_load.Image = ((System.Drawing.Image)(resources.GetObject("pb_load.Image")));
+            this.pb_load.Location = new System.Drawing.Point(3, 353);
+            this.pb_load.Name = "pb_load";
+            this.pb_load.Size = new System.Drawing.Size(504, 36);
+            this.pb_load.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pb_load.TabIndex = 24;
+            this.pb_load.TabStop = false;
+            this.pb_load.Visible = false;
             // 
             // btn_CreateCustomer
             // 
@@ -405,27 +418,14 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(518, 424);
             this.tabControl1.TabIndex = 8;
-            // 
-            // pb_load
-            // 
-            this.pb_load.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pb_load.Enabled = false;
-            this.pb_load.Image = ((System.Drawing.Image)(resources.GetObject("pb_load.Image")));
-            this.pb_load.Location = new System.Drawing.Point(3, 353);
-            this.pb_load.Name = "pb_load";
-            this.pb_load.Size = new System.Drawing.Size(504, 36);
-            this.pb_load.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pb_load.TabIndex = 24;
-            this.pb_load.TabStop = false;
-            this.pb_load.Visible = false;
             // 
             // Main
             // 
@@ -434,16 +434,17 @@
             this.ClientSize = new System.Drawing.Size(518, 424);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "iikoCardClients";
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).EndInit();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).EndInit();
             this.ResumeLayout(false);
 
         }

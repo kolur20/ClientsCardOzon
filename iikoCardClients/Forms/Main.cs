@@ -40,8 +40,8 @@ namespace iikoCardClients
             try
             {
                 string status = string.Empty;
-                var manager = new ManagerCsv(strFilePath, 
-                    string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':','.')}"),
+                var manager = new ManagerCsv(strFilePath,
+                    string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
                     cb_isDeleted.Checked);
                 manager.CreateClients();
                 status += "Файл гостей создан" + '\n';
@@ -56,7 +56,7 @@ namespace iikoCardClients
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка");
-                
+
 
             }
         }
@@ -123,12 +123,12 @@ namespace iikoCardClients
             var cat = cb_Categories.Text;
             var org = cb_organizations.Text == "" ? organizations.FirstOrDefault().Name : cb_organizations.Text;
 
-            var result = Task.Run(() => 
+            var result = Task.Run(() =>
                 deliveryAPI.CreateCustomersCategory(
-                    cat, 
+                    cat,
                     organizations.Where(data => data.Name == org).FirstOrDefault())
                     ).Result;
-            
+
             if (result)
             {
                 MessageBox.Show("Категория " + cat + " добавлена", "Успешно");
@@ -153,20 +153,25 @@ namespace iikoCardClients
             strFilePath = dialog.FileName;
         }
 
-        private void btn_CreateCustomer_Click(object sender, EventArgs e)
+        
+        //ДЕЛЕГАТЫ
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        delegate void DelegateCustomers(string org, string cat, string cor, string api, string login, string file, string balance);
+        delegate void DelegateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance);
+        DelegateCustomers del_Customers = new DelegateCustomers(UpdateCustomers);
+        DelegateCustomer del_Customer = new DelegateCustomer(UpdateCustomer);
+        static Stopwatch stopWatch = new Stopwatch();
+        static void UpdateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance)
         {
             try
             {
-                var deliveryAPI = new Managers.ManagerAPI(tb_LoginAPI.Text, tb_PasswordAPI.Text);
+                stopWatch.Start();
+                var deliveryAPI = new Managers.ManagerAPI(api, login);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
                 var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
                 var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
 
 
-
-                var org = cb_organizations.SelectedItem.ToString();
-                var cat = cb_Categories.SelectedItem.ToString();
-                var cor = cb_CorporateNutritions.SelectedItem.ToString();
 
                 var managerCustomers = new ManagerCustomers(
                     organizations.Where(data => data.Name == org).FirstOrDefault(),
@@ -176,28 +181,18 @@ namespace iikoCardClients
 
                 var customer = new ShortCustomerInfo()
                 {
-                    Name = tb_NameCustomer.Text,
-                    Card = tb_CardCustomer.Text
+                    Name = name,
+                    Card = card
                 };
                 var customers = new List<ShortCustomerInfo>();
                 customers.Add(customer);
-                managerCustomers.UploadCustomers(customers, tb_CustomersBalance.Text);
-
-
-                MessageBox.Show("Гость \"" + customer.Name + "\" добавлен, баланс установлен", "Успешно");
-
+                managerCustomers.UploadCustomers(customers, balance);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Возникла ошибка при добавлении гостя \r\n" + ex.Message, "Ошибка");
+                MessageBox.Show(ex.Message, "Ошибка");
             }
-        }
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        delegate void Delegate(string org, string cat, string cor, string api, string login, string file, string balance);
-        Delegate del = new Delegate(UpdateCustomers);
-        static Stopwatch stopWatch = new Stopwatch();
+}
         static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance)
         {
             try
@@ -242,9 +237,18 @@ namespace iikoCardClients
             }
         }
 
-        void CallBackFunc(IAsyncResult aRes)
+        void CallBackFuncCustomers(IAsyncResult aRes)
         {
-            del.EndInvoke(aRes);
+            del_Customers.EndInvoke(aRes);
+            CallBackFunc();
+        }
+        void CallBackFuncCustomer(IAsyncResult aRes)
+        {
+            del_Customer.EndInvoke(aRes);
+            CallBackFunc();
+        }
+        void CallBackFunc()
+        {
             pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
             stopWatch.Stop();
             MessageBox.Show(
@@ -257,9 +261,33 @@ namespace iikoCardClients
                 );
         }
 
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        private void btn_CreateCustomer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                pb_load.Enabled = pb_load.Visible = true;
 
+
+                del_Customer.BeginInvoke(
+                    cb_organizations.SelectedItem.ToString(),
+                    cb_Categories.SelectedItem.ToString(),
+                    cb_CorporateNutritions.SelectedItem.ToString(),
+                    tb_LoginAPI.Text,
+                    tb_PasswordAPI.Text,
+                    tb_NameCustomer.Text,
+                    tb_CardCustomer.Text,
+                    tb_CustomersBalance.Text,
+                    new AsyncCallback(CallBackFuncCustomer),
+                    null
+                    );
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.\r\n Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
+            }
+        }
         private void btn_UploadCustomers_Click(object sender, EventArgs e)
         {
             
@@ -276,45 +304,8 @@ namespace iikoCardClients
                 var balance = tb_CustomersBalance.Text;
                 pb_load.Enabled = pb_load.Visible = true;
 
-                del.BeginInvoke(org, cat, cor, api, login, strFilePath, balance, new AsyncCallback(CallBackFunc), null);
+                del_Customers.BeginInvoke(org, cat, cor, api, login, strFilePath, balance, new AsyncCallback(CallBackFuncCustomers), null);
 
-                //IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
-                //ManagerCustomers managerCustomers;
-                //if (strFilePath.Contains(".csv"))
-                //{
-                //    var csvManager = new ManagerCsv(strFilePath);
-                //    list = csvManager.GetClients()
-                //        .Select(data => new ShortCustomerInfo()
-                //        {
-                //            Name = data.Name,
-                //            Card = data.Number
-                //        })
-                //        .ToArray();
-                //}
-                //else if (strFilePath.Contains(".xls"))
-                //{
-                //    var excelManager = new ManagerExcel(strFilePath);
-                //    list = excelManager.GetClients().ToArray();
-                //}
-                //if (api == "" || login == "")
-                //    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
-
-                //var deliveryAPI = new Managers.ManagerAPI(api, login);
-                //var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                //var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                //var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
-
-                //managerCustomers = new ManagerCustomers(
-                //    organizations.Where(data => data.Name == org).FirstOrDefault(),
-                //    categories.Where(data => data.Name == cat).FirstOrDefault(),
-                //    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                //    deliveryAPI);
-                //managerCustomers.UploadCustomers(list, tb_CustomersBalance.Text);
-
-
-
-                
-                
             }
             catch (Exception ex)
             {
