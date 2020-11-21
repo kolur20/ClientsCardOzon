@@ -22,7 +22,9 @@ namespace iikoCardClients.Managers
         static HttpClientHandler httpClientHandler; 
         static TimeSpan cancellationTime = new TimeSpan(0,0,20);
         static HttpClient client;
-        
+
+        readonly int TimeDelayThread = 600;
+        readonly string MessageTimeCollapse = "Too many requests, wait";
 
         string API_Login { get; set; }
         string API_Password { get; set; }
@@ -98,8 +100,13 @@ namespace iikoCardClients.Managers
                     .ToList();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetOrganizations()).Result;
+                }
                 return null;
             }
 
@@ -107,34 +114,46 @@ namespace iikoCardClients.Managers
 
         public async Task<decimal> GetCastomerBalance(string card, CorporateNutritions corporateNutritions, Organization organization = null)
         {
-            var organizationId = organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id;
+            try
+            {
+                var organizationId = organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id;
 
                 var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
                     .ConfigureAwait(false);
 
-            switch (response.StatusCode)
-            {
-                case System.Net.HttpStatusCode.BadRequest:
-                    throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
-                    
-                case System.Net.HttpStatusCode.Unauthorized:
-                    throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
-                default:
-                    break;
-            }
-           
-                
-
-            return JObject.Parse(await response.Content.ReadAsStringAsync())["walletBalances"]
-                .Select(data => new
+                switch (response.StatusCode)
                 {
-                    Balance = (decimal)data.SelectToken("balance"),
-                    WalletId =  (string)data["wallet"].SelectToken("id")
-                })
-                .Where(data => data.WalletId == corporateNutritions.Wallets)
-                .FirstOrDefault()
-                .Balance;
-           
+                    case System.Net.HttpStatusCode.BadRequest:
+                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+
+                    case System.Net.HttpStatusCode.Unauthorized:
+                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+                    default:
+                        break;
+                }
+
+
+
+                return JObject.Parse(await response.Content.ReadAsStringAsync())["walletBalances"]
+                    .Select(data => new
+                    {
+                        Balance = (decimal)data.SelectToken("balance"),
+                        WalletId = (string)data["wallet"].SelectToken("id")
+                    })
+                    .Where(data => data.WalletId == corporateNutritions.Wallets)
+                    .FirstOrDefault()
+                    .Balance;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetCastomerBalance(card, corporateNutritions, organization)).Result;
+                }
+                throw new Exception(ex.Message);
+                
+            }
 
 
         }
@@ -163,8 +182,13 @@ namespace iikoCardClients.Managers
                     .ToList();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetShortGuestInfo(dateFrom, dateTo, organization)).Result;
+                }
                 return null;
             }
         }
@@ -205,11 +229,14 @@ namespace iikoCardClients.Managers
                     guest.Category = guests.Where(data => data.id == guest.Id).FirstOrDefault().Category;
                 }
                 return guestInfos;
-                        //guestInfos.Where(guest => 
-                        //guest.Id == (string)data["id"]).FirstOrDefault().Category = data["categories"].Select(categories => )
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => SetCategoryGuest(guestInfos, organization)).Result;
+                }
                 return null;
             }
         }
@@ -234,8 +261,13 @@ namespace iikoCardClients.Managers
                     .ToList();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetCategories(organization)).Result;
+                }
                 return null;
             }
         }
@@ -260,8 +292,13 @@ namespace iikoCardClients.Managers
                     .ToList();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetCorporateNutritions(organization)).Result;
+                }
                 return null;
             }
         }
@@ -285,11 +322,16 @@ namespace iikoCardClients.Managers
                     $"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/create_or_update_guest_category?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false; 
+                return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync())); 
                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => CreateCustomersCategory(nameCategory, organization)).Result;
+                }
                 return false;
             }
         }
@@ -314,13 +356,19 @@ namespace iikoCardClients.Managers
                 var response = await client.PostAsync(
                     $"customers/create_or_update?access_token={token}&organization={ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
                     new StringContent("{ \"customer\" : " + json.ToString() + "}", Encoding.UTF8, "application/json"));
-
-                return response.StatusCode == HttpStatusCode.OK ? (await response.Content.ReadAsStringAsync()).Trim('"') : "";
+                var answer = await response.Content.ReadAsStringAsync();
+                
+                return response.StatusCode == HttpStatusCode.OK ? answer.Trim('"') : throw new Exception(GetErrorMessage(answer));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "";
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => CreateCustomer(name, card, organization)).Result;
+                }
+                return null;
             }
         }
 
@@ -337,12 +385,22 @@ namespace iikoCardClients.Managers
                         organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
                         categories.Id),
                     new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
-
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+               return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("already binded to customer"))
+                {
+                    return false;
+                }
+                
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => SetCategoryByCustomer(customerInfo, categories, organization)).Result;
+                }
+                
                 return false;
             }
         }
@@ -361,11 +419,16 @@ namespace iikoCardClients.Managers
                         corporateNutritions.Id),
                     new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => SetCorporateNutritionByCustomer(customerInfo, corporateNutritions, organization)).Result;
+                }
                 return false;
             }
         }
@@ -380,7 +443,7 @@ namespace iikoCardClients.Managers
                 var json = new JObject()
                 {
                     { "customerId", customerInfo.Id},
-                    {"organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
+                    { "organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
                     { "walletId", corporateNutritions.Wallets },
                     { "sum", Sum }
                 };
@@ -390,11 +453,16 @@ namespace iikoCardClients.Managers
                     $"customers/refill_balance?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => AddBalanceByCustomer(customerInfo, corporateNutritions, Sum, organization)).Result;
+                }
                 return false;
             }
         }
@@ -418,11 +486,16 @@ namespace iikoCardClients.Managers
                     $"customers/withdraw_balance?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => DelBalanceByCustomer(customerInfo, corporateNutritions, Sum, organization)).Result;
+                }
                 return false;
             }
         }

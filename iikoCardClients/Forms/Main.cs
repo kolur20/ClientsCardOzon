@@ -254,6 +254,8 @@ namespace iikoCardClients
             MessageBox.Show(
                 $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
                 $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
+                $"Гостям присвоена категория {ManagerCustomers.GetCountCategory} \r\n" +
+                $"Гостей включено в программу питания {ManagerCustomers.GetCountCorporateNutritions} \r\n" +
                 $"У гостей обработан баланс {ManagerCustomers.GetCountBalance} \r\n" +
                 $"Гостей не обработано {ManagerCustomers.GetCountFail} \r\n" +
                 $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.",

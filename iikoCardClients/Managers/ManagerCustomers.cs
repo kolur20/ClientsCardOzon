@@ -13,10 +13,16 @@ namespace iikoCardClients.Managers
         static int CountUpload = 0;
         static int CountFail = 0;
         static int CountBalance = 0;
+        static int CountCategory = 0;
+        static int CountCorporateNutritions = 0;
         static public int GetCountAll { get { return CountAll; } }
         static public int GetCountUpload { get { return CountUpload; } }
         static public int GetCountFail { get { return CountFail; } }
         static public int GetCountBalance { get { return CountBalance; } }
+        static public int GetCountCategory { get { return CountCategory; } }
+        static public int GetCountCorporateNutritions { get { return CountCorporateNutritions; } }
+
+        
 
         Organization _organization;
         Categories _categories;
@@ -64,6 +70,7 @@ namespace iikoCardClients.Managers
             decimal balance = 0;
             bool guest = false;
             var customer = new ShortCustomerInfo();
+            
             try
             {
                 balance = Task.Run(() => deliveryAPI.GetCastomerBalance(Card, _corporateNutritions, _organization)).Result;
@@ -81,10 +88,14 @@ namespace iikoCardClients.Managers
                     {
                         Id = Task.Run(() => deliveryAPI.CreateCustomer(Name, Card, _organization)).Result
                     };
+
+                if (Task.Run(() => deliveryAPI.SetCategoryByCustomer(customer, _categories, _organization)).Result)
+                    CountCategory++;
                 
-                var b = Task.Run(() => deliveryAPI.SetCategoryByCustomer(customer, _categories,_organization)).Result;
-                b = Task.Run(() => deliveryAPI.SetCorporateNutritionByCustomer(customer, _corporateNutritions, _organization)).Result;
+                if (Task.Run(() => deliveryAPI.SetCorporateNutritionByCustomer(customer, _corporateNutritions, _organization)).Result)
+                    CountCorporateNutritions++;
                 CountUpload++;
+                
                 if (balance.ToString() != Balance)
                 {
                     if (balance == 0 || balance < Convert.ToDecimal(Balance))
