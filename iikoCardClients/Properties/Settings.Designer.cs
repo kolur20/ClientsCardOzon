@@ -46,5 +46,17 @@ namespace iikoCardClients.Properties {
                 this["PasswordAPI"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ManagerCard {
+            get {
+                return ((bool)(this["ManagerCard"]));
+            }
+            set {
+                this["ManagerCard"] = value;
+            }
+        }
     }
 }

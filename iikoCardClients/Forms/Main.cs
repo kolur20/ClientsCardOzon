@@ -20,6 +20,7 @@ namespace iikoCardClients
             Managers.ManagerAPI.Initialization();
             tb_LoginAPI.Text = Properties.Settings.Default.LoginAPI;
             tb_PasswordAPI.Text = Properties.Settings.Default.PasswordAPI;
+            cb_ManagerCard.Checked = Properties.Settings.Default.ManagerCard;
         }
         string strFilePath = "";
 
@@ -75,6 +76,7 @@ namespace iikoCardClients
         {
             Properties.Settings.Default.LoginAPI = tb_LoginAPI.Text;
             Properties.Settings.Default.PasswordAPI = tb_PasswordAPI.Text;
+            Properties.Settings.Default.ManagerCard = cb_ManagerCard.Checked;
             Properties.Settings.Default.Save();
         }
 
