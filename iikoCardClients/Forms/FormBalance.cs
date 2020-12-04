@@ -18,6 +18,8 @@ namespace iikoCardClients
             InitializeComponent();
             CountClick = 0;
             timer_settings.Start();
+
+
         }
 
         private void label2_Click(object sender, EventArgs e)
