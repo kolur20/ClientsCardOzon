@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,10 @@ namespace iikoCardClients
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            if (Properties.Settings.Default.ManagerCard)
+                Application.Run(new FormBalance());
+            else
+                Application.Run(new Main());
         }
     }
 }

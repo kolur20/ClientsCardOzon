@@ -60,17 +60,21 @@
             this.btn_Convert = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.cb_ManagerCard = new System.Windows.Forms.CheckBox();
             this.btn_SaveAPI = new System.Windows.Forms.Button();
             this.tb_PasswordAPI = new System.Windows.Forms.TextBox();
             this.tb_LoginAPI = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.cb_ManagerCard = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rb_excel = new System.Windows.Forms.RadioButton();
+            this.rb_csv = new System.Windows.Forms.RadioButton();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -280,6 +284,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.tb_file);
             this.tabPage1.Controls.Add(this.tb_balance);
             this.tabPage1.Controls.Add(this.tb_group);
@@ -302,7 +307,7 @@
             this.tb_file.Margin = new System.Windows.Forms.Padding(4);
             this.tb_file.Name = "tb_file";
             this.tb_file.ReadOnly = true;
-            this.tb_file.Size = new System.Drawing.Size(148, 26);
+            this.tb_file.Size = new System.Drawing.Size(191, 26);
             this.tb_file.TabIndex = 0;
             // 
             // tb_balance
@@ -363,7 +368,7 @@
             // 
             // btn_Convert
             // 
-            this.btn_Convert.Location = new System.Drawing.Point(180, 151);
+            this.btn_Convert.Location = new System.Drawing.Point(366, 131);
             this.btn_Convert.Name = "btn_Convert";
             this.btn_Convert.Size = new System.Drawing.Size(138, 30);
             this.btn_Convert.TabIndex = 6;
@@ -398,6 +403,16 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Настройки";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // cb_ManagerCard
+            // 
+            this.cb_ManagerCard.AutoSize = true;
+            this.cb_ManagerCard.Location = new System.Drawing.Point(13, 87);
+            this.cb_ManagerCard.Name = "cb_ManagerCard";
+            this.cb_ManagerCard.Size = new System.Drawing.Size(306, 23);
+            this.cb_ManagerCard.TabIndex = 10;
+            this.cb_ManagerCard.Text = "Запускать принудительно менеджер карт";
+            this.cb_ManagerCard.UseVisualStyleBackColor = true;
             // 
             // btn_SaveAPI
             // 
@@ -442,15 +457,38 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Логин API";
             // 
-            // cb_ManagerCard
+            // groupBox1
             // 
-            this.cb_ManagerCard.AutoSize = true;
-            this.cb_ManagerCard.Location = new System.Drawing.Point(13, 87);
-            this.cb_ManagerCard.Name = "cb_ManagerCard";
-            this.cb_ManagerCard.Size = new System.Drawing.Size(306, 23);
-            this.cb_ManagerCard.TabIndex = 10;
-            this.cb_ManagerCard.Text = "Запускать принудительно менеджер карт";
-            this.cb_ManagerCard.UseVisualStyleBackColor = true;
+            this.groupBox1.Controls.Add(this.rb_csv);
+            this.groupBox1.Controls.Add(this.rb_excel);
+            this.groupBox1.Location = new System.Drawing.Point(326, 7);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(176, 105);
+            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Формат файла импорта";
+            // 
+            // rb_excel
+            // 
+            this.rb_excel.AutoSize = true;
+            this.rb_excel.Checked = true;
+            this.rb_excel.Location = new System.Drawing.Point(7, 42);
+            this.rb_excel.Name = "rb_excel";
+            this.rb_excel.Size = new System.Drawing.Size(70, 23);
+            this.rb_excel.TabIndex = 0;
+            this.rb_excel.TabStop = true;
+            this.rb_excel.Text = "xls/xlsx";
+            this.rb_excel.UseVisualStyleBackColor = true;
+            // 
+            // rb_csv
+            // 
+            this.rb_csv.AutoSize = true;
+            this.rb_csv.Location = new System.Drawing.Point(6, 71);
+            this.rb_csv.Name = "rb_csv";
+            this.rb_csv.Size = new System.Drawing.Size(47, 23);
+            this.rb_csv.TabIndex = 1;
+            this.rb_csv.Text = "csv";
+            this.rb_csv.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
@@ -472,6 +510,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -515,6 +555,9 @@
         private System.Windows.Forms.TextBox tb_LoginAPI;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton rb_csv;
+        private System.Windows.Forms.RadioButton rb_excel;
     }
 }
 

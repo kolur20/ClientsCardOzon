@@ -29,7 +29,8 @@ namespace iikoCardClients
         private void btn_Open_Click(object sender, EventArgs e)
         {
             var dialog = new OpenFileDialog();
-            dialog.Filter = "Файлы csv|*.csv";
+            if (rb_csv.Checked) dialog.Filter = "Файлы csv|*.csv";
+            if (rb_excel.Checked) dialog.Filter = "Файлы EXCEL|*.xlsx;*.xls|Файлы .cvs|*.csv";
             if (dialog.ShowDialog() == DialogResult.Cancel)
                 return;
             tb_file.Text = dialog.SafeFileName;
@@ -38,18 +39,41 @@ namespace iikoCardClients
 
         private void btn_Convert_Click(object sender, EventArgs e)
         {
+            string status = string.Empty;
             try
             {
-                string status = string.Empty;
-                var manager = new ManagerCsv(strFilePath,
-                    string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
-                    cb_isDeleted.Checked);
-                manager.CreateClients();
-                status += "Файл гостей создан" + '\n';
-                if (!cb_isDeleted.Checked)
+                if (strFilePath.Contains(".xlsx") || strFilePath.Contains(".xlx"))
                 {
-                    manager.CreateBalanses(tb_balance.Text);
-                    status += "Файл баланса гостей создан";
+                    var clients = new ManagerExcel(strFilePath).GetClients();
+                    var manager = new ManagerCsv();
+                    manager.CreateClients(
+                        string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
+                        clients,
+                        cb_isDeleted.Checked);
+                    status += "Файл гостей создан" + '\n';
+                    if (!cb_isDeleted.Checked)
+                    {
+                        manager.CreateBalanses(
+                            string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
+                           clients,
+                            tb_balance.Text);
+                        status += "Файл баланса гостей создан";
+                    }
+                    status += $"Гостей обработано: {clients.Count()}" + '\n';
+                }
+                else
+                {
+                    
+                    var manager = new ManagerCsv(strFilePath,
+                        string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
+                        cb_isDeleted.Checked);
+                    manager.CreateClients();
+                    status += "Файл гостей создан" + '\n';
+                    if (!cb_isDeleted.Checked)
+                    {
+                        manager.CreateBalanses(tb_balance.Text);
+                        status += "Файл баланса гостей создан";
+                    }
                 }
                 MessageBox.Show(status, "Успешно");
 

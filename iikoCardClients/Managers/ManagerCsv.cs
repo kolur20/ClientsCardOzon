@@ -30,6 +30,7 @@ namespace iikoCardClients.Managers
         {
             strFilePath = file;
         }
+        public ManagerCsv() { }
 
         public IEnumerable<Client> GetClients()
         {
@@ -76,6 +77,37 @@ namespace iikoCardClients.Managers
             }
             return clientList.ToArray();
         }
+
+        
+
+        public void CreateClients(string outname, IEnumerable<ShortCustomerInfo> shortCustomerInfos, bool deleted = false)
+        {
+            Directory.CreateDirectory(path);
+            var csvClients = Path.Combine(path, "Guests " + outname + ".csv");
+            using (StreamWriter streamReader = new StreamWriter(csvClients, false, Encoding.UTF8))
+            {
+                using (CsvWriter csvReader = new CsvWriter(streamReader, new System.Globalization.CultureInfo("en")))
+                {
+                    // указываем разделитель, который будет использоваться в файле
+                    csvReader.Configuration.Delimiter = ";";
+                    var clientList = new List<Client>();
+                    clientList.AddRange(shortCustomerInfos.Select(
+                        data => new Client() {
+                            Name = data.Name,
+                            Track = data.Card,
+                            isDeleted = deleted ? "1" : "0",
+                            Number = data.Card
+
+                        })
+                        .ToArray()
+                        );
+                    csvReader.WriteRecords(clientList);
+                }
+            }
+        }
+
+
+
         public void CreateClients()
         {
             Directory.CreateDirectory(path);
@@ -129,15 +161,40 @@ namespace iikoCardClients.Managers
                         }
 
                     }
-
-
-
-
-
+                    
                     csvReader.WriteRecords(clientList);
                 }
             }
         }
+
+
+
+        public void CreateBalanses(string outname, IEnumerable<ShortCustomerInfo> shortCustomerInfos, string balance)
+        {
+            Directory.CreateDirectory(path);
+            var csvClients = Path.Combine(path, "Balance " + outname + ".csv");
+            
+            using (StreamWriter streamReader = new StreamWriter(csvClients, false, Encoding.UTF8))
+            {
+                using (CsvWriter csvReader = new CsvWriter(streamReader, new System.Globalization.CultureInfo("en")))
+                {
+                    csvReader.Configuration.Delimiter = ";";
+                    var clientList = new List<Balance>();
+                    clientList.AddRange(shortCustomerInfos.Select(
+                        data => new Balance()
+                        {
+                            Track = data.Card,
+                            Sum = balance
+
+                        })
+                        .ToArray()
+                        );
+                    csvReader.WriteRecords(clientList);
+                }
+            }
+        }
+
+
         public void CreateBalanses(string balance)
         {
             Directory.CreateDirectory(path);
