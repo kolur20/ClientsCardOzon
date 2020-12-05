@@ -21,6 +21,10 @@ namespace iikoCardClients
             tb_LoginAPI.Text = Properties.Settings.Default.LoginAPI;
             tb_PasswordAPI.Text = Properties.Settings.Default.PasswordAPI;
             cb_ManagerCard.Checked = Properties.Settings.Default.ManagerCard;
+            
+
+            cb_organizations.SelectedItem = Properties.Settings.Default.Organization;
+            cb_CorporateNutritions.SelectedItem = Properties.Settings.Default.CorporateNutritions;
         }
         string strFilePath = "";
 
@@ -57,7 +61,7 @@ namespace iikoCardClients
                             string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
                            clients,
                             tb_balance.Text);
-                        status += "Файл баланса гостей создан";
+                        status += "Файл баланса гостей создан" + '\n';
                     }
                     status += $"Гостей обработано: {clients.Count()}" + '\n';
                 }

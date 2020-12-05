@@ -134,11 +134,23 @@ namespace iikoCardClients
         {
             if (((Label)sender).Text != string.Empty)
             {
-                deliveryAPI.GetCastomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID);
+                var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
+                l_Name.Text = customer.Name;
+                l_Balance.Text = customer.Wallet.Balance.ToString();
+                l_Description.Text = "Организация: ";
+                foreach (var i in customer.Category)
+                    l_Description.Text += i + ", ";
+                if (l_Description.Text.Contains("Удален"))
+                {
+                    l_Description.Text = "Гость - " + customer.Name + ", удален из программы корпоративного питания!";
+                }
+                else
+                    l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
             }
             else
             {
                 l_Name.Text = l_Balance.Text = string.Empty;
+                l_Description.Text = string.Empty;
             }
         }
 

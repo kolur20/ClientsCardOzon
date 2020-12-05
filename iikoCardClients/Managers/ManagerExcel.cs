@@ -13,14 +13,18 @@ namespace iikoCardClients.Managers
     class ManagerExcel
     {
         string originalFileName = string.Empty;
+        NLog.Logger logger = null;
+        int Columns;
         public ManagerExcel(string file)
         {
             originalFileName = file;
+            Columns = 3;
+            logger = NLog.LogManager.GetCurrentClassLogger();
         }
         public IEnumerable<ShortCustomerInfo> GetClients()
         {
             var clientList = new List<ShortCustomerInfo>();
-
+            logger.Info($"Открытие файла {originalFileName} для получения гостей");
             using (var stream = File.Open(originalFileName, FileMode.Open, FileAccess.Read))
             {
                 IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream);
@@ -36,8 +40,11 @@ namespace iikoCardClients.Managers
                 };
                 
                 var dataSet = reader.AsDataSet(conf).Tables[0];
-                if (dataSet.Columns.Count != 3)
+                if (dataSet.Columns.Count != Columns)
+                {
+                    logger.Fatal($"Колличество столбцов ({dataSet.Columns.Count}) не соответствует заданному для парсинга количеству ({Columns})");
                     return null;
+                }
                 var count = dataSet.Rows.Count;
                 foreach (DataRow row in dataSet.Rows)
                 {
@@ -73,11 +80,13 @@ namespace iikoCardClients.Managers
                         Card = card
                     });
                 }
+                logger.Info($"Обработка завершена, строк в документе обработано: {dataSet.Rows.Count}");
                 reader.Close();
                 //clientList.RemoveAt(0);
 
             }
-
+            
+            logger.Info($"Загрузка гостей завершена, гостей для дальнейшей обработки: {clientList.Count}");
             return clientList.ToArray();
         }
 
