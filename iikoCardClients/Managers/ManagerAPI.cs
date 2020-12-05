@@ -112,10 +112,63 @@ namespace iikoCardClients.Managers
 
         }
 
+        public async Task<ShortCustomerInfo> GetCustomerInfoByCard(string card, string organizationId, string walletId)
+        {
+            try
+            {
+                token = Task.Run(() => GetToken()).Result;
+                var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
+                   .ConfigureAwait(false);
+                switch (response.StatusCode)
+                {
+                    case System.Net.HttpStatusCode.BadRequest:
+                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+
+                    case System.Net.HttpStatusCode.Unauthorized:
+                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+                    default:
+                        break;
+                }
+                var jObj = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                return new ShortCustomerInfo()
+                {
+                    Id = (string)jObj.SelectToken("id"),
+                    Name = (string)jObj.SelectToken("name"),
+                    Card = card,
+                    Wallet = jObj["walletBalances"]
+                        .Select(data => new Wallet()
+                        {
+                            Balance = (decimal)data.SelectToken("balance"),
+                            Id = (string)data["wallet"].SelectToken("id"),
+                            Name = (string)data["wallet"].SelectToken("name")
+                        })
+                        .Where(data => data.Id == walletId)
+                        .FirstOrDefault(),
+                    Category = jObj["categories"]
+                        .Select(data => (string)data.SelectToken("name"))
+
+                };
+
+                
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetCustomerInfoByCard(card, organizationId, walletId)).Result;
+                }
+                throw new Exception(ex.Message);
+
+            }
+        }
+
         public async Task<decimal> GetCastomerBalance(string card, CorporateNutritions corporateNutritions, Organization organization = null)
         {
             try
             {
+                token = Task.Run(() => GetToken()).Result;
                 var organizationId = organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id;
 
                 var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
@@ -131,9 +184,7 @@ namespace iikoCardClients.Managers
                     default:
                         break;
                 }
-
-
-
+                
                 return JObject.Parse(await response.Content.ReadAsStringAsync())["walletBalances"]
                     .Select(data => new
                     {

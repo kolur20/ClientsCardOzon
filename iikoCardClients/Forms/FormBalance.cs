@@ -16,6 +16,7 @@ namespace iikoCardClients
         private int CountClick;
         ManagerAPI deliveryAPI = null;
         string OrganizationId = "";
+        string WalletID = "";
         public FormBalance()
         {
             InitializeComponent();
@@ -26,40 +27,61 @@ namespace iikoCardClients
             Reader.Reader.SetFiel(l_Card);
             ManagerAPI.Initialization();
 
-            ConnectToRead();
-            ConnectToBiz();
+            //ускоряем подключение путем использования таймера при отвале
+            timer_readerConnection_Tick(null, null);
 
         }
 
-        private void ConnectToBiz()
+        private bool ConnectToBiz()
         {
             try
             {
                 deliveryAPI = new ManagerAPI(Properties.Settings.Default.LoginAPI, Properties.Settings.Default.PasswordAPI);
                 OrganizationId = Task.Run(() => deliveryAPI.GetOrganizations())
                     .Result
-                    .Where(data => data.Active == true)
+                    .Where(data => data.Active == true && data.Name == Properties.Settings.Default.Organization)
                     .Select(data => data.Id)
                     .FirstOrDefault();
+
+                WalletID = Task.Run(() => deliveryAPI.GetCorporateNutritions())
+                    .Result
+                    .Where(data => data.Name == Properties.Settings.Default.CorporateNutritions)
+                    .Select(data => data.Wallets)
+                    .FirstOrDefault();
+                if (WalletID is null || OrganizationId is null)
+                    throw new ArgumentNullException("Не задана организация или акция", "");
+
+                return true;
+            }
+            catch (AggregateException)
+            {
+                
+                timer_readerConnection.Start();
+                return false;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n Приложение будет закрыто", "Ошибка подключения API");
+                timer_readerConnection.Stop();
+                MessageBox.Show(ex.Message + "\n Приложение будет закрыто \n Укажите данные при следующем запуске.", "Ошибка подключения API");
+                
                 Properties.Settings.Default.ManagerCard = false;
                 Properties.Settings.Default.Save();
                 Close();
+                return false;
             }
         }
-        private void ConnectToRead()
+        private bool ConnectToRead()
         {
             try
             {
                 Reader.Reader.InitializaeZ2(l_stat);
+                return true;
             }
             catch (Reader.ReaderExceptions)
             {
                 Reader.Reader.LoggerMessage($"Повторная попытка через {timer_readerConnection.Interval} ms");
                 timer_readerConnection.Start();
+                return false;
             }
         }
 
@@ -94,7 +116,12 @@ namespace iikoCardClients
 
         private void timer_readerConnection_Tick(object sender, EventArgs e)
         {
-            ConnectToRead();
+            var reader = ConnectToRead();
+            var biz = ConnectToBiz();
+            
+            l_stat.BackColor = reader & biz ? Color.LightGreen : Color.Red;
+            if (reader | biz) l_stat.BackColor = Color.Yellow;
+
         }
 
         private void FormBalance_FormClosed(object sender, FormClosedEventArgs e)
@@ -107,6 +134,7 @@ namespace iikoCardClients
         {
             if (((Label)sender).Text != string.Empty)
             {
+                deliveryAPI.GetCastomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID);
             }
             else
             {

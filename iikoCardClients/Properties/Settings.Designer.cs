@@ -58,5 +58,29 @@ namespace iikoCardClients.Properties {
                 this["ManagerCard"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Organization {
+            get {
+                return ((string)(this["Organization"]));
+            }
+            set {
+                this["Organization"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CorporateNutritions {
+            get {
+                return ((string)(this["CorporateNutritions"]));
+            }
+            set {
+                this["CorporateNutritions"] = value;
+            }
+        }
     }
 }

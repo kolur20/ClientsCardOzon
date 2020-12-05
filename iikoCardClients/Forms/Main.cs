@@ -101,6 +101,9 @@ namespace iikoCardClients
             Properties.Settings.Default.LoginAPI = tb_LoginAPI.Text;
             Properties.Settings.Default.PasswordAPI = tb_PasswordAPI.Text;
             Properties.Settings.Default.ManagerCard = cb_ManagerCard.Checked;
+
+            Properties.Settings.Default.Organization = cb_organizations.Text;
+            Properties.Settings.Default.CorporateNutritions = cb_CorporateNutritions.Text;
             Properties.Settings.Default.Save();
         }
 
