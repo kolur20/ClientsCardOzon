@@ -37,12 +37,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tb_Name = new System.Windows.Forms.TextBox();
-            this.tb_Balance = new System.Windows.Forms.TextBox();
+            this.l_stat = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.tb_Card = new System.Windows.Forms.TextBox();
             this.timer_settings = new System.Windows.Forms.Timer(this.components);
-            this.label6 = new System.Windows.Forms.Label();
+            this.l_Name = new System.Windows.Forms.Label();
+            this.l_Balance = new System.Windows.Forms.Label();
+            this.l_Card = new System.Windows.Forms.Label();
+            this.timer_readerConnection = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +73,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(91, 210);
+            this.label3.Location = new System.Drawing.Point(91, 217);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(616, 37);
             this.label3.TabIndex = 9;
@@ -83,7 +84,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(91, 123);
+            this.label2.Location = new System.Drawing.Point(91, 143);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(616, 37);
             this.label2.TabIndex = 8;
@@ -95,7 +96,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(98, 86);
+            this.label1.Location = new System.Drawing.Point(98, 106);
             this.label1.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(602, 37);
@@ -126,14 +127,14 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.l_stat, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.label1, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.label3, 1, 4);
-            this.tableLayoutPanel2.Controls.Add(this.tb_Name, 1, 3);
-            this.tableLayoutPanel2.Controls.Add(this.tb_Balance, 1, 5);
             this.tableLayoutPanel2.Controls.Add(this.label2, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.label5, 1, 7);
-            this.tableLayoutPanel2.Controls.Add(this.tb_Card, 1, 8);
+            this.tableLayoutPanel2.Controls.Add(this.l_Name, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.l_Balance, 1, 5);
+            this.tableLayoutPanel2.Controls.Add(this.l_Card, 1, 8);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
@@ -153,63 +154,74 @@
             this.tableLayoutPanel2.TabIndex = 10;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
-            // tb_Name
+            // l_stat
             // 
-            this.tb_Name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_Name.Location = new System.Drawing.Point(91, 163);
-            this.tb_Name.Name = "tb_Name";
-            this.tb_Name.ReadOnly = true;
-            this.tb_Name.Size = new System.Drawing.Size(616, 44);
-            this.tb_Name.TabIndex = 10;
-            this.tb_Name.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tb_Balance
-            // 
-            this.tb_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Balance.Location = new System.Drawing.Point(91, 250);
-            this.tb_Balance.Name = "tb_Balance";
-            this.tb_Balance.ReadOnly = true;
-            this.tb_Balance.Size = new System.Drawing.Size(616, 44);
-            this.tb_Balance.TabIndex = 11;
-            this.tb_Balance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.l_stat.AutoSize = true;
+            this.l_stat.BackColor = System.Drawing.Color.Lime;
+            this.l_stat.Dock = System.Windows.Forms.DockStyle.Right;
+            this.l_stat.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.l_stat.Location = new System.Drawing.Point(755, 0);
+            this.l_stat.MaximumSize = new System.Drawing.Size(40, 40);
+            this.l_stat.MinimumSize = new System.Drawing.Size(40, 40);
+            this.l_stat.Name = "l_stat";
+            this.l_stat.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.l_stat.Size = new System.Drawing.Size(40, 40);
+            this.l_stat.TabIndex = 1;
+            this.l_stat.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label5
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(91, 297);
+            this.label5.Location = new System.Drawing.Point(91, 291);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(616, 37);
             this.label5.TabIndex = 13;
             this.label5.Text = "Карта сотрудника";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // tb_Card
-            // 
-            this.tb_Card.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Card.Location = new System.Drawing.Point(91, 337);
-            this.tb_Card.Name = "tb_Card";
-            this.tb_Card.ReadOnly = true;
-            this.tb_Card.Size = new System.Drawing.Size(616, 44);
-            this.tb_Card.TabIndex = 14;
-            // 
             // timer_settings
             // 
             this.timer_settings.Interval = 60000;
             this.timer_settings.Tick += new System.EventHandler(this.timer_settings_Tick);
             // 
-            // label6
+            // l_Name
             // 
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Lime;
-            this.label6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.label6.Location = new System.Drawing.Point(713, 0);
-            this.label6.Name = "label6";
-            this.label6.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.label6.Size = new System.Drawing.Size(82, 24);
-            this.label6.TabIndex = 1;
-            this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.l_Name.AutoSize = true;
+            this.l_Name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Name.Location = new System.Drawing.Point(91, 180);
+            this.l_Name.Name = "l_Name";
+            this.l_Name.Size = new System.Drawing.Size(616, 37);
+            this.l_Name.TabIndex = 15;
+            this.l_Name.Text = "label7";
+            this.l_Name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // l_Balance
+            // 
+            this.l_Balance.AutoSize = true;
+            this.l_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Balance.Location = new System.Drawing.Point(91, 254);
+            this.l_Balance.Name = "l_Balance";
+            this.l_Balance.Size = new System.Drawing.Size(616, 37);
+            this.l_Balance.TabIndex = 16;
+            this.l_Balance.Text = "label8";
+            this.l_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // l_Card
+            // 
+            this.l_Card.AutoSize = true;
+            this.l_Card.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Card.Location = new System.Drawing.Point(91, 328);
+            this.l_Card.Name = "l_Card";
+            this.l_Card.Size = new System.Drawing.Size(616, 37);
+            this.l_Card.TabIndex = 17;
+            this.l_Card.Text = "label9";
+            this.l_Card.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // timer_readerConnection
+            // 
+            this.timer_readerConnection.Interval = 5000;
+            this.timer_readerConnection.Tick += new System.EventHandler(this.timer_readerConnection_Tick);
             // 
             // FormBalance
             // 
@@ -245,11 +257,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.TextBox tb_Name;
-        private System.Windows.Forms.TextBox tb_Balance;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tb_Card;
         private System.Windows.Forms.Timer timer_settings;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label l_stat;
+        private System.Windows.Forms.Label l_Name;
+        private System.Windows.Forms.Label l_Balance;
+        private System.Windows.Forms.Label l_Card;
+        private System.Windows.Forms.Timer timer_readerConnection;
     }
 }

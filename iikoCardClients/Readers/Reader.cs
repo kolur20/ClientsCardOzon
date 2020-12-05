@@ -119,9 +119,9 @@ namespace Reader
                     foreach (var k in aBuf)
                     {
                         keyStr += (k - '0').ToString();
-                        KeyboardSend.KeyDown((char)(k));
+                        //KeyboardSend.KeyDown((char)(k));
                     }
-                    KeyboardSend.KeyDown(System.Windows.Forms.Keys.Enter);
+                    //KeyboardSend.KeyDown(System.Windows.Forms.Keys.Enter);
                     logger.Info($"Трек карты: {keyStr}");
 
                     if (nSBlockN == (nSBlockMax - 1))
@@ -344,9 +344,9 @@ namespace Reader
             var rPorts = EnumSerialPorts();
             if (rPorts == null || rPorts.Count == 0)
             {
-                //logger.Fatal("Считыватель не найден...");
+                logger.Fatal("Считыватель не найден...");
                 Red();
-                return;
+                throw new OpenReaderException();
             }
             int hr;
             try
@@ -357,14 +357,14 @@ namespace Reader
                     logger.Fatal("Ошибка ZR_Initialize ({0}).", hr);
                     Red();
                     //Console.ReadLine();
-                    return;
+                    throw new OpenReaderException();
                 }
             }
             catch (System.DllNotFoundException ex)
             {
                 logger.Fatal($"{ex.Message}");
                 Red();
-                return;
+                throw new OpenReaderException();
             }
             try
             {
@@ -410,7 +410,7 @@ namespace Reader
                     logger.Fatal("Ошибка ZR_Rd_SetNotification ({0}).", hr);
                     Red();
                     //Console.ReadLine();
-                    return;
+                    throw new OpenReaderException();
                 }
                 StartNotifyThread();
                 //Console.WriteLine();
@@ -425,6 +425,7 @@ namespace Reader
                     ZRIntf.ZR_CloseHandle(m_hRd);
                 ZRIntf.ZR_Finalyze();
                 Red();
+                throw new ReadReaderException();
             }
         }
 

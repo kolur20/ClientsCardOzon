@@ -18,8 +18,26 @@ namespace iikoCardClients
             InitializeComponent();
             CountClick = 0;
             timer_settings.Start();
+            l_Balance.Text = l_Card.Text = l_Name.Text = l_Description.Text = string.Empty;
+            
 
 
+            ConnectToRead();
+            
+
+        }
+
+        private void ConnectToRead()
+        {
+            try
+            {
+                Reader.Reader.InitializaeZ2(l_stat);
+            }
+            catch (Reader.ReaderExceptions)
+            {
+                Reader.Reader.LoggerMessage($"Повторная попытка через {timer_readerConnection.Interval} ms");
+                timer_readerConnection.Start();
+            }
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -49,6 +67,11 @@ namespace iikoCardClients
         private void timer_settings_Tick(object sender, EventArgs e)
         {
             CountClick = 0;
+        }
+
+        private void timer_readerConnection_Tick(object sender, EventArgs e)
+        {
+            ConnectToRead();
         }
     }
 }
