@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iikoCardClients.Managers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,20 +14,42 @@ namespace iikoCardClients
     public partial class FormBalance : Form
     {
         private int CountClick;
+        ManagerAPI deliveryAPI = null;
+        string OrganizationId = "";
         public FormBalance()
         {
             InitializeComponent();
             CountClick = 0;
             timer_settings.Start();
-            l_Balance.Text = l_Card.Text = l_Name.Text = l_Description.Text = string.Empty;
-            
+            l_Description.Text = string.Empty;
 
+            Reader.Reader.SetFiel(l_Card);
+            ManagerAPI.Initialization();
 
             ConnectToRead();
-            
+            ConnectToBiz();
 
         }
 
+        private void ConnectToBiz()
+        {
+            try
+            {
+                deliveryAPI = new ManagerAPI(Properties.Settings.Default.LoginAPI, Properties.Settings.Default.PasswordAPI);
+                OrganizationId = Task.Run(() => deliveryAPI.GetOrganizations())
+                    .Result
+                    .Where(data => data.Active == true)
+                    .Select(data => data.Id)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n Приложение будет закрыто", "Ошибка подключения API");
+                Properties.Settings.Default.ManagerCard = false;
+                Properties.Settings.Default.Save();
+                Close();
+            }
+        }
         private void ConnectToRead()
         {
             try
@@ -73,5 +96,18 @@ namespace iikoCardClients
         {
             ConnectToRead();
         }
+
+        private void FormBalance_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Reader.Reader.LoggerMessage("Закрытие приложения");
+            Reader.Reader.Dispose();
+        }
+
+        private void l_Card_TextChanged(object sender, EventArgs e)
+        {
+            MessageBox.Show(((Label)sender).Text);
+        }
+
+        
     }
 }

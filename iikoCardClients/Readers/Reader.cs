@@ -14,6 +14,10 @@ namespace Reader
     static class Reader
     {
         static System.Windows.Forms.Label status = null;
+        static System.Windows.Forms.Label Card = null;
+
+
+
         const ZP_PORT_TYPE RdPortType = ZP_PORT_TYPE.ZP_PORT_COM;
         //const string RdPortName = "COM3";
 
@@ -33,10 +37,27 @@ namespace Reader
         static private void Green() { status.BackColor = Color.LightGreen; }
         static private void Red() { status.BackColor = Color.Red; }
         #endregion
+
+        #region Fiel
+        static public void SetFiel(System.Windows.Forms.Label card)
+        {
+            Card = card;
+        }
+        static private void ToLabel(System.Windows.Forms.Label label, string text)
+        {
+            label.Invoke(new Action(() => label.Text = text));
+        }
+        #endregion
+
+
         static public void LoggerMessage(string msg)
         {
             logger.Debug(msg);
         }
+
+
+
+
         //считывание данных из блоков
         static void DoRead1K4K(Byte[] rNum, ZR_CARD_TYPE nCdType)
         {
@@ -140,7 +161,25 @@ namespace Reader
             TimeSpan rezultTime = TimeSpan.FromMilliseconds(Environment.TickCount - startTick);
             logger.Info("Общее время: {0}", rezultTime);
         }
-       static int CheckNotifyMsgs()
+
+        static void DoWrite(string keyStr)
+        {
+            ToLabel(Card, keyStr);
+        }
+
+        static void DoWriteSR(string serialNumber)
+        {
+            try
+            {
+                DoWrite(serialNumber);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+            }
+        }
+
+        static int CheckNotifyMsgs()
         {
             int hr;
             UInt32 nMsg = 0;
@@ -161,11 +200,16 @@ namespace Reader
                                     //DoReadUL(pInfo.nNum, pInfo.nType);
                                     break;
                                 case ZR_CARD_TYPE.ZR_CD_1K:
+                                    break;
                                 case ZR_CARD_TYPE.ZR_CD_4K:
                                     DoRead1K4K(pInfo.nNum, pInfo.nType);
                                     break;
+                                case ZR_CARD_TYPE.ZR_CD_EM:
+                                    ///передача серийного номера с преобразованием
+                                    DoWriteSR(ZRIntf.CardNumToStr(pInfo.nNum, pInfo.nType));
+                                    break;
                                 default:
-                                   logger.Error("Не могу прочитать карту.");
+                                    logger.Error("Не могу прочитать карту.");
                                     break;
                             }
                         }
@@ -173,7 +217,7 @@ namespace Reader
                     case ZRIntf.ZR_RN_CARD_REMOVE:
                         {
                             ZR_CARD_INFO pInfo = (ZR_CARD_INFO)Marshal.PtrToStructure(nMsgParam, typeof(ZR_CARD_INFO));
-                           logger.Info("Удалена карта {0} {1}",
+                            logger.Info("Удалена карта {0} {1}",
                                 CardTypeStrs[(int)pInfo.nType],
                                 ZRIntf.CardNumToStr(pInfo.nNum, pInfo.nType));
                         }

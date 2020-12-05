@@ -17,10 +17,13 @@ namespace iikoCardClients
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if (Properties.Settings.Default.ManagerCard)
-                Application.Run(new FormBalance());
-            else
-                Application.Run(new Main());
+            try {
+                if (Properties.Settings.Default.ManagerCard)
+                    Application.Run(new FormBalance());
+                else
+                    Application.Run(new Main());
+            }
+            catch (Exception) { }
         }
     }
 }

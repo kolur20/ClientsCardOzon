@@ -991,7 +991,7 @@ namespace ZREADER
             switch (nType)
             {
                 case ZR_CARD_TYPE.ZR_CD_EM:
-                    s = string.Format("{0},{1:D5}", aNum[3], aNum[1] + (aNum[2] << 8));
+                    s = string.Format("{0:D3}{1:D5}", aNum[3], aNum[1] + (aNum[2] << 8));
                     break;
                 case ZR_CARD_TYPE.ZR_CD_HID:
                     {

@@ -39,10 +39,10 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.l_stat = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.timer_settings = new System.Windows.Forms.Timer(this.components);
             this.l_Name = new System.Windows.Forms.Label();
             this.l_Balance = new System.Windows.Forms.Label();
             this.l_Card = new System.Windows.Forms.Label();
+            this.timer_settings = new System.Windows.Forms.Timer(this.components);
             this.timer_readerConnection = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -73,7 +73,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(91, 217);
+            this.label3.Location = new System.Drawing.Point(91, 216);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(616, 37);
             this.label3.TabIndex = 9;
@@ -84,7 +84,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(91, 143);
+            this.label2.Location = new System.Drawing.Point(91, 140);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(616, 37);
             this.label2.TabIndex = 8;
@@ -96,7 +96,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(98, 106);
+            this.label1.Location = new System.Drawing.Point(98, 103);
             this.label1.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(602, 37);
@@ -173,50 +173,51 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(91, 291);
+            this.label5.Location = new System.Drawing.Point(91, 292);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(616, 37);
             this.label5.TabIndex = 13;
             this.label5.Text = "Карта сотрудника";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // timer_settings
-            // 
-            this.timer_settings.Interval = 60000;
-            this.timer_settings.Tick += new System.EventHandler(this.timer_settings_Tick);
-            // 
             // l_Name
             // 
             this.l_Name.AutoSize = true;
+            this.l_Name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.l_Name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Name.Location = new System.Drawing.Point(91, 180);
+            this.l_Name.Location = new System.Drawing.Point(91, 177);
             this.l_Name.Name = "l_Name";
-            this.l_Name.Size = new System.Drawing.Size(616, 37);
+            this.l_Name.Size = new System.Drawing.Size(616, 39);
             this.l_Name.TabIndex = 15;
-            this.l_Name.Text = "label7";
             this.l_Name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // l_Balance
             // 
             this.l_Balance.AutoSize = true;
+            this.l_Balance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.l_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Balance.Location = new System.Drawing.Point(91, 254);
+            this.l_Balance.Location = new System.Drawing.Point(91, 253);
             this.l_Balance.Name = "l_Balance";
-            this.l_Balance.Size = new System.Drawing.Size(616, 37);
+            this.l_Balance.Size = new System.Drawing.Size(616, 39);
             this.l_Balance.TabIndex = 16;
-            this.l_Balance.Text = "label8";
             this.l_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // l_Card
             // 
             this.l_Card.AutoSize = true;
+            this.l_Card.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.l_Card.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Card.Location = new System.Drawing.Point(91, 328);
+            this.l_Card.Location = new System.Drawing.Point(91, 329);
             this.l_Card.Name = "l_Card";
-            this.l_Card.Size = new System.Drawing.Size(616, 37);
+            this.l_Card.Size = new System.Drawing.Size(616, 39);
             this.l_Card.TabIndex = 17;
-            this.l_Card.Text = "label9";
             this.l_Card.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.l_Card.TextChanged += new System.EventHandler(this.l_Card_TextChanged);
+            // 
+            // timer_settings
+            // 
+            this.timer_settings.Interval = 60000;
+            this.timer_settings.Tick += new System.EventHandler(this.timer_settings_Tick);
             // 
             // timer_readerConnection
             // 
@@ -240,6 +241,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Balance";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormBalance_FormClosed);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
