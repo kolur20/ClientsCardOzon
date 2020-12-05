@@ -105,7 +105,13 @@ namespace iikoCardClients
 
         private void l_Card_TextChanged(object sender, EventArgs e)
         {
-            MessageBox.Show(((Label)sender).Text);
+            if (((Label)sender).Text != string.Empty)
+            {
+            }
+            else
+            {
+                l_Name.Text = l_Balance.Text = string.Empty;
+            }
         }
 
         

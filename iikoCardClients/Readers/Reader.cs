@@ -220,6 +220,7 @@ namespace Reader
                             logger.Info("Удалена карта {0} {1}",
                                 CardTypeStrs[(int)pInfo.nType],
                                 ZRIntf.CardNumToStr(pInfo.nNum, pInfo.nType));
+                            ToLabel(Card, string.Empty);
                         }
                         break;
                 }
