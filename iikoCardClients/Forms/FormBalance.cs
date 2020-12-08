@@ -11,8 +11,10 @@ using System.Windows.Forms;
 
 namespace iikoCardClients
 {
+
     public partial class FormBalance : Form
     {
+        NLog.Logger logger = null;
         private int CountClick;
         ManagerAPI deliveryAPI = null;
         string OrganizationId = "";
@@ -23,10 +25,11 @@ namespace iikoCardClients
             CountClick = 0;
             timer_settings.Start();
             l_Description.Text = string.Empty;
+            logger = NLog.LogManager.GetCurrentClassLogger();
 
             Reader.Reader.SetFiel(l_Card);
             ManagerAPI.Initialization();
-
+            logger.Info("Старт приложения...");
             //ускоряем подключение путем использования таймера при отвале
             timer_readerConnection_Tick(null, null);
 
@@ -118,14 +121,25 @@ namespace iikoCardClients
         {
             var reader = ConnectToRead();
             var biz = ConnectToBiz();
+
+            logger.Info(string.Format("Подключение к ридеру... {0}", reader ? "Успешно" : "Не успешно"));
+            logger.Info(string.Format("Подключение к iiko.biz... {0}", biz ? "Успешно" : "Не успешно"));
+            if (reader & biz)
+            {
+                l_stat.BackColor = Color.LightGreen;
+            }
+            else
+            {
+
+                l_stat.BackColor = reader | biz ? Color.Yellow : Color.Red;
+            }
             
-            l_stat.BackColor = reader & biz ? Color.LightGreen : Color.Red;
-            if (reader | biz) l_stat.BackColor = Color.Yellow;
 
         }
 
         private void FormBalance_FormClosed(object sender, FormClosedEventArgs e)
         {
+            logger.Info("Закрытие приложения");
             Reader.Reader.LoggerMessage("Закрытие приложения");
             Reader.Reader.Dispose();
         }
@@ -134,18 +148,34 @@ namespace iikoCardClients
         {
             if (((Label)sender).Text != string.Empty)
             {
-                var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
-                l_Name.Text = customer.Name;
-                l_Balance.Text = customer.Wallet.Balance.ToString();
-                l_Description.Text = "Организация: ";
-                foreach (var i in customer.Category)
-                    l_Description.Text += i + ", ";
-                if (l_Description.Text.Contains("Удален"))
+                logger.Info($"Карта {((Label)sender).Text} поднесена к считывателю");
+                try
                 {
-                    l_Description.Text = "Гость - " + customer.Name + ", удален из программы корпоративного питания!";
+                    var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
+                    l_Name.Text = customer.Name;
+                    l_Balance.Text = customer.Wallet.Balance.ToString();
+                    l_Description.Text = "Организация: ";
+                    foreach (var i in customer.Category)
+                        l_Description.Text += i + ", ";
+                    if (l_Description.Text.Contains("Удален"))
+                    {
+                        l_Description.Text = "Гость - " + customer.Name + ", удален из программы корпоративного питания!";
+                    }
+                    else
+                        l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
+
+                    logger.Info($"Гость - {customer.Name} баланс: {l_Balance.Text} {l_Description.Text}");
                 }
-                else
-                    l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
+                catch (AggregateException ex)
+                {
+                    l_Description.Text= "Гость с такой картой не найден";
+                    logger.Warn("Гость с такой картой не найден");
+                }
+                catch (Exception ex)
+                {
+                    l_Description.Text = ex.Message;
+                    logger.Error(ex.Message);
+                }
             }
             else
             {
