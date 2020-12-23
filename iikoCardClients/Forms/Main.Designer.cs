@@ -440,7 +440,6 @@
             // cb_ManagerCard
             // 
             this.cb_ManagerCard.AutoSize = true;
-            this.cb_ManagerCard.Enabled = false;
             this.cb_ManagerCard.Location = new System.Drawing.Point(13, 87);
             this.cb_ManagerCard.Name = "cb_ManagerCard";
             this.cb_ManagerCard.Size = new System.Drawing.Size(306, 23);
