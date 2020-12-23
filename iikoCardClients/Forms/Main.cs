@@ -10,13 +10,14 @@ using System.Windows.Forms;
 
 namespace iikoCardClients
 {
-    public partial class Main : Form
+    public partial class FormMain : Form
     {
-        
-        public Main()
+        static NLog.Logger logger = null;
+        public FormMain()
         {
             InitializeComponent();
-
+            logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info("Запуск приложения...");
 
             Managers.ManagerAPI.Initialization();
             tb_LoginAPI.Text = Properties.Settings.Default.LoginAPI;
@@ -26,6 +27,8 @@ namespace iikoCardClients
 
             cb_organizations.SelectedItem = Properties.Settings.Default.Organization;
             cb_CorporateNutritions.SelectedItem = Properties.Settings.Default.CorporateNutritions;
+
+            logger.Info("Приложение запущено");
         }
         string strFilePath = "";
 
@@ -44,11 +47,13 @@ namespace iikoCardClients
 
         private void btn_Convert_Click(object sender, EventArgs e)
         {
+            logger.Info("Инициализация преобразования файлов");
             string status = string.Empty;
             try
             {
                 if (strFilePath.Contains(".xlsx") || strFilePath.Contains(".xlx"))
                 {
+                    logger.Info("Выбран excel документ");
                     var clients = new ManagerExcel(strFilePath).GetClients();
                     var manager = new ManagerCsv();
                     manager.CreateClients(
@@ -68,7 +73,7 @@ namespace iikoCardClients
                 }
                 else
                 {
-                    
+                    logger.Info("Выбран csv документ");
                     var manager = new ManagerCsv(strFilePath,
                         string.Format($"{tb_group.Text} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString().Replace(':', '.')}"),
                         cb_isDeleted.Checked);
@@ -81,12 +86,12 @@ namespace iikoCardClients
                     }
                 }
                 MessageBox.Show(status, "Успешно");
-
+                logger.Info(status);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка");
-
+                logger.Warn(ex.Message);
 
             }
         }
@@ -110,6 +115,7 @@ namespace iikoCardClients
             Properties.Settings.Default.Organization = cb_organizations.Text;
             Properties.Settings.Default.CorporateNutritions = cb_CorporateNutritions.Text;
             Properties.Settings.Default.Save();
+            logger.Info("Сохранение настроек");
         }
 
         private void tb_CustomersBalance_KeyPress(object sender, KeyPressEventArgs e)
@@ -220,11 +226,16 @@ namespace iikoCardClients
                 };
                 var customers = new List<ShortCustomerInfo>();
                 customers.Add(customer);
+                logger.Info($"Начата робота с категорией {cat} и программой {cor}");
+                logger.Info($"Добавление одного гостя: {customer.Name} с картой {customer.Card} и балансом {balance}");
                 managerCustomers.UploadCustomers(customers, balance);
+
+                
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка");
+                logger.Warn(ex.Message);
             }
 }
         static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance)
@@ -263,11 +274,14 @@ namespace iikoCardClients
                     categories.Where(data => data.Name == cat).FirstOrDefault(),
                     corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
                     deliveryAPI);
+                logger.Info($"Начата робота с категорией {cat} и программой {cor}");
+                logger.Info($"Запрошено массовое добавление {list.Count()} гостей с балансом {balance}");
                 managerCustomers.UploadCustomers(list, balance);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка");
+                logger.Warn(ex.Message);
             }
         }
 
@@ -285,16 +299,15 @@ namespace iikoCardClients
         {
             pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
             stopWatch.Stop();
-            MessageBox.Show(
-                $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
+            var info = $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
                 $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
                 $"Гостям присвоена категория {ManagerCustomers.GetCountCategory} \r\n" +
                 $"Гостей включено в программу питания {ManagerCustomers.GetCountCorporateNutritions} \r\n" +
                 $"У гостей обработан баланс {ManagerCustomers.GetCountBalance} \r\n" +
                 $"Гостей не обработано {ManagerCustomers.GetCountFail} \r\n" +
-                $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.",
-                "Выгружено"
-                );
+                $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
+            MessageBox.Show(info, "Выгружено");
+            logger.Info(info);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

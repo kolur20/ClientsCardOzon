@@ -106,7 +106,7 @@ namespace iikoCardClients
             {
                 CountClick = 0;
                 timer_settings.Stop();
-                new Main().ShowDialog();
+                new FormMain().ShowDialog();
                 this.Close();
                 
             }

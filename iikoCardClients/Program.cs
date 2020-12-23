@@ -21,7 +21,7 @@ namespace iikoCardClients
                 if (Properties.Settings.Default.ManagerCard)
                     Application.Run(new FormBalance());
                 else
-                    Application.Run(new Main());
+                    Application.Run(new FormMain());
             }
             catch (Exception) { }
         }

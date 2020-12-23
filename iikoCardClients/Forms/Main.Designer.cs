@@ -1,6 +1,6 @@
 ﻿namespace iikoCardClients
 {
-    partial class Main
+    partial class FormMain
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.pb_load = new System.Windows.Forms.PictureBox();
             this.btn_CreateCustomer = new System.Windows.Forms.Button();
@@ -50,6 +50,9 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rb_csv = new System.Windows.Forms.RadioButton();
+            this.rb_excel = new System.Windows.Forms.RadioButton();
             this.tb_file = new System.Windows.Forms.TextBox();
             this.tb_balance = new System.Windows.Forms.TextBox();
             this.tb_group = new System.Windows.Forms.TextBox();
@@ -66,15 +69,12 @@
             this.tb_LoginAPI = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rb_excel = new System.Windows.Forms.RadioButton();
-            this.rb_csv = new System.Windows.Forms.RadioButton();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tabPage1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -301,6 +301,39 @@
             this.tabPage1.Text = "Преобразование";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rb_csv);
+            this.groupBox1.Controls.Add(this.rb_excel);
+            this.groupBox1.Location = new System.Drawing.Point(326, 7);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(176, 105);
+            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Формат файла импорта";
+            // 
+            // rb_csv
+            // 
+            this.rb_csv.AutoSize = true;
+            this.rb_csv.Location = new System.Drawing.Point(6, 71);
+            this.rb_csv.Name = "rb_csv";
+            this.rb_csv.Size = new System.Drawing.Size(47, 23);
+            this.rb_csv.TabIndex = 1;
+            this.rb_csv.Text = "csv";
+            this.rb_csv.UseVisualStyleBackColor = true;
+            // 
+            // rb_excel
+            // 
+            this.rb_excel.AutoSize = true;
+            this.rb_excel.Checked = true;
+            this.rb_excel.Location = new System.Drawing.Point(7, 42);
+            this.rb_excel.Name = "rb_excel";
+            this.rb_excel.Size = new System.Drawing.Size(70, 23);
+            this.rb_excel.TabIndex = 0;
+            this.rb_excel.TabStop = true;
+            this.rb_excel.Text = "xls/xlsx";
+            this.rb_excel.UseVisualStyleBackColor = true;
+            // 
             // tb_file
             // 
             this.tb_file.Location = new System.Drawing.Point(7, 7);
@@ -407,6 +440,7 @@
             // cb_ManagerCard
             // 
             this.cb_ManagerCard.AutoSize = true;
+            this.cb_ManagerCard.Enabled = false;
             this.cb_ManagerCard.Location = new System.Drawing.Point(13, 87);
             this.cb_ManagerCard.Name = "cb_ManagerCard";
             this.cb_ManagerCard.Size = new System.Drawing.Size(306, 23);
@@ -457,40 +491,7 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Логин API";
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.rb_csv);
-            this.groupBox1.Controls.Add(this.rb_excel);
-            this.groupBox1.Location = new System.Drawing.Point(326, 7);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(176, 105);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Формат файла импорта";
-            // 
-            // rb_excel
-            // 
-            this.rb_excel.AutoSize = true;
-            this.rb_excel.Checked = true;
-            this.rb_excel.Location = new System.Drawing.Point(7, 42);
-            this.rb_excel.Name = "rb_excel";
-            this.rb_excel.Size = new System.Drawing.Size(70, 23);
-            this.rb_excel.TabIndex = 0;
-            this.rb_excel.TabStop = true;
-            this.rb_excel.Text = "xls/xlsx";
-            this.rb_excel.UseVisualStyleBackColor = true;
-            // 
-            // rb_csv
-            // 
-            this.rb_csv.AutoSize = true;
-            this.rb_csv.Location = new System.Drawing.Point(6, 71);
-            this.rb_csv.Name = "rb_csv";
-            this.rb_csv.Size = new System.Drawing.Size(47, 23);
-            this.rb_csv.TabIndex = 1;
-            this.rb_csv.Text = "csv";
-            this.rb_csv.UseVisualStyleBackColor = true;
-            // 
-            // Main
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -499,7 +500,7 @@
             this.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "Main";
+            this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "iikoCardClients";
             this.tabPage2.ResumeLayout(false);
@@ -507,11 +508,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.pb_load)).EndInit();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
