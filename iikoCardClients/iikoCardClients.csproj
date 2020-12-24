@@ -78,6 +78,7 @@
     <Compile Include="Data\Client.cs" />
     <Compile Include="Data\CorporateNutritions.cs" />
     <Compile Include="Data\Organization.cs" />
+    <Compile Include="Data\ReportBiz.cs" />
     <Compile Include="Data\ShortGuestInfo.cs" />
     <Compile Include="Data\Wallet.cs" />
     <Compile Include="Forms\FormBalance.cs">

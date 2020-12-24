@@ -54,7 +54,7 @@ namespace iikoCardClients.Managers
                 foreach (var customer in shortCustomers)
                 {
                     CountAll++;
-                    UploadCustomer(customer.Name, customer.Card, balance);
+                    UploadCustomer(customer, balance);
                 }
             }
             catch (Exception)
@@ -65,7 +65,7 @@ namespace iikoCardClients.Managers
             }
         }
 
-        void UploadCustomer(string Name, string Card, string Balance)
+        void UploadCustomer(ShortCustomerInfo _customer, string Balance)
         {
             decimal balance = 0;
             bool guest = false;
@@ -73,29 +73,38 @@ namespace iikoCardClients.Managers
             
             try
             {
-                balance = Task.Run(() => deliveryAPI.GetCastomerBalance(Card, _corporateNutritions, _organization)).Result;
+                //если гость существует, то получаем его баланс по его карте
+                //если же гостя нет, мы упадем в обработчик ошибки, где создаем правильную карточку гостя
+                balance = Task.Run(() => deliveryAPI.GetCastomerBalance(_customer.Card, _corporateNutritions, _organization)).Result;
                 guest = true;
+                //если баланс отработал, тоесть гость есть в системе
+                //получаем его id, путем попытки создания гостя с существующей картой
+                //даже если гость уже есть, привязываем его к табельному номеру
                 customer = new ShortCustomerInfo()
                 {
-                    Id = Task.Run(() => deliveryAPI.CreateCustomer(null, Card, _organization)).Result
+                    Id = Task.Run(() => deliveryAPI.CreateCustomer(null, _customer.Card, _organization)).Result
                 };
+                //падаем в ошибку для обработки категорий и корпоративного питания
                 throw new Exception();
             }
             catch (Exception)
             {
+                //баланс мы не получили, создаем гостя
                 if (guest == false)
                     customer = new ShortCustomerInfo()
                     {
-                        Id = Task.Run(() => deliveryAPI.CreateCustomer(Name, Card, _organization)).Result
+                        Id = Task.Run(() => deliveryAPI.CreateCustomer(_customer.Name, _customer.Card, _organization)).Result
                     };
 
+                //присваиваем гостю категорию
                 if (Task.Run(() => deliveryAPI.SetCategoryByCustomer(customer, _categories, _organization)).Result)
                     CountCategory++;
-                
+                //назначаем гостю кошелек в программе
                 if (Task.Run(() => deliveryAPI.SetCorporateNutritionByCustomer(customer, _corporateNutritions, _organization)).Result)
                     CountCorporateNutritions++;
                 CountUpload++;
                 
+                //выравниваем баланс в зависимости пополнить или списать нам нужно от текущего значения
                 if (balance.ToString() != Balance)
                 {
                     if (balance == 0 || balance < Convert.ToDecimal(Balance))

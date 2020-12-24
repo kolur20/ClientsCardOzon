@@ -69,12 +69,23 @@
             this.tb_LoginAPI = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tb_fileTabNumber = new System.Windows.Forms.TextBox();
+            this.btn_fileTabNumber = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.tb_fileReport = new System.Windows.Forms.TextBox();
+            this.btn_fileReport = new System.Windows.Forms.Button();
+            this.btn_create = new System.Windows.Forms.Button();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -414,6 +425,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -491,6 +503,113 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Логин API";
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.tableLayoutPanel1);
+            this.tabPage4.Location = new System.Drawing.Point(4, 28);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(510, 392);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Отчеты";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.Controls.Add(this.tb_fileTabNumber, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btn_fileTabNumber, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label11, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label12, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.tb_fileReport, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.btn_fileReport, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.btn_create, 0, 4);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 5;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(504, 386);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // tb_fileTabNumber
+            // 
+            this.tb_fileTabNumber.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_fileTabNumber.Location = new System.Drawing.Point(3, 22);
+            this.tb_fileTabNumber.Name = "tb_fileTabNumber";
+            this.tb_fileTabNumber.ReadOnly = true;
+            this.tb_fileTabNumber.Size = new System.Drawing.Size(397, 26);
+            this.tb_fileTabNumber.TabIndex = 0;
+            // 
+            // btn_fileTabNumber
+            // 
+            this.btn_fileTabNumber.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_fileTabNumber.Location = new System.Drawing.Point(406, 22);
+            this.btn_fileTabNumber.Name = "btn_fileTabNumber";
+            this.btn_fileTabNumber.Size = new System.Drawing.Size(95, 26);
+            this.btn_fileTabNumber.TabIndex = 1;
+            this.btn_fileTabNumber.Text = "Выбрать";
+            this.btn_fileTabNumber.UseVisualStyleBackColor = true;
+            this.btn_fileTabNumber.Click += new System.EventHandler(this.btn_fileTabNumber_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label11.Location = new System.Drawing.Point(3, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(397, 19);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Выберите файл с табельными номерами";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label12.Location = new System.Drawing.Point(3, 51);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(397, 19);
+            this.label12.TabIndex = 3;
+            this.label12.Text = "Выберите выгруженный отчет";
+            // 
+            // tb_fileReport
+            // 
+            this.tb_fileReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_fileReport.Location = new System.Drawing.Point(3, 73);
+            this.tb_fileReport.Name = "tb_fileReport";
+            this.tb_fileReport.ReadOnly = true;
+            this.tb_fileReport.Size = new System.Drawing.Size(397, 26);
+            this.tb_fileReport.TabIndex = 4;
+            // 
+            // btn_fileReport
+            // 
+            this.btn_fileReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_fileReport.Location = new System.Drawing.Point(406, 73);
+            this.btn_fileReport.Name = "btn_fileReport";
+            this.btn_fileReport.Size = new System.Drawing.Size(95, 26);
+            this.btn_fileReport.TabIndex = 5;
+            this.btn_fileReport.Text = "Выбрать";
+            this.btn_fileReport.UseVisualStyleBackColor = true;
+            this.btn_fileReport.Click += new System.EventHandler(this.btn_fileReport_Click);
+            // 
+            // btn_create
+            // 
+            this.btn_create.AutoSize = true;
+            this.btn_create.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_create.Location = new System.Drawing.Point(3, 105);
+            this.btn_create.Name = "btn_create";
+            this.btn_create.Size = new System.Drawing.Size(397, 29);
+            this.btn_create.TabIndex = 6;
+            this.btn_create.Text = "Сформировать";
+            this.btn_create.UseVisualStyleBackColor = true;
+            this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
@@ -513,6 +632,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -559,6 +681,15 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rb_csv;
         private System.Windows.Forms.RadioButton rb_excel;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TextBox tb_fileTabNumber;
+        private System.Windows.Forms.Button btn_fileTabNumber;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox tb_fileReport;
+        private System.Windows.Forms.Button btn_fileReport;
+        private System.Windows.Forms.Button btn_create;
     }
 }
 

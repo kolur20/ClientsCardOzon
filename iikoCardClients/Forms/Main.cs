@@ -238,13 +238,30 @@ namespace iikoCardClients
                 logger.Warn(ex.Message);
             }
 }
+
+        /// <summary>
+        /// считывание гостей из файла и загрузка их в биз
+        /// </summary>
+        /// <param name="org">Текущая организация</param>
+        /// <param name="cat">Категория для пользователей</param>
+        /// <param name="cor">Программа корпоративного питания</param>
+        /// <param name="api">Логин API</param>
+        /// <param name="login">Пароль API</param>
+        /// <param name="file">Файл гостей для импорта</param>
+        /// <param name="balance">Баланс для гостей</param>
         static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance)
         {
             try
             {
+                if (api == "" || login == "")
+                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+                if (org == "" || cat == "" ||cor == "" ||balance == "")
+                    throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
                 stopWatch.Start();
                 IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
                 ManagerCustomers managerCustomers;
+
+
                 if (file.Contains(".csv"))
                 {
                     var csvManager = new ManagerCsv(file);
@@ -261,9 +278,8 @@ namespace iikoCardClients
                     var excelManager = new ManagerExcel(file);
                     list = excelManager.GetClients().ToArray();
                 }
-                if (api == "" || login == "")
-                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
-
+                
+                
                 var deliveryAPI = new Managers.ManagerAPI(api, login);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
                 var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
@@ -337,6 +353,11 @@ namespace iikoCardClients
                 MessageBox.Show($"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.\r\n Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
             }
         }
+        /// <summary>
+        /// получение данных из биза, файла гостей и загрузка их в биз
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_UploadCustomers_Click(object sender, EventArgs e)
         {
             
@@ -359,6 +380,54 @@ namespace iikoCardClients
             catch (Exception ex)
             {
                 MessageBox.Show($"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.\r\n Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
+            }
+        }
+
+
+
+        /*------------------------------------------------------------------------------------------------------------------------------------------------------------
+                        ФОРМИРОВАНИЕ ОТЧЕТА С ТАБЕЛЬНЫМ НОМЕРОМ НА ОСНОВАНИИ ОТЧЕТА БИЗА
+          ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+
+        string fileTabNumber = "";
+        string fileReport = "";
+
+        private void btn_fileTabNumber_Click(object sender, EventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Filter = "Файлы EXCEL|*.xlsx;*.xls|Файлы .cvs|*.csv";
+            if (dialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            tb_fileTabNumber.Text = dialog.SafeFileName;
+            fileTabNumber = dialog.FileName;
+        }
+
+        private void btn_fileReport_Click(object sender, EventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Filter = "Файлы EXCEL|*.xlsx;*.xls|Файлы .cvs|*.csv";
+            if (dialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            tb_fileReport.Text = dialog.SafeFileName;
+            fileReport = dialog.FileName;
+        }
+        /// <summary>
+        /// Формирование отчета
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_create_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var excelManager = new ManagerExcel(fileTabNumber);
+                var list = excelManager.GetClients().ToArray();
+
+                new ManagerExcel(fileReport).CreateReportWithTabNumber(list);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
             }
         }
     }

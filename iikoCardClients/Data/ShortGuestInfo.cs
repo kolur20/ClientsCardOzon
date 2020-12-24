@@ -6,6 +6,7 @@ namespace iikoCardClients.Data
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string TabNumber { get; set; }
         public string Card { get; set; }
         public IEnumerable<string> Category { get; set; }
         public Wallet Wallet { get; set; }
