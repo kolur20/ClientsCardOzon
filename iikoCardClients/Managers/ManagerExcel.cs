@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using ExcelLibrary;
 using System.Text;
 using System.Threading.Tasks;
+using ExcelLibrary.SpreadSheet;
 
 namespace iikoCardClients.Managers
 {
@@ -108,7 +110,7 @@ namespace iikoCardClients.Managers
             return clientList.ToArray();
         }
 
-        public void CreateReportWithTabNumber(IEnumerable<ShortCustomerInfo> Customers)
+        public void CreateReportWithTabNumber(IEnumerable<ShortCustomerInfo> Customers, string saveFileName)
         {
             logger.Info($"Открытие файла {originalFileName} для получения отчета");
             using (var stream = File.Open(originalFileName, FileMode.Open, FileAccess.ReadWrite))
@@ -136,7 +138,10 @@ namespace iikoCardClients.Managers
                             sname = "";
                             break;
                         case 2:
-                            sname = " " + name[1];
+                            if (name[1].Length == 4 && name[1].Contains('.'))
+                                sname = " " + name[1];
+                            else
+                                sname = " " + name[1].First() + ".";
                             break;
                         case 3:
                             sname = " " + name[1].First() + "." + name[2].First() + ".";
@@ -147,23 +152,91 @@ namespace iikoCardClients.Managers
                     
                     try
                     {
+                        //if (name[0].Contains("Орешкин"))
+                        //    offset = 0;
                         var s = Customers.Where(
-                            data => data.Name.Contains(name[0] + sname)).ToArray();
-                        var r = s.Select(data => data.TabNumber).First();
-                        row[8] = r;
+                            data => data.Name.Contains(name[0] + sname)).ToArray()
+                            .Select(data => data.TabNumber).First();
+                        if (row[3].ToString().Length > 0)
+                            row[8] = s;
+                        
                     }
                     catch (Exception ex)
                     {
 
                     }
                 }
+                
+                CreateWorkbook(saveFileName, dataSet.DataSet);
 
-                logger.Info($"Обработка завершена");
+                logger.Info($"Обработка завершена, результат сохранен в {saveFileName}");
                 
                 reader.Close();
 
             }
 
         }
+
+
+        //////// экспорт в эксель
+
+    
+        //export Excel from DataSet
+        public static void CreateWorkbook(String filePath, DataSet dataset)
+        {
+            if (dataset.Tables.Count == 0)
+                throw new ArgumentException("DataSet needs to have at least one DataTable", "dataset");
+
+            Workbook workbook = new Workbook();
+            foreach (DataTable dt in dataset.Tables)
+            {
+                Worksheet worksheet = new Worksheet(dt.TableName);
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    // Add column header
+                    //worksheet.Cells[0, i] = new Cell(dt.Columns[i].ColumnName);
+
+                    // Populate row data
+                    for (int j = 0; j < dt.Rows.Count; j++)
+                        //Если нулевые значения, заменяем на пустые строки
+                        worksheet.Cells[j + 1, i] = new Cell(dt.Rows[j][i] == DBNull.Value ? "" : dt.Rows[j][i]);
+                }
+                workbook.Worksheets.Add(worksheet);
+            }
+            workbook.Save(filePath);
+        }
+        //********************************
+        //DataGridView to DataTable
+        //public static DataTable ToDataTable(DataTable table, string tableName)
+        //{
+
+        //    DataGridView dgv = dataGridView;
+        //    DataTable table = new DataTable(tableName);
+        //    int iCol = 0;
+
+        //    for (iCol = 0; iCol & lt; dgv.Columns.Count; iCol++)
+        //    {
+        //        table.Columns.Add(dgv.Columns[iCol].Name);
+        //    }
+
+        //    foreach (DataGridViewRow row in dgv.Rows)
+        //    {
+
+        //        DataRow datarw = table.NewRow();
+
+        //        for (iCol = 0; iCol & lt; dgv.Columns.Count; iCol++)
+        //        {
+        //            datarw[iCol] = row.Cells[iCol].Value;
+        //        }
+
+        //        table.Rows.Add(datarw);
+        //    }
+
+        //    return table;
+        //}
+
     }
+
+
 }
+

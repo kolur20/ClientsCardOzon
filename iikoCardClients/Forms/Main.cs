@@ -420,10 +420,17 @@ namespace iikoCardClients
         {
             try
             {
-                var excelManager = new ManagerExcel(fileTabNumber);
-                var list = excelManager.GetClients().ToArray();
+                var save = new SaveFileDialog();
+                save.Filter = "xls files (*.xls)|*.xls|All files|*.*";
+                if (save.ShowDialog() == DialogResult.OK)
+                {
+                    var excelManager = new ManagerExcel(fileTabNumber);
+                    var list = excelManager.GetClients().ToArray();
 
-                new ManagerExcel(fileReport).CreateReportWithTabNumber(list);
+                    new ManagerExcel(fileReport).CreateReportWithTabNumber(list, save.FileName);
+                    MessageBox.Show("Файл успешно создан", "Успешно");
+
+                }
             }
             catch (Exception ex)
             {
