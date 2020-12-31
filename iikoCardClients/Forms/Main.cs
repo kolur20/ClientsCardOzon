@@ -13,6 +13,8 @@ namespace iikoCardClients
     public partial class FormMain : Form
     {
         static NLog.Logger logger = null;
+        static Stopwatch stopWatch = new Stopwatch();
+
         public FormMain()
         {
             InitializeComponent();
@@ -31,9 +33,168 @@ namespace iikoCardClients
             logger.Info("Приложение запущено");
         }
         string strFilePath = "";
+        /*------------------------------------------------------------------------------------------------------------------------------------------------------------
+                      ДЕЛЕГАТЫ ДЛЯ ОТОБРАЖЕНИЯ ПРОЦЕССА РАБОТЫ ОПЕРАЦИЙ
+        ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+        #region Делегаты - процессы отображения работы
+            //массовая выгрузка в биз
+        delegate void DelegateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, bool owerwriteName = false);
+        DelegateCustomers del_Customers = new DelegateCustomers(UpdateCustomers);
+        void CallBackFuncCustomers(IAsyncResult aRes)
+        {
+            del_Customers.EndInvoke(aRes);
+            CallBackFunc();
+        }
 
-        //C:\Users\Kirill\Desktop\Ложка + OZON 6.1.4011.0\Сотруд.csv
 
+        //одиночная выгрузка в биз
+        delegate void DelegateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance, bool owerwriteName = false);
+        DelegateCustomer del_Customer = new DelegateCustomer(UpdateCustomer);
+        void CallBackFuncCustomer(IAsyncResult aRes)
+        {
+            del_Customer.EndInvoke(aRes);
+            CallBackFunc();
+        }
+
+
+
+        void CallBackFunc()
+        {
+            pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
+            stopWatch.Stop();
+            var info = $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
+                $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
+                $"Гостям присвоена категория {ManagerCustomers.GetCountCategory} \r\n" +
+                $"Гостей включено в программу питания {ManagerCustomers.GetCountCorporateNutritions} \r\n" +
+                $"У гостей обработан баланс {ManagerCustomers.GetCountBalance} \r\n" +
+                $"Гостей не обработано {ManagerCustomers.GetCountFail} \r\n" +
+                $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
+            MessageBox.Show(info, "Выгружено");
+            logger.Info(info);
+        }
+
+        #endregion
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+        /*------------------------------------------------------------------------------------------------------------------------------------------------------------
+                     ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ДЛЯ РАБОТЫ ДЕЛЕГАТОВ
+       ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+        #region Вспомогательные методы для делегатов
+        static void UpdateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance, bool owerwriteName = false)
+        {
+            try
+            {
+                stopWatch.Start();
+                var deliveryAPI = new Managers.ManagerAPI(api, login);
+                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
+                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+
+
+
+                var managerCustomers = new ManagerCustomers(
+                    organizations.Where(data => data.Name == org).FirstOrDefault(),
+                    categories.Where(data => data.Name == cat).FirstOrDefault(),
+                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
+                    deliveryAPI);
+
+                var customer = new ShortCustomerInfo()
+                {
+                    Name = name,
+                    Card = card
+                };
+                var customers = new List<ShortCustomerInfo>();
+                customers.Add(customer);
+                logger.Info($"Начата робота с категорией {cat} и программой {cor}");
+                logger.Info($"Добавление одного гостя: {customer.Name} с картой {customer.Card} и балансом {balance}");
+                managerCustomers.UploadCustomers(customers, balance, owerwriteName);
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+                logger.Warn(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// считывание гостей из файла и загрузка их в биз
+        /// </summary>
+        /// <param name="org">Текущая организация</param>
+        /// <param name="cat">Категория для пользователей</param>
+        /// <param name="cor">Программа корпоративного питания</param>
+        /// <param name="api">Логин API</param>
+        /// <param name="login">Пароль API</param>
+        /// <param name="file">Файл гостей для импорта</param>
+        /// <param name="balance">Баланс для гостей</param>
+        static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, bool owerwriteName = false)
+        {
+            try
+            {
+                if (api == "" || login == "")
+                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+                if (org == "" || cat == "" || cor == "" || balance == "")
+                    throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
+                stopWatch.Start();
+                IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
+                ManagerCustomers managerCustomers;
+
+
+                if (file.Contains(".csv"))
+                {
+                    var csvManager = new ManagerCsv(file);
+                    list = csvManager.GetClients()
+                        .Select(data => new ShortCustomerInfo()
+                        {
+                            Name = data.Name,
+                            Card = data.Number
+                        })
+                        .ToArray();
+                }
+                else if (file.Contains(".xls"))
+                {
+                    var excelManager = new ManagerExcel(file);
+                    list = excelManager.GetClients().ToArray();
+                }
+
+
+                var deliveryAPI = new Managers.ManagerAPI(api, login);
+                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
+                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+
+                managerCustomers = new ManagerCustomers(
+                    organizations.Where(data => data.Name == org).FirstOrDefault(),
+                    categories.Where(data => data.Name == cat).FirstOrDefault(),
+                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
+                    deliveryAPI);
+                logger.Info($"Начата робота с категорией {cat} и программой {cor}");
+                logger.Info($"Запрошено массовое добавление {list.Count()} гостей с балансом {balance}");
+                managerCustomers.UploadCustomers(list, balance, owerwriteName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+                logger.Warn(ex.Message);
+            }
+        }
+
+        #endregion
+
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+        /*------------------------------------------------------------------------------------------------------------------------------------------------------------
+                       ФОРМИРОВАНИЕ CSV ДЛЯ БИЗА
+         ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+        #region Формирование CSV для iiko.biz
         private void btn_Open_Click(object sender, EventArgs e)
         {
             var dialog = new OpenFileDialog();
@@ -105,7 +266,16 @@ namespace iikoCardClients
                 e.Handled = true;
             }
         }
+        #endregion
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+
+        /*------------------------------------------------------------------------------------------------------------------------------------------------------------
+                  ВЫГРУЗКА В IIKO.BIZ
+        ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+        #region Выгрузка в iiko.biz
         private void btn_SaveAPI_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.LoginAPI = tb_LoginAPI.Text;
@@ -117,6 +287,8 @@ namespace iikoCardClients
             Properties.Settings.Default.Save();
             logger.Info("Сохранение настроек");
         }
+
+
 
         private void tb_CustomersBalance_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -194,139 +366,8 @@ namespace iikoCardClients
         }
 
         
-        //ДЕЛЕГАТЫ
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        delegate void DelegateCustomers(string org, string cat, string cor, string api, string login, string file, string balance);
-        delegate void DelegateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance);
-        DelegateCustomers del_Customers = new DelegateCustomers(UpdateCustomers);
-        DelegateCustomer del_Customer = new DelegateCustomer(UpdateCustomer);
-        static Stopwatch stopWatch = new Stopwatch();
-        static void UpdateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance)
-        {
-            try
-            {
-                stopWatch.Start();
-                var deliveryAPI = new Managers.ManagerAPI(api, login);
-                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
-
-
-
-                var managerCustomers = new ManagerCustomers(
-                    organizations.Where(data => data.Name == org).FirstOrDefault(),
-                    categories.Where(data => data.Name == cat).FirstOrDefault(),
-                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                    deliveryAPI);
-
-                var customer = new ShortCustomerInfo()
-                {
-                    Name = name,
-                    Card = card
-                };
-                var customers = new List<ShortCustomerInfo>();
-                customers.Add(customer);
-                logger.Info($"Начата робота с категорией {cat} и программой {cor}");
-                logger.Info($"Добавление одного гостя: {customer.Name} с картой {customer.Card} и балансом {balance}");
-                managerCustomers.UploadCustomers(customers, balance);
-
-                
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка");
-                logger.Warn(ex.Message);
-            }
-}
-
-        /// <summary>
-        /// считывание гостей из файла и загрузка их в биз
-        /// </summary>
-        /// <param name="org">Текущая организация</param>
-        /// <param name="cat">Категория для пользователей</param>
-        /// <param name="cor">Программа корпоративного питания</param>
-        /// <param name="api">Логин API</param>
-        /// <param name="login">Пароль API</param>
-        /// <param name="file">Файл гостей для импорта</param>
-        /// <param name="balance">Баланс для гостей</param>
-        static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance)
-        {
-            try
-            {
-                if (api == "" || login == "")
-                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
-                if (org == "" || cat == "" ||cor == "" ||balance == "")
-                    throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
-                stopWatch.Start();
-                IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
-                ManagerCustomers managerCustomers;
-
-
-                if (file.Contains(".csv"))
-                {
-                    var csvManager = new ManagerCsv(file);
-                    list = csvManager.GetClients()
-                        .Select(data => new ShortCustomerInfo()
-                        {
-                            Name = data.Name,
-                            Card = data.Number
-                        })
-                        .ToArray();
-                }
-                else if (file.Contains(".xls"))
-                {
-                    var excelManager = new ManagerExcel(file);
-                    list = excelManager.GetClients().ToArray();
-                }
-                
-                
-                var deliveryAPI = new Managers.ManagerAPI(api, login);
-                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
-
-                managerCustomers = new ManagerCustomers(
-                    organizations.Where(data => data.Name == org).FirstOrDefault(),
-                    categories.Where(data => data.Name == cat).FirstOrDefault(),
-                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                    deliveryAPI);
-                logger.Info($"Начата робота с категорией {cat} и программой {cor}");
-                logger.Info($"Запрошено массовое добавление {list.Count()} гостей с балансом {balance}");
-                managerCustomers.UploadCustomers(list, balance);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка");
-                logger.Warn(ex.Message);
-            }
-        }
-
-        void CallBackFuncCustomers(IAsyncResult aRes)
-        {
-            del_Customers.EndInvoke(aRes);
-            CallBackFunc();
-        }
-        void CallBackFuncCustomer(IAsyncResult aRes)
-        {
-            del_Customer.EndInvoke(aRes);
-            CallBackFunc();
-        }
-        void CallBackFunc()
-        {
-            pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
-            stopWatch.Stop();
-            var info = $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
-                $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
-                $"Гостям присвоена категория {ManagerCustomers.GetCountCategory} \r\n" +
-                $"Гостей включено в программу питания {ManagerCustomers.GetCountCorporateNutritions} \r\n" +
-                $"У гостей обработан баланс {ManagerCustomers.GetCountBalance} \r\n" +
-                $"Гостей не обработано {ManagerCustomers.GetCountFail} \r\n" +
-                $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
-            MessageBox.Show(info, "Выгружено");
-            logger.Info(info);
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
         private void btn_CreateCustomer_Click(object sender, EventArgs e)
         {
             try
@@ -343,6 +384,7 @@ namespace iikoCardClients
                     tb_NameCustomer.Text,
                     tb_CardCustomer.Text,
                     tb_CustomersBalance.Text,
+                    cb_OwerwriteName.Checked,
                     new AsyncCallback(CallBackFuncCustomer),
                     null
                     );
@@ -360,21 +402,21 @@ namespace iikoCardClients
         /// <param name="e"></param>
         private void btn_UploadCustomers_Click(object sender, EventArgs e)
         {
-            
-           
-            
             try
             {
-                
-                var org = cb_organizations.SelectedItem.ToString();
-                var cat = cb_Categories.SelectedItem.ToString();
-                var cor = cb_CorporateNutritions.SelectedItem.ToString();
-                var api = tb_LoginAPI.Text;
-                var login = tb_PasswordAPI.Text;
-                var balance = tb_CustomersBalance.Text;
-                pb_load.Enabled = pb_load.Visible = true;
+               pb_load.Enabled = pb_load.Visible = true;
 
-                del_Customers.BeginInvoke(org, cat, cor, api, login, strFilePath, balance, new AsyncCallback(CallBackFuncCustomers), null);
+                del_Customers.BeginInvoke(
+                    cb_organizations.SelectedItem.ToString(), 
+                    cb_Categories.SelectedItem.ToString(), 
+                    cb_CorporateNutritions.SelectedItem.ToString(), 
+                    tb_LoginAPI.Text,
+                    tb_PasswordAPI.Text, 
+                    strFilePath,
+                    tb_CustomersBalance.Text,
+                    cb_OwerwriteName.Checked,
+                    new AsyncCallback(CallBackFuncCustomers), 
+                    null);
 
             }
             catch (Exception ex)
@@ -382,13 +424,16 @@ namespace iikoCardClients
                 MessageBox.Show($"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.\r\n Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
             }
         }
+        #endregion
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 
         /*------------------------------------------------------------------------------------------------------------------------------------------------------------
                         ФОРМИРОВАНИЕ ОТЧЕТА С ТАБЕЛЬНЫМ НОМЕРОМ НА ОСНОВАНИИ ОТЧЕТА БИЗА
           ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
-
+        #region Отчет с табельными номерами
         string fileTabNumber = "";
         string fileReport = "";
 
@@ -437,5 +482,10 @@ namespace iikoCardClients
                 MessageBox.Show(ex.Message, "Ошибка");
             }
         }
+
+        #endregion
+
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+        
     }
 }

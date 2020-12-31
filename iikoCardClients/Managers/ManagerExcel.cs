@@ -130,36 +130,47 @@ namespace iikoCardClients.Managers
                 var dataSet = reader.AsDataSet(conf).Tables[0];
                 foreach (DataRow row in dataSet.Rows)
                 {
-                    var name = row[0].ToString().Replace("  "," ").Split(' ');
-                    var sname = "";
-                    switch (name.Count())
-                    {
-                        case 1:
-                            sname = "";
-                            break;
-                        case 2:
-                            if (name[1].Length == 4 && name[1].Contains('.'))
-                                sname = " " + name[1];
-                            else
-                                sname = " " + name[1].First() + ".";
-                            break;
-                        case 3:
-                            sname = " " + name[1].First() + "." + name[2].First() + ".";
-                            break;
-                        default:
-                            break;
-                    }
-                    
+
+                    //4.2
+                    //проверка на сокрещенные инициалы имени и отчества
+                    //var name = row[0].ToString().Replace("  "," ").Split(' ');
+                    //var sname = "";
+                    //switch (name.Count())
+                    //{
+                    //    case 1:
+                    //        sname = "";
+                    //        break;
+                    //    case 2:
+                    //        if (name[1].Length == 4 && name[1].Contains('.'))
+                    //            sname = " " + name[1];
+                    //        else
+                    //            sname = " " + name[1].First() + ".";
+                    //        break;
+                    //    case 3:
+                    //        sname = " " + name[1].First() + "." + name[2].First() + ".";
+                    //        break;
+                    //    default:
+                    //        break;
+                    //}
+                    //try
+                    //{
+
+                    //    var s = Customers.Where(
+                    //        data => data.Name.Contains(name[0] + sname)).ToArray()
+                    //        .Select(data => data.TabNumber).First();
+                    //    if (row[3].ToString().Length > 0)
+                    //        row[8] = s;
+                    //}
+
+                    //4.3 полное совпадение полных данных фио
                     try
                     {
-                        //if (name[0].Contains("Орешкин"))
-                        //    offset = 0;
-                        var s = Customers.Where(
-                            data => data.Name.Contains(name[0] + sname)).ToArray()
+                        var s = Customers
+                            .Where(data => data.Name.Contains(row[0].ToString().Replace("  ", " ").Trim()))
+                            .ToArray()
                             .Select(data => data.TabNumber).First();
                         if (row[3].ToString().Length > 0)
                             row[8] = s;
-                        
                     }
                     catch (Exception ex)
                     {

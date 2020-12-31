@@ -46,7 +46,7 @@ namespace iikoCardClients.Managers
             CountBalance = 0;
         }
 
-        public void UploadCustomers(IEnumerable<ShortCustomerInfo> shortCustomers, string balance)
+        public void UploadCustomers(IEnumerable<ShortCustomerInfo> shortCustomers, string balance, bool owerwriteName = false)
         {
             try
             {
@@ -54,18 +54,18 @@ namespace iikoCardClients.Managers
                 foreach (var customer in shortCustomers)
                 {
                     CountAll++;
-                    UploadCustomer(customer, balance);
+                    UploadCustomer(customer, balance, owerwriteName);
                 }
             }
             catch (Exception)
             {
                 CountFail++;
                 if (CountAll != shortCustomers.Count())
-                    UploadCustomers(shortCustomers.Skip(CountAll), balance);
+                    UploadCustomers(shortCustomers.Skip(CountAll), balance, owerwriteName);
             }
         }
 
-        void UploadCustomer(ShortCustomerInfo _customer, string Balance)
+        void UploadCustomer(ShortCustomerInfo _customer, string Balance, bool owerwriteName = false)
         {
             decimal balance = 0;
             bool guest = false;
@@ -79,10 +79,13 @@ namespace iikoCardClients.Managers
                 guest = true;
                 //если баланс отработал, тоесть гость есть в системе
                 //получаем его id, путем попытки создания гостя с существующей картой
-                //даже если гость уже есть, привязываем его к табельному номеру
+                //даже если гость уже есть, если нужно меняем его имя
                 customer = new ShortCustomerInfo()
                 {
-                    Id = Task.Run(() => deliveryAPI.CreateCustomer(null, _customer.Card, _organization)).Result
+                    Id = Task.Run(() => deliveryAPI.CreateCustomer(
+                        owerwriteName ? _customer.Name : null, 
+                        _customer.Card, 
+                        _organization)).Result
                 };
                 //падаем в ошибку для обработки категорий и корпоративного питания
                 throw new Exception();
