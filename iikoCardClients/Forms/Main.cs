@@ -14,6 +14,7 @@ namespace iikoCardClients
     {
         static NLog.Logger logger = null;
         static Stopwatch stopWatch = new Stopwatch();
+        
 
         public FormMain()
         {
@@ -37,10 +38,10 @@ namespace iikoCardClients
                       ДЕЛЕГАТЫ ДЛЯ ОТОБРАЖЕНИЯ ПРОЦЕССА РАБОТЫ ОПЕРАЦИЙ
         ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
         #region Делегаты - процессы отображения работы
-            //массовая выгрузка в биз
+        //массовая выгрузка в биз
         delegate void DelegateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, bool owerwriteName = false);
         DelegateCustomers del_Customers = new DelegateCustomers(UpdateCustomers);
-        void CallBackFuncCustomers(IAsyncResult aRes)
+        void CallBackUpdateCustomers(IAsyncResult aRes)
         {
             del_Customers.EndInvoke(aRes);
             CallBackFunc();
@@ -50,18 +51,27 @@ namespace iikoCardClients
         //одиночная выгрузка в биз
         delegate void DelegateCustomer(string org, string cat, string cor, string api, string login, string name, string card, string balance, bool owerwriteName = false);
         DelegateCustomer del_Customer = new DelegateCustomer(UpdateCustomer);
-        void CallBackFuncCustomer(IAsyncResult aRes)
+        void CallBackUpdateCustomer(IAsyncResult aRes)
         {
             del_Customer.EndInvoke(aRes);
             CallBackFunc();
         }
 
+        //формирование отчета биза с табельными
+        delegate void DelegateReport(string tabNumberReport, string iikoBizReport, string currentReport);
+        DelegateReport del_Report = new DelegateReport(CreateTabNumberReport);
+        void CallBackCreateReport(IAsyncResult aRes)
+        {
+            del_Report.EndInvoke(aRes);
+            CallBackFucnReport();
+        }
 
 
         void CallBackFunc()
         {
             pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
             stopWatch.Stop();
+           
             var info = $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
                 $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
                 $"Гостям присвоена категория {ManagerCustomers.GetCountCategory} \r\n" +
@@ -70,6 +80,15 @@ namespace iikoCardClients
                 $"Гостей не обработано {ManagerCustomers.GetCountFail} \r\n" +
                 $"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
             MessageBox.Show(info, "Выгружено");
+            logger.Info(info);
+        }
+
+        void CallBackFucnReport()
+        {
+            pb_loadReport.Invoke(new Action(() => pb_loadReport.Enabled = pb_loadReport.Visible = false));
+            stopWatch.Stop();
+            var info = $"Файл успешно создан, затрачено {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
+            MessageBox.Show(info, "Успешно");
             logger.Info(info);
         }
 
@@ -87,7 +106,7 @@ namespace iikoCardClients
         {
             try
             {
-                stopWatch.Start();
+                stopWatch.Restart();
                 var deliveryAPI = new Managers.ManagerAPI(api, login);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
                 var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
@@ -139,7 +158,7 @@ namespace iikoCardClients
                     throw new NullReferenceException(message: "Не заполнены данные пользователя API");
                 if (org == "" || cat == "" || cor == "" || balance == "")
                     throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
-                stopWatch.Start();
+                stopWatch.Restart();
                 IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
                 ManagerCustomers managerCustomers;
 
@@ -183,6 +202,24 @@ namespace iikoCardClients
             }
         }
 
+
+
+        static void CreateTabNumberReport(string tabNumberReport, string iikoBizReport, string currentReport)
+        {
+            try
+            {
+                stopWatch.Restart();
+                var excelManager = new ManagerExcel(tabNumberReport);
+                var list = excelManager.GetClients().ToArray();
+
+                new ManagerExcel(iikoBizReport).CreateReportWithTabNumber(list, currentReport);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+                logger.Warn(ex.Message);
+            }
+        }
         #endregion
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -367,7 +404,6 @@ namespace iikoCardClients
 
         
         
-        
         private void btn_CreateCustomer_Click(object sender, EventArgs e)
         {
             try
@@ -385,7 +421,7 @@ namespace iikoCardClients
                     tb_CardCustomer.Text,
                     tb_CustomersBalance.Text,
                     cb_OwerwriteName.Checked,
-                    new AsyncCallback(CallBackFuncCustomer),
+                    new AsyncCallback(CallBackUpdateCustomer),
                     null
                     );
 
@@ -415,7 +451,7 @@ namespace iikoCardClients
                     strFilePath,
                     tb_CustomersBalance.Text,
                     cb_OwerwriteName.Checked,
-                    new AsyncCallback(CallBackFuncCustomers), 
+                    new AsyncCallback(CallBackUpdateCustomers), 
                     null);
 
             }
@@ -469,12 +505,14 @@ namespace iikoCardClients
                 save.Filter = "xls files (*.xls)|*.xls|All files|*.*";
                 if (save.ShowDialog() == DialogResult.OK)
                 {
-                    var excelManager = new ManagerExcel(fileTabNumber);
-                    var list = excelManager.GetClients().ToArray();
 
-                    new ManagerExcel(fileReport).CreateReportWithTabNumber(list, save.FileName);
-                    MessageBox.Show("Файл успешно создан", "Успешно");
-
+                    pb_loadReport.Enabled = pb_loadReport.Visible = true;
+                    del_Report.BeginInvoke(
+                        fileTabNumber, 
+                        fileReport, 
+                        save.FileName,
+                        new AsyncCallback(CallBackCreateReport),
+                        null);
                 }
             }
             catch (Exception ex)
