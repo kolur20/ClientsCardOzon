@@ -84,6 +84,8 @@
             this.tb_fileReport = new System.Windows.Forms.TextBox();
             this.btn_fileReport = new System.Windows.Forms.Button();
             this.btn_create = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -95,6 +97,7 @@
             this.tabPage4.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_loadReport)).BeginInit();
+            this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -380,15 +383,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Controls.Add(this.tb_file);
-            this.tabPage1.Controls.Add(this.tb_balance);
-            this.tabPage1.Controls.Add(this.tb_group);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.btn_Open);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.cb_isDeleted);
-            this.tabPage1.Controls.Add(this.btn_Convert);
+            this.tabPage1.Controls.Add(this.tableLayoutPanel4);
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -401,8 +396,10 @@
             // 
             this.groupBox1.Controls.Add(this.rb_csv);
             this.groupBox1.Controls.Add(this.rb_excel);
-            this.groupBox1.Location = new System.Drawing.Point(326, 7);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(371, 3);
             this.groupBox1.Name = "groupBox1";
+            this.tableLayoutPanel4.SetRowSpan(this.groupBox1, 3);
             this.groupBox1.Size = new System.Drawing.Size(176, 105);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
@@ -432,42 +429,48 @@
             // 
             // tb_file
             // 
-            this.tb_file.Location = new System.Drawing.Point(7, 7);
+            this.tb_file.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_file.Location = new System.Drawing.Point(4, 4);
             this.tb_file.Margin = new System.Windows.Forms.Padding(4);
             this.tb_file.Name = "tb_file";
             this.tb_file.ReadOnly = true;
-            this.tb_file.Size = new System.Drawing.Size(191, 26);
+            this.tb_file.Size = new System.Drawing.Size(240, 26);
             this.tb_file.TabIndex = 0;
             // 
             // tb_balance
             // 
-            this.tb_balance.Location = new System.Drawing.Point(7, 75);
+            this.tb_balance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_balance.Location = new System.Drawing.Point(4, 75);
             this.tb_balance.Margin = new System.Windows.Forms.Padding(4);
             this.tb_balance.Name = "tb_balance";
-            this.tb_balance.Size = new System.Drawing.Size(148, 26);
+            this.tb_balance.Size = new System.Drawing.Size(240, 26);
             this.tb_balance.TabIndex = 4;
             this.tb_balance.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_balance_KeyPress);
             // 
             // tb_group
             // 
-            this.tb_group.Location = new System.Drawing.Point(7, 41);
+            this.tb_group.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_group.Location = new System.Drawing.Point(4, 41);
             this.tb_group.Margin = new System.Windows.Forms.Padding(4);
             this.tb_group.Name = "tb_group";
-            this.tb_group.Size = new System.Drawing.Size(148, 26);
+            this.tb_group.Size = new System.Drawing.Size(240, 26);
             this.tb_group.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(162, 82);
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Location = new System.Drawing.Point(251, 71);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 19);
+            this.label2.Size = new System.Drawing.Size(114, 40);
             this.label2.TabIndex = 7;
             this.label2.Text = "Баланс гостя";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btn_Open
             // 
-            this.btn_Open.Location = new System.Drawing.Point(206, 7);
+            this.btn_Open.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Open.Location = new System.Drawing.Point(252, 4);
             this.btn_Open.Margin = new System.Windows.Forms.Padding(4);
             this.btn_Open.Name = "btn_Open";
             this.btn_Open.Size = new System.Drawing.Size(112, 29);
@@ -479,27 +482,32 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(162, 44);
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Location = new System.Drawing.Point(251, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(98, 19);
+            this.label1.Size = new System.Drawing.Size(114, 34);
             this.label1.TabIndex = 2;
             this.label1.Text = "Организация";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cb_isDeleted
             // 
             this.cb_isDeleted.AutoSize = true;
-            this.cb_isDeleted.Location = new System.Drawing.Point(7, 122);
+            this.tableLayoutPanel4.SetColumnSpan(this.cb_isDeleted, 2);
+            this.cb_isDeleted.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cb_isDeleted.Location = new System.Drawing.Point(3, 114);
             this.cb_isDeleted.Name = "cb_isDeleted";
-            this.cb_isDeleted.Size = new System.Drawing.Size(247, 23);
+            this.cb_isDeleted.Size = new System.Drawing.Size(362, 30);
             this.cb_isDeleted.TabIndex = 5;
             this.cb_isDeleted.Text = "Данные гости требуют удаления";
             this.cb_isDeleted.UseVisualStyleBackColor = true;
             // 
             // btn_Convert
             // 
-            this.btn_Convert.Location = new System.Drawing.Point(366, 131);
+            this.btn_Convert.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Convert.Location = new System.Drawing.Point(371, 114);
             this.btn_Convert.Name = "btn_Convert";
-            this.btn_Convert.Size = new System.Drawing.Size(138, 30);
+            this.btn_Convert.Size = new System.Drawing.Size(176, 30);
             this.btn_Convert.TabIndex = 6;
             this.btn_Convert.Text = "Конвертировать";
             this.btn_Convert.UseVisualStyleBackColor = true;
@@ -757,6 +765,50 @@
             this.btn_create.UseVisualStyleBackColor = true;
             this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.tableLayoutPanel4.SetColumnSpan(this.textBox1, 3);
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Location = new System.Drawing.Point(3, 170);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(544, 213);
+            this.textBox1.TabIndex = 9;
+            this.textBox1.Text = "Для создания CSV используется формат файла в три столбца\r\nФИО, Подразделение, Иде" +
+    "нтификатор\r\nСверху может быть любое количество пустых строк.\r\nНеверные карты или" +
+    " пустые - игнорируются.";
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 3;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel4.Controls.Add(this.btn_Open, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.cb_isDeleted, 0, 3);
+            this.tableLayoutPanel4.Controls.Add(this.label2, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.tb_balance, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.groupBox1, 2, 0);
+            this.tableLayoutPanel4.Controls.Add(this.tb_group, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.label1, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.tb_file, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.btn_Convert, 2, 3);
+            this.tableLayoutPanel4.Controls.Add(this.textBox1, 0, 5);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 6;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(550, 386);
+            this.tableLayoutPanel4.TabIndex = 10;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
@@ -775,7 +827,6 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -786,6 +837,8 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_loadReport)).EndInit();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -847,6 +900,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.TextBox tb_rule;
         private System.Windows.Forms.PictureBox pb_loadReport;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 
