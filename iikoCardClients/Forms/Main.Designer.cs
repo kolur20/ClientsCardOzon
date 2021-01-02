@@ -30,14 +30,12 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.pb_load = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label13 = new System.Windows.Forms.Label();
             this.btn_CreateCustomer = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.tb_NameCustomer = new System.Windows.Forms.TextBox();
             this.tb_CardCustomer = new System.Windows.Forms.TextBox();
-            this.cb_OwerwriteName = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -52,7 +50,11 @@
             this.cb_CorporateNutritions = new System.Windows.Forms.ComboBox();
             this.tb_CustomersBalance = new System.Windows.Forms.TextBox();
             this.tb_OpenFile = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cb_OwerwriteName = new System.Windows.Forms.CheckBox();
             this.cb_OwerwriteBalance = new System.Windows.Forms.CheckBox();
+            this.pb_load = new System.Windows.Forms.PictureBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.btn_Open = new System.Windows.Forms.Button();
@@ -86,11 +88,14 @@
             this.tb_fileReport = new System.Windows.Forms.TextBox();
             this.btn_fileReport = new System.Windows.Forms.Button();
             this.btn_create = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.l_UploadCustomers = new System.Windows.Forms.Label();
+            this.l_AllCustomers = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -99,8 +104,7 @@
             this.tableLayoutPanel3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -114,19 +118,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Выгрузка";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // pb_load
-            // 
-            this.pb_load.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pb_load.Enabled = false;
-            this.pb_load.Image = ((System.Drawing.Image)(resources.GetObject("pb_load.Image")));
-            this.pb_load.Location = new System.Drawing.Point(0, 425);
-            this.pb_load.Name = "pb_load";
-            this.pb_load.Size = new System.Drawing.Size(564, 36);
-            this.pb_load.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pb_load.TabIndex = 24;
-            this.pb_load.TabStop = false;
-            this.pb_load.Visible = false;
             // 
             // tableLayoutPanel2
             // 
@@ -227,16 +218,6 @@
             this.tb_CardCustomer.Name = "tb_CardCustomer";
             this.tb_CardCustomer.Size = new System.Drawing.Size(261, 26);
             this.tb_CardCustomer.TabIndex = 21;
-            // 
-            // cb_OwerwriteName
-            // 
-            this.cb_OwerwriteName.AutoSize = true;
-            this.cb_OwerwriteName.Location = new System.Drawing.Point(3, 3);
-            this.cb_OwerwriteName.Name = "cb_OwerwriteName";
-            this.cb_OwerwriteName.Size = new System.Drawing.Size(368, 23);
-            this.cb_OwerwriteName.TabIndex = 26;
-            this.cb_OwerwriteName.Text = "Перезаписать имена, используя текущую выгрузку";
-            this.cb_OwerwriteName.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -386,6 +367,43 @@
             this.tb_OpenFile.Size = new System.Drawing.Size(259, 26);
             this.tb_OpenFile.TabIndex = 15;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.AutoSize = true;
+            this.tableLayoutPanel2.SetColumnSpan(this.groupBox2, 3);
+            this.groupBox2.Controls.Add(this.flowLayoutPanel1);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox2.Location = new System.Drawing.Point(3, 171);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(544, 83);
+            this.groupBox2.TabIndex = 28;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Дополнительные параметры";
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.Controls.Add(this.cb_OwerwriteName);
+            this.flowLayoutPanel1.Controls.Add(this.cb_OwerwriteBalance);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 22);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(538, 58);
+            this.flowLayoutPanel1.TabIndex = 0;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // cb_OwerwriteName
+            // 
+            this.cb_OwerwriteName.AutoSize = true;
+            this.cb_OwerwriteName.Location = new System.Drawing.Point(3, 3);
+            this.cb_OwerwriteName.Name = "cb_OwerwriteName";
+            this.cb_OwerwriteName.Size = new System.Drawing.Size(368, 23);
+            this.cb_OwerwriteName.TabIndex = 26;
+            this.cb_OwerwriteName.Text = "Перезаписать имена, используя текущую выгрузку";
+            this.cb_OwerwriteName.UseVisualStyleBackColor = true;
+            // 
             // cb_OwerwriteBalance
             // 
             this.cb_OwerwriteBalance.AutoSize = true;
@@ -397,13 +415,25 @@
             this.cb_OwerwriteBalance.UseVisualStyleBackColor = true;
             this.cb_OwerwriteBalance.CheckedChanged += new System.EventHandler(this.cb_OwerwriteBalance_CheckedChanged);
             // 
+            // pb_load
+            // 
+            this.pb_load.Enabled = false;
+            this.pb_load.Image = ((System.Drawing.Image)(resources.GetObject("pb_load.Image")));
+            this.pb_load.Location = new System.Drawing.Point(54, 3);
+            this.pb_load.Name = "pb_load";
+            this.pb_load.Size = new System.Drawing.Size(455, 36);
+            this.pb_load.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pb_load.TabIndex = 24;
+            this.pb_load.TabStop = false;
+            this.pb_load.Visible = false;
+            // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.tableLayoutPanel4);
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(556, 328);
+            this.tabPage1.Size = new System.Drawing.Size(556, 429);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Преобразование";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -434,7 +464,7 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(550, 322);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(550, 423);
             this.tableLayoutPanel4.TabIndex = 10;
             // 
             // btn_Open
@@ -567,7 +597,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(544, 149);
+            this.textBox1.Size = new System.Drawing.Size(544, 250);
             this.textBox1.TabIndex = 9;
             this.textBox1.Text = "Для создания CSV используется формат файла в три столбца\r\nФИО, Подразделение, Иде" +
     "нтификатор\r\nСверху может быть любое количество пустых строк.\r\nНеверные карты или" +
@@ -592,7 +622,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 28);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(556, 328);
+            this.tabPage3.Size = new System.Drawing.Size(556, 429);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Настройки";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -619,16 +649,16 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(550, 322);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(550, 423);
             this.tableLayoutPanel3.TabIndex = 12;
             // 
             // btn_SaveAPI
             // 
             this.btn_SaveAPI.AutoSize = true;
             this.btn_SaveAPI.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btn_SaveAPI.Location = new System.Drawing.Point(400, 288);
+            this.btn_SaveAPI.Location = new System.Drawing.Point(400, 388);
             this.btn_SaveAPI.Name = "btn_SaveAPI";
-            this.btn_SaveAPI.Size = new System.Drawing.Size(147, 31);
+            this.btn_SaveAPI.Size = new System.Drawing.Size(147, 32);
             this.btn_SaveAPI.TabIndex = 9;
             this.btn_SaveAPI.Text = "Сохранить данные";
             this.btn_SaveAPI.UseVisualStyleBackColor = true;
@@ -645,7 +675,7 @@
             this.tb_rule.Name = "tb_rule";
             this.tb_rule.ReadOnly = true;
             this.tb_rule.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_rule.Size = new System.Drawing.Size(544, 90);
+            this.tb_rule.Size = new System.Drawing.Size(544, 140);
             this.tb_rule.TabIndex = 11;
             this.tb_rule.Text = resources.GetString("tb_rule.Text");
             // 
@@ -707,7 +737,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 28);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(556, 328);
+            this.tabPage4.Size = new System.Drawing.Size(556, 429);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Отчеты";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -735,7 +765,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 322);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 423);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tb_fileTabNumber
@@ -810,32 +840,48 @@
             this.btn_create.UseVisualStyleBackColor = true;
             this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
             // 
-            // groupBox2
+            // tableLayoutPanel5
             // 
-            this.groupBox2.AutoSize = true;
-            this.tableLayoutPanel2.SetColumnSpan(this.groupBox2, 3);
-            this.groupBox2.Controls.Add(this.flowLayoutPanel1);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox2.Location = new System.Drawing.Point(3, 171);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(544, 83);
-            this.groupBox2.TabIndex = 28;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Дополнительные параметры";
+            this.tableLayoutPanel5.AutoSize = true;
+            this.tableLayoutPanel5.BackColor = System.Drawing.Color.Transparent;
+            this.tableLayoutPanel5.ColumnCount = 3;
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel5.Controls.Add(this.l_UploadCustomers, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.pb_load, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.l_AllCustomers, 3, 0);
+            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 419);
+            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
+            this.tableLayoutPanel5.RowCount = 1;
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(564, 42);
+            this.tableLayoutPanel5.TabIndex = 26;
             // 
-            // flowLayoutPanel1
+            // l_UploadCustomers
             // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.cb_OwerwriteName);
-            this.flowLayoutPanel1.Controls.Add(this.cb_OwerwriteBalance);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 22);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(538, 58);
-            this.flowLayoutPanel1.TabIndex = 0;
-            this.flowLayoutPanel1.WrapContents = false;
+            this.l_UploadCustomers.AutoSize = true;
+            this.l_UploadCustomers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_UploadCustomers.Enabled = false;
+            this.l_UploadCustomers.Location = new System.Drawing.Point(3, 0);
+            this.l_UploadCustomers.Name = "l_UploadCustomers";
+            this.l_UploadCustomers.Size = new System.Drawing.Size(45, 42);
+            this.l_UploadCustomers.TabIndex = 29;
+            this.l_UploadCustomers.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.l_UploadCustomers.Visible = false;
+            // 
+            // l_AllCustomers
+            // 
+            this.l_AllCustomers.AutoSize = true;
+            this.l_AllCustomers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_AllCustomers.Enabled = false;
+            this.l_AllCustomers.Location = new System.Drawing.Point(515, 0);
+            this.l_AllCustomers.Name = "l_AllCustomers";
+            this.l_AllCustomers.Size = new System.Drawing.Size(46, 42);
+            this.l_AllCustomers.TabIndex = 30;
+            this.l_AllCustomers.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.l_AllCustomers.Visible = false;
             // 
             // FormMain
             // 
@@ -844,7 +890,7 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(564, 461);
-            this.Controls.Add(this.pb_load);
+            this.Controls.Add(this.tableLayoutPanel5);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -855,9 +901,13 @@
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_load)).EndInit();
             this.tabPage1.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
@@ -870,11 +920,10 @@
             this.tabPage4.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel5.ResumeLayout(false);
+            this.tableLayoutPanel5.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -939,6 +988,9 @@
         private System.Windows.Forms.CheckBox cb_OwerwriteBalance;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+        private System.Windows.Forms.Label l_UploadCustomers;
+        private System.Windows.Forms.Label l_AllCustomers;
     }
 }
 

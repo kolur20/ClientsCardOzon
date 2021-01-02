@@ -39,7 +39,7 @@ namespace iikoCardClients
         ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
         #region Делегаты - процессы отображения работы
         //массовая выгрузка в биз
-        delegate void DelegateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, bool owerwriteName = false);
+        delegate void DelegateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, object[] StatusCustomers, bool owerwriteName = false);
         DelegateCustomers del_Customers = new DelegateCustomers(UpdateCustomers);
         void CallBackUpdateCustomers(IAsyncResult aRes)
         {
@@ -70,6 +70,9 @@ namespace iikoCardClients
         void CallBackFunc()
         {
             pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
+            l_UploadCustomers.Invoke(new Action(() => l_UploadCustomers.Visible = false));
+            l_AllCustomers.Invoke(new Action(() => l_AllCustomers.Visible = false));
+
             stopWatch.Stop();
            
             var info = $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
@@ -135,7 +138,7 @@ namespace iikoCardClients
                 logger.Info(balance is null ?
                     $"Добавление одного гостя: {customer.Name} с картой {customer.Card}" :
                     $"Добавление одного гостя: {customer.Name} с картой {customer.Card} и балансом {balance}");
-                managerCustomers.UploadCustomers(customers, balance, owerwriteName);
+                managerCustomers.UploadCustomers(customers, balance, null, owerwriteName);
 
 
             }
@@ -156,7 +159,7 @@ namespace iikoCardClients
         /// <param name="login">Пароль API</param>
         /// <param name="file">Файл гостей для импорта</param>
         /// <param name="balance">Баланс для гостей</param>
-        static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, bool owerwriteName = false)
+        static void UpdateCustomers(string org, string cat, string cor, string api, string login, string file, string balance, object[] StatusCustomers, bool owerwriteName = false)
         {
             try
             {
@@ -185,7 +188,7 @@ namespace iikoCardClients
                     var excelManager = new ManagerExcel(file);
                     list = excelManager.GetClients().ToArray();
                 }
-
+                
 
                 var deliveryAPI = new Managers.ManagerAPI(api, login);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
@@ -201,7 +204,9 @@ namespace iikoCardClients
                 logger.Info(balance is null ?
                     $"Запрошено массовое добавление {list.Count()} гостей без баланса" :
                     $"Запрошено массовое добавление {list.Count()} гостей с балансом {balance}");
-                managerCustomers.UploadCustomers(list, balance, owerwriteName);
+
+                //l_AllCustomers.Invoke(new Action(() => l_AllCustomers.Visible = false));
+                managerCustomers.UploadCustomers(list, balance, StatusCustomers, owerwriteName);
             }
             catch (Exception ex)
             {
@@ -417,7 +422,7 @@ namespace iikoCardClients
             try
             {
                 pb_load.Enabled = pb_load.Visible = true;
-
+                
 
                 del_Customer.BeginInvoke(
                     cb_organizations.SelectedItem.ToString(),
@@ -448,7 +453,9 @@ namespace iikoCardClients
         {
             try
             {
-               pb_load.Enabled = pb_load.Visible = true;
+                pb_load.Enabled = pb_load.Visible = true;
+                l_AllCustomers.Visible = l_UploadCustomers.Visible = true;
+                
 
                 del_Customers.BeginInvoke(
                     cb_organizations.SelectedItem.ToString(), 
@@ -458,6 +465,7 @@ namespace iikoCardClients
                     tb_PasswordAPI.Text, 
                     strFilePath,
                     tb_CustomersBalance.Enabled ? tb_CustomersBalance.Text : null,
+                    new object[] { l_UploadCustomers, l_AllCustomers },
                     cb_OwerwriteName.Checked,
                     new AsyncCallback(CallBackUpdateCustomers), 
                     null);

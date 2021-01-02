@@ -48,22 +48,27 @@ namespace iikoCardClients.Managers
             CountCorporateNutritions = 0;
         }
 
-        public void UploadCustomers(IEnumerable<ShortCustomerInfo> shortCustomers, string balance, bool owerwriteName = false)
+        public void UploadCustomers(IEnumerable<ShortCustomerInfo> shortCustomers, string balance, object[] status, bool owerwriteName = false)
         {
             try
             {
-                
+                if (status != null)
+                    ((System.Windows.Forms.Label)status?.Last()).Invoke(
+                        new Action(() => ((System.Windows.Forms.Label)status?.Last()).Text = shortCustomers.Count().ToString()));
                 foreach (var customer in shortCustomers)
                 {
                     CountAll++;
                     UploadCustomer(customer, balance, owerwriteName);
+                    if (status != null)
+                        ((System.Windows.Forms.Label)status?.First()).Invoke(
+                            new Action(() => ((System.Windows.Forms.Label)status?.First()).Text = CountAll.ToString()));
                 }
             }
             catch (Exception)
             {
                 CountFail++;
                 if (CountAll != shortCustomers.Count())
-                    UploadCustomers(shortCustomers.Skip(CountAll), balance, owerwriteName);
+                    UploadCustomers(shortCustomers.Skip(CountAll), balance, status, owerwriteName);
             }
         }
 
