@@ -180,7 +180,7 @@ namespace iikoCardClients.Managers
                             .ToArray()
                             .Select(data => data.TabNumber).First();
                         if (row[3].ToString().Length > 0)
-                            row[8] = s;
+                            row[row.ItemArray.Count()-1] = s;
                     }
                     catch (Exception ex)
                     {
