@@ -106,6 +106,7 @@
     <Compile Include="Readers\ReaderExceptions.cs" />
     <Compile Include="Readers\ZPort.cs" />
     <Compile Include="Readers\ZReader.cs" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\ZReader.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

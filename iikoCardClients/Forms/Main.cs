@@ -85,7 +85,7 @@ namespace iikoCardClients
 
         void CallBackFucnReport()
         {
-            pb_loadReport.Invoke(new Action(() => pb_loadReport.Enabled = pb_loadReport.Visible = false));
+            pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
             stopWatch.Stop();
             var info = $"Файл успешно создан, затрачено {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
             MessageBox.Show(info, "Успешно");
@@ -106,6 +106,10 @@ namespace iikoCardClients
         {
             try
             {
+                if (api == "" || login == "")
+                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+                if (org == "" || cat == "" || cor == "")
+                    throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
                 stopWatch.Restart();
                 var deliveryAPI = new Managers.ManagerAPI(api, login);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
@@ -128,7 +132,9 @@ namespace iikoCardClients
                 var customers = new List<ShortCustomerInfo>();
                 customers.Add(customer);
                 logger.Info($"Начата робота с категорией {cat} и программой {cor}");
-                logger.Info($"Добавление одного гостя: {customer.Name} с картой {customer.Card} и балансом {balance}");
+                logger.Info(balance is null ?
+                    $"Добавление одного гостя: {customer.Name} с картой {customer.Card}" :
+                    $"Добавление одного гостя: {customer.Name} с картой {customer.Card} и балансом {balance}");
                 managerCustomers.UploadCustomers(customers, balance, owerwriteName);
 
 
@@ -156,7 +162,7 @@ namespace iikoCardClients
             {
                 if (api == "" || login == "")
                     throw new NullReferenceException(message: "Не заполнены данные пользователя API");
-                if (org == "" || cat == "" || cor == "" || balance == "")
+                if (org == "" || cat == "" || cor == "")
                     throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
                 stopWatch.Restart();
                 IEnumerable<ShortCustomerInfo> list = new List<ShortCustomerInfo>();
@@ -192,7 +198,9 @@ namespace iikoCardClients
                     corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
                     deliveryAPI);
                 logger.Info($"Начата робота с категорией {cat} и программой {cor}");
-                logger.Info($"Запрошено массовое добавление {list.Count()} гостей с балансом {balance}");
+                logger.Info(balance is null ?
+                    $"Запрошено массовое добавление {list.Count()} гостей без баланса" :
+                    $"Запрошено массовое добавление {list.Count()} гостей с балансом {balance}");
                 managerCustomers.UploadCustomers(list, balance, owerwriteName);
             }
             catch (Exception ex)
@@ -419,7 +427,7 @@ namespace iikoCardClients
                     tb_PasswordAPI.Text,
                     tb_NameCustomer.Text,
                     tb_CardCustomer.Text,
-                    tb_CustomersBalance.Text,
+                    tb_CustomersBalance.Enabled ? tb_CustomersBalance.Text : null,
                     cb_OwerwriteName.Checked,
                     new AsyncCallback(CallBackUpdateCustomer),
                     null
@@ -449,7 +457,7 @@ namespace iikoCardClients
                     tb_LoginAPI.Text,
                     tb_PasswordAPI.Text, 
                     strFilePath,
-                    tb_CustomersBalance.Text,
+                    tb_CustomersBalance.Enabled ? tb_CustomersBalance.Text : null,
                     cb_OwerwriteName.Checked,
                     new AsyncCallback(CallBackUpdateCustomers), 
                     null);
@@ -459,6 +467,11 @@ namespace iikoCardClients
             {
                 MessageBox.Show($"Затраченное время {stopWatch.ElapsedMilliseconds / 1000.0f} сек.\r\n Возникла ошибка при добавлении гостей \r\n" + ex.Message, "Ошибка");
             }
+        }
+
+        private void cb_OwerwriteBalance_CheckedChanged(object sender, EventArgs e)
+        {
+            tb_CustomersBalance.Enabled = !((CheckBox)sender).Checked;
         }
         #endregion
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -506,7 +519,7 @@ namespace iikoCardClients
                 if (save.ShowDialog() == DialogResult.OK)
                 {
 
-                    pb_loadReport.Enabled = pb_loadReport.Visible = true;
+                    pb_load.Enabled = pb_load.Visible = true;
                     del_Report.BeginInvoke(
                         fileTabNumber, 
                         fileReport, 
@@ -521,9 +534,18 @@ namespace iikoCardClients
             }
         }
 
+
+
+
+
         #endregion
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-        
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
+        }
+       
     }
 }

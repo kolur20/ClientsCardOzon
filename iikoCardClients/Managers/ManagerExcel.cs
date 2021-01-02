@@ -26,88 +26,98 @@ namespace iikoCardClients.Managers
         }
         public IEnumerable<ShortCustomerInfo> GetClients()
         {
-            var clientList = new List<ShortCustomerInfo>();
-            logger.Info($"Открытие файла {originalFileName} для получения гостей");
-            using (var stream = File.Open(originalFileName, FileMode.Open, FileAccess.Read))
+            try
             {
-                IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream);
-                
-                var conf = new ExcelDataSetConfiguration
+
+
+                var clientList = new List<ShortCustomerInfo>();
+                logger.Info($"Открытие файла {originalFileName} для получения гостей");
+                using (var stream = File.Open(originalFileName, FileMode.Open, FileAccess.Read))
                 {
-                    UseColumnDataType = false,
-                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                    IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream);
+
+                    var conf = new ExcelDataSetConfiguration
                     {
-                        UseHeaderRow = false
-                        
+                        UseColumnDataType = false,
+                        ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                        {
+                            UseHeaderRow = false
+
+                        }
+                    };
+
+                    var dataSet = reader.AsDataSet(conf).Tables[0];
+                    switch (dataSet.Columns.Count)
+                    {
+                        case Columns:
+                            break;
+                        case Columns + 1:
+                            offset = 1;
+                            break;
+                        default:
+                            logger.Fatal($"Колличество столбцов ({dataSet.Columns.Count}) не соответствует заданному для парсинга количеству ({Columns})");
+                            return null;
+
                     }
-                };
-                
-                var dataSet = reader.AsDataSet(conf).Tables[0];
-                switch (dataSet.Columns.Count)
-                {
-                    case Columns:
-                        break;
-                    case Columns + 1:
-                        offset = 1;
-                        break;
-                    default:
-                        logger.Fatal($"Колличество столбцов ({dataSet.Columns.Count}) не соответствует заданному для парсинга количеству ({Columns})");
-                        return null;
+
+                    //var count = dataSet.Rows.Count;
+                    foreach (DataRow row in dataSet.Rows)
+                    {
+                        string card = string.Empty;
+                        if (row[offset + 2].ToString().Contains("/"))
+                        {
+                            string[] num = row[offset + 2].ToString().Replace(" ", "").Split('/');
+                            num[0] = "000".Remove(0, num[0].Count()) + num[0];
+                            num[1] = "00000".Remove(0, num[1].Count()) + num[1];
+                            card = num[0] + num[1];
+                        }
+                        else
+                        {
+                            try
+                            {
+                                if (row[offset + 2].ToString().Trim() == "")
+                                    throw new Exception();
+                                card = "00000000".Remove(0, row[offset + 2].ToString().Count()) + row[offset + 2].ToString();
+                            }
+                            catch (Exception)
+                            {
+                                card = "";
+                            }
+
+                        }
+                        if (card == "" || clientList
+                            .Select(data => data.Card)
+                            .Contains(card))
+                            continue;
+                        if (offset == 1)
+                            clientList.Add(new ShortCustomerInfo()
+                            {
+                                Name = row[offset].ToString().Replace("  ", " ").Trim(),
+                                Card = card,
+                                TabNumber = row[0].ToString()
+                            });
+                        else
+                            clientList.Add(new ShortCustomerInfo()
+                            {
+                                Name = row[0].ToString(),
+                                Card = card
+                            });
+                    }
+
+                    logger.Info($"Обработка завершена, строк в документе обработано: {dataSet.Rows.Count}");
+                    reader.Close();
+                    //clientList.RemoveAt(0);
 
                 }
-                
-                //var count = dataSet.Rows.Count;
-                foreach (DataRow row in dataSet.Rows)
-                {
-                    string card = string.Empty;
-                    if (row[offset + 2].ToString().Contains("/"))
-                    {
-                        string[] num = row[offset + 2].ToString().Replace(" ","").Split('/');
-                        num[0] = "000".Remove(0, num[0].Count()) + num[0];
-                        num[1] = "00000".Remove(0, num[1].Count()) + num[1];
-                        card = num[0] + num[1];
-                    }
-                    else
-                    {
-                        try
-                        {
-                            if (row[offset + 2].ToString().Trim() == "")
-                                throw new Exception();
-                            card = "00000000".Remove(0, row[offset + 2].ToString().Count()) + row[offset + 2].ToString();
-                        }
-                        catch (Exception)
-                        {
-                            card = "";
-                        }
-                        
-                    }
-                    if (card == "" || clientList
-                        .Select(data => data.Card)
-                        .Contains(card))
-                        continue;
-                    if (offset == 1)
-                        clientList.Add(new ShortCustomerInfo()
-                        {
-                            Name = row[offset].ToString().Replace("  "," "),
-                            Card = card,
-                            TabNumber = row[0].ToString()
-                        });
-                    else
-                        clientList.Add(new ShortCustomerInfo()
-                        {
-                            Name = row[0].ToString(),
-                            Card = card
-                        });
-                }
-                
-                logger.Info($"Обработка завершена, строк в документе обработано: {dataSet.Rows.Count}");
-                reader.Close();
-                //clientList.RemoveAt(0);
 
+                logger.Info($"Загрузка гостей завершена, гостей для дальнейшей обработки: {clientList.Count}");
+                return clientList.ToArray();
             }
-            
-            logger.Info($"Загрузка гостей завершена, гостей для дальнейшей обработки: {clientList.Count}");
-            return clientList.ToArray();
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                throw new Exception(ex.Message);
+            }
         }
 
         public void CreateReportWithTabNumber(IEnumerable<ShortCustomerInfo> Customers, string saveFileName)
@@ -130,7 +140,6 @@ namespace iikoCardClients.Managers
                 var dataSet = reader.AsDataSet(conf).Tables[0];
                 foreach (DataRow row in dataSet.Rows)
                 {
-
                     //4.2
                     //проверка на сокрещенные инициалы имени и отчества
                     //var name = row[0].ToString().Replace("  "," ").Split(' ');
@@ -161,6 +170,7 @@ namespace iikoCardClients.Managers
                     //    if (row[3].ToString().Length > 0)
                     //        row[8] = s;
                     //}
+                    
 
                     //4.3 полное совпадение полных данных фио
                     try

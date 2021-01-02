@@ -44,6 +44,8 @@ namespace iikoCardClients.Managers
             CountUpload = 0;
             CountFail = 0;
             CountBalance = 0;
+            CountCategory = 0;
+            CountCorporateNutritions = 0;
         }
 
         public void UploadCustomers(IEnumerable<ShortCustomerInfo> shortCustomers, string balance, bool owerwriteName = false)
@@ -106,7 +108,9 @@ namespace iikoCardClients.Managers
                 if (Task.Run(() => deliveryAPI.SetCorporateNutritionByCustomer(customer, _corporateNutritions, _organization)).Result)
                     CountCorporateNutritions++;
                 CountUpload++;
-                
+
+                //выходим если не нужно изменять баланс
+                if (Balance is null) return;
                 //выравниваем баланс в зависимости пополнить или списать нам нужно от текущего значения
                 if (balance.ToString() != Balance)
                 {
