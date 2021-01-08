@@ -79,6 +79,9 @@
             this.tb_PasswordAPI = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tb_fileTabNumber = new System.Windows.Forms.TextBox();
@@ -91,6 +94,11 @@
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.l_UploadCustomers = new System.Windows.Forms.Label();
             this.l_AllCustomers = new System.Windows.Forms.Label();
+            this.tb_Organization_Name = new System.Windows.Forms.TextBox();
+            this.tb_CorporateNutritions_Name = new System.Windows.Forms.TextBox();
+            this.tb_DataBase_Name = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.tb_DataBase_Folder = new System.Windows.Forms.TextBox();
             this.tabPage2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -114,7 +122,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 28);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(556, 429);
+            this.tabPage2.Size = new System.Drawing.Size(556, 608);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Выгрузка";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -433,7 +441,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(556, 429);
+            this.tabPage1.Size = new System.Drawing.Size(556, 608);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Преобразование";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -464,7 +472,7 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(550, 423);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(550, 602);
             this.tableLayoutPanel4.TabIndex = 10;
             // 
             // btn_Open
@@ -597,7 +605,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(544, 250);
+            this.textBox1.Size = new System.Drawing.Size(544, 429);
             this.textBox1.TabIndex = 9;
             this.textBox1.Text = "Для создания CSV используется формат файла в три столбца\r\nФИО, Подразделение, Иде" +
     "нтификатор\r\nСверху может быть любое количество пустых строк.\r\nНеверные карты или" +
@@ -613,7 +621,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(564, 461);
+            this.tabControl1.Size = new System.Drawing.Size(564, 640);
             this.tabControl1.TabIndex = 8;
             // 
             // tabPage3
@@ -622,7 +630,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 28);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(556, 429);
+            this.tabPage3.Size = new System.Drawing.Size(556, 608);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Настройки";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -632,33 +640,46 @@
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.btn_SaveAPI, 1, 5);
+            this.tableLayoutPanel3.Controls.Add(this.btn_SaveAPI, 1, 9);
             this.tableLayoutPanel3.Controls.Add(this.tb_rule, 0, 3);
             this.tableLayoutPanel3.Controls.Add(this.tb_LoginAPI, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.cb_ManagerCard, 0, 2);
             this.tableLayoutPanel3.Controls.Add(this.tb_PasswordAPI, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.label4, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label14, 0, 4);
+            this.tableLayoutPanel3.Controls.Add(this.label15, 0, 5);
+            this.tableLayoutPanel3.Controls.Add(this.label16, 0, 6);
+            this.tableLayoutPanel3.Controls.Add(this.label17, 0, 7);
+            this.tableLayoutPanel3.Controls.Add(this.tb_Organization_Name, 1, 4);
+            this.tableLayoutPanel3.Controls.Add(this.tb_CorporateNutritions_Name, 1, 5);
+            this.tableLayoutPanel3.Controls.Add(this.tb_DataBase_Name, 1, 6);
+            this.tableLayoutPanel3.Controls.Add(this.tb_DataBase_Folder, 1, 7);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 6;
+            this.tableLayoutPanel3.RowCount = 10;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(550, 423);
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(550, 602);
             this.tableLayoutPanel3.TabIndex = 12;
             // 
             // btn_SaveAPI
             // 
             this.btn_SaveAPI.AutoSize = true;
             this.btn_SaveAPI.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btn_SaveAPI.Location = new System.Drawing.Point(400, 388);
+            this.btn_SaveAPI.Location = new System.Drawing.Point(400, 570);
             this.btn_SaveAPI.Name = "btn_SaveAPI";
-            this.btn_SaveAPI.Size = new System.Drawing.Size(147, 32);
+            this.btn_SaveAPI.Size = new System.Drawing.Size(147, 29);
             this.btn_SaveAPI.TabIndex = 9;
             this.btn_SaveAPI.Text = "Сохранить данные";
             this.btn_SaveAPI.UseVisualStyleBackColor = true;
@@ -675,16 +696,16 @@
             this.tb_rule.Name = "tb_rule";
             this.tb_rule.ReadOnly = true;
             this.tb_rule.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_rule.Size = new System.Drawing.Size(544, 140);
+            this.tb_rule.Size = new System.Drawing.Size(544, 180);
             this.tb_rule.TabIndex = 11;
             this.tb_rule.Text = resources.GetString("tb_rule.Text");
             // 
             // tb_LoginAPI
             // 
             this.tb_LoginAPI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_LoginAPI.Location = new System.Drawing.Point(96, 3);
+            this.tb_LoginAPI.Location = new System.Drawing.Point(150, 3);
             this.tb_LoginAPI.Name = "tb_LoginAPI";
-            this.tb_LoginAPI.Size = new System.Drawing.Size(451, 26);
+            this.tb_LoginAPI.Size = new System.Drawing.Size(397, 26);
             this.tb_LoginAPI.TabIndex = 7;
             // 
             // cb_ManagerCard
@@ -703,10 +724,10 @@
             // tb_PasswordAPI
             // 
             this.tb_PasswordAPI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_PasswordAPI.Location = new System.Drawing.Point(96, 35);
+            this.tb_PasswordAPI.Location = new System.Drawing.Point(150, 35);
             this.tb_PasswordAPI.Name = "tb_PasswordAPI";
             this.tb_PasswordAPI.PasswordChar = '*';
-            this.tb_PasswordAPI.Size = new System.Drawing.Size(451, 26);
+            this.tb_PasswordAPI.Size = new System.Drawing.Size(397, 26);
             this.tb_PasswordAPI.TabIndex = 8;
             // 
             // label3
@@ -715,7 +736,7 @@
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(87, 32);
+            this.label3.Size = new System.Drawing.Size(141, 32);
             this.label3.TabIndex = 5;
             this.label3.Text = "Логин API";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -726,10 +747,43 @@
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label4.Location = new System.Drawing.Point(3, 32);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(87, 32);
+            this.label4.Size = new System.Drawing.Size(141, 32);
             this.label4.TabIndex = 6;
             this.label4.Text = "Пароль API";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label14.Location = new System.Drawing.Point(3, 279);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(141, 32);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Организация";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label15.Location = new System.Drawing.Point(3, 311);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(141, 32);
+            this.label15.TabIndex = 13;
+            this.label15.Text = "Прорамма";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label16.Location = new System.Drawing.Point(3, 343);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(141, 32);
+            this.label16.TabIndex = 14;
+            this.label16.Text = "Имя базы данных";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tabPage4
             // 
@@ -737,7 +791,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 28);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(556, 429);
+            this.tabPage4.Size = new System.Drawing.Size(556, 608);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Отчеты";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -765,7 +819,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 423);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 602);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tb_fileTabNumber
@@ -852,7 +906,7 @@
             this.tableLayoutPanel5.Controls.Add(this.pb_load, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.l_AllCustomers, 3, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 419);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 598);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -883,13 +937,64 @@
             this.l_AllCustomers.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.l_AllCustomers.Visible = false;
             // 
+            // tb_Organization_Name
+            // 
+            this.tb_Organization_Name.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.tb_Organization_Name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_Organization_Name.Location = new System.Drawing.Point(150, 282);
+            this.tb_Organization_Name.Name = "tb_Organization_Name";
+            this.tb_Organization_Name.PasswordChar = '*';
+            this.tb_Organization_Name.ReadOnly = true;
+            this.tb_Organization_Name.Size = new System.Drawing.Size(397, 26);
+            this.tb_Organization_Name.TabIndex = 15;
+            // 
+            // tb_CorporateNutritions_Name
+            // 
+            this.tb_CorporateNutritions_Name.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.tb_CorporateNutritions_Name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_CorporateNutritions_Name.Location = new System.Drawing.Point(150, 314);
+            this.tb_CorporateNutritions_Name.Name = "tb_CorporateNutritions_Name";
+            this.tb_CorporateNutritions_Name.PasswordChar = '*';
+            this.tb_CorporateNutritions_Name.ReadOnly = true;
+            this.tb_CorporateNutritions_Name.Size = new System.Drawing.Size(397, 26);
+            this.tb_CorporateNutritions_Name.TabIndex = 16;
+            // 
+            // tb_DataBase_Name
+            // 
+            this.tb_DataBase_Name.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_DataBase_Name.Location = new System.Drawing.Point(150, 346);
+            this.tb_DataBase_Name.Name = "tb_DataBase_Name";
+            this.tb_DataBase_Name.PasswordChar = '*';
+            this.tb_DataBase_Name.Size = new System.Drawing.Size(397, 26);
+            this.tb_DataBase_Name.TabIndex = 17;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label17.Location = new System.Drawing.Point(3, 375);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(141, 32);
+            this.label17.TabIndex = 18;
+            this.label17.Text = "Папка базы данных";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tb_DataBase_Folder
+            // 
+            this.tb_DataBase_Folder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tb_DataBase_Folder.Location = new System.Drawing.Point(150, 378);
+            this.tb_DataBase_Folder.Name = "tb_DataBase_Folder";
+            this.tb_DataBase_Folder.PasswordChar = '*';
+            this.tb_DataBase_Folder.Size = new System.Drawing.Size(397, 26);
+            this.tb_DataBase_Folder.TabIndex = 19;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(564, 461);
+            this.ClientSize = new System.Drawing.Size(564, 640);
             this.Controls.Add(this.tableLayoutPanel5);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -991,6 +1096,14 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.Label l_UploadCustomers;
         private System.Windows.Forms.Label l_AllCustomers;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox tb_Organization_Name;
+        private System.Windows.Forms.TextBox tb_CorporateNutritions_Name;
+        private System.Windows.Forms.TextBox tb_DataBase_Name;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox tb_DataBase_Folder;
     }
 }
 

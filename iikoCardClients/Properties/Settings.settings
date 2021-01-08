@@ -17,5 +17,11 @@
     <Setting Name="CorporateNutritions" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="DataBase_Name" Type="System.String" Scope="User">
+      <Value Profile="(Default)">entity</Value>
+    </Setting>
+    <Setting Name="DataBase_Folder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DataBase</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

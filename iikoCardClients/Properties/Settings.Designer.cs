@@ -82,5 +82,29 @@ namespace iikoCardClients.Properties {
                 this["CorporateNutritions"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("entity")]
+        public string DataBase_Name {
+            get {
+                return ((string)(this["DataBase_Name"]));
+            }
+            set {
+                this["DataBase_Name"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DataBase")]
+        public string DataBase_Folder {
+            get {
+                return ((string)(this["DataBase_Folder"]));
+            }
+            set {
+                this["DataBase_Folder"] = value;
+            }
+        }
     }
 }

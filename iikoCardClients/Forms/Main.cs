@@ -28,8 +28,8 @@ namespace iikoCardClients
             cb_ManagerCard.Checked = Properties.Settings.Default.ManagerCard;
             
 
-            cb_organizations.SelectedItem = Properties.Settings.Default.Organization;
-            cb_CorporateNutritions.SelectedItem = Properties.Settings.Default.CorporateNutritions;
+            tb_Organization_Name.Text = Properties.Settings.Default.Organization;
+            tb_CorporateNutritions_Name.Text = Properties.Settings.Default.CorporateNutritions;
 
             logger.Info("Приложение запущено");
         }
