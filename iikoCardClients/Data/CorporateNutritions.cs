@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace iikoCardClients.Data
 {
-    class CorporateNutritions
+    public class CorporateNutritions : iikoCardClients.SQL.IDataSql
     {
         public string Name { get; set; }
-        public string Wallets { get; set; }
+        public string IdWallet { get; set; }
         public string Id { get; set; }
     }
 }

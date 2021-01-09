@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace iikoCardClients.Data
 {
-    public class Wallet : iikoCardClients.SQL.IDataSql
+    public class Card : iikoCardClients.SQL.IDataSql
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public decimal Balance { get; set; }
-        public string IdName { get; set; }
+        public string Track { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime Create { get; set; }
+
     }
 }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace iikoCardClients.Data
 {
-    class Categories
+    public class Category : iikoCardClients.SQL.IDataSql
     {
         public string Id { get; set; }
         public string Name { get; set; }
-
+        public bool IsActive { get; set; }
     }
 }

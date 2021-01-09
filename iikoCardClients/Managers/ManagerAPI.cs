@@ -93,7 +93,7 @@ namespace iikoCardClients.Managers
                     .SelectTokens(@"$.[?(@.isActive === true)]")
                     .Select(data => new Organization()
                     {
-                        Active = (bool)data.SelectToken("isActive"),
+                        IsActive = (bool)data.SelectToken("isActive"),
                         Name = (string)data["fullName"],
                         Id = (string)data["id"]
                     })
@@ -140,10 +140,10 @@ namespace iikoCardClients.Managers
                         .Select(data => new Wallet()
                         {
                             Balance = (decimal)data.SelectToken("balance"),
-                            Id = (string)data["wallet"].SelectToken("id"),
+                            IdName = (string)data["wallet"].SelectToken("id"),
                             Name = (string)data["wallet"].SelectToken("name")
                         })
-                        .Where(data => data.Id == walletId)
+                        .Where(data => data.IdName == walletId)
                         .FirstOrDefault(),
                     Category = jObj["categories"]
                         .Select(data => (string)data.SelectToken("name"))
@@ -191,7 +191,7 @@ namespace iikoCardClients.Managers
                         Balance = (decimal)data.SelectToken("balance"),
                         WalletId = (string)data["wallet"].SelectToken("id")
                     })
-                    .Where(data => data.WalletId == corporateNutritions.Wallets)
+                    .Where(data => data.WalletId == corporateNutritions.IdWallet)
                     .FirstOrDefault()
                     .Balance;
             }
@@ -293,7 +293,7 @@ namespace iikoCardClients.Managers
         }
 
 
-        public async Task<IEnumerable<Categories>> GetCategories(Organization organization = null)
+        public async Task<IEnumerable<Category>> GetCategories(Organization organization = null)
         {
             token = Task.Run(() => GetToken()).Result;
             try
@@ -304,7 +304,7 @@ namespace iikoCardClients.Managers
 
                 return JArray.Parse(await response.Content.ReadAsStringAsync())
                     .SelectTokens(@"$.[?(@.isActive === true)]")
-                    .Select(data => new Categories()
+                    .Select(data => new Category()
                     {
                         Name = (string)data["name"],
                         Id = (string)data["id"]
@@ -337,7 +337,7 @@ namespace iikoCardClients.Managers
                     {
                         Name = (string)data["name"],
                         Id = (string)data["id"],
-                        Wallets = data["wallets"].Select(wallet => (string)wallet["id"]).FirstOrDefault()
+                        IdWallet = data["wallets"].Select(wallet => (string)wallet["id"]).FirstOrDefault()
                         //data["categories"].Select(categories => (string)categories["name"]).ToArray()
                     })
                     .ToList();
@@ -424,7 +424,7 @@ namespace iikoCardClients.Managers
             }
         }
 
-        public async Task<bool> SetCategoryByCustomer(ShortCustomerInfo customerInfo, Categories categories, Organization organization = null)
+        public async Task<bool> SetCategoryByCustomer(ShortCustomerInfo customerInfo, Category categories, Organization organization = null)
         {
             try
             {
@@ -496,7 +496,7 @@ namespace iikoCardClients.Managers
                 {
                     { "customerId", customerInfo.Id},
                     { "organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
-                    { "walletId", corporateNutritions.Wallets },
+                    { "walletId", corporateNutritions.IdWallet },
                     { "sum", Sum }
                 };
 
@@ -529,7 +529,7 @@ namespace iikoCardClients.Managers
                 {
                     { "customerId", customerInfo.Id},
                     {"organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
-                    { "walletId", corporateNutritions.Wallets },
+                    { "walletId", corporateNutritions.IdWallet },
                     { "sum", Sum }
                 };
 

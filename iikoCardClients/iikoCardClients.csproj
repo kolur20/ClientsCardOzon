@@ -64,7 +64,9 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -96,7 +98,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Balance.cs" />
-    <Compile Include="Data\Categories.cs" />
+    <Compile Include="Data\Card.cs" />
+    <Compile Include="Data\Category.cs" />
     <Compile Include="Data\Client.cs" />
     <Compile Include="Data\CorporateNutritions.cs" />
     <Compile Include="Data\Organization.cs" />
@@ -119,12 +122,22 @@
     <Compile Include="Managers\ManagerAPI.cs" />
     <Compile Include="Managers\ManagerCustomers.cs" />
     <Compile Include="Managers\ManagerExcel.cs" />
+    <Compile Include="Managers\ManagerSQL.cs" />
     <Compile Include="program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Readers\Reader.cs" />
     <Compile Include="Readers\ReaderExceptions.cs" />
     <Compile Include="Readers\ZPort.cs" />
     <Compile Include="Readers\ZReader.cs" />
+    <Compile Include="SQL\Interface\IDataSql.cs" />
+    <Compile Include="SQL\Interface\ITableSql.cs" />
+    <Compile Include="SQL\Tables\SqlTables.cs" />
+    <Compile Include="SQL\Tables\Table.cs" />
+    <Compile Include="SQL\Tables\TableCard.cs" />
+    <Compile Include="SQL\Tables\TableCategory.cs" />
+    <Compile Include="SQL\Tables\TableOrganization.cs" />
+    <Compile Include="SQL\Tables\TableWallet.cs" />
+    <Compile Include="SQL\Tables\TableWalletName.cs" />
     <None Include="ClassDiagram1.cd" />
     <None Include="Resources\ZReader.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -168,6 +181,7 @@
   <ItemGroup>
     <Content Include="iikocardClient.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

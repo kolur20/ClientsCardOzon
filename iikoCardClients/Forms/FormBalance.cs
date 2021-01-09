@@ -42,14 +42,14 @@ namespace iikoCardClients
                 deliveryAPI = new ManagerAPI(Properties.Settings.Default.LoginAPI, Properties.Settings.Default.PasswordAPI);
                 OrganizationId = Task.Run(() => deliveryAPI.GetOrganizations())
                     .Result
-                    .Where(data => data.Active == true && data.Name == Properties.Settings.Default.Organization)
+                    .Where(data => data.IsActive == true && data.Name == Properties.Settings.Default.Organization)
                     .Select(data => data.Id)
                     .FirstOrDefault();
 
                 WalletID = Task.Run(() => deliveryAPI.GetCorporateNutritions())
                     .Result
                     .Where(data => data.Name == Properties.Settings.Default.CorporateNutritions)
-                    .Select(data => data.Wallets)
+                    .Select(data => data.IdWallet)
                     .FirstOrDefault();
                 if (WalletID is null || OrganizationId is null)
                     throw new ArgumentNullException("Не задана организация или акция", "");

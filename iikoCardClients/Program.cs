@@ -23,7 +23,7 @@ namespace iikoCardClients
                 else
                     Application.Run(new FormMain());
             }
-            catch (Exception) { }
+            catch (Exception ex) { MessageBox.Show(ex.Message + "\nПодробнее в логах", "Ошибка при запуске"); }
         }
     }
 }

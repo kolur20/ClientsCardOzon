@@ -25,11 +25,11 @@ namespace iikoCardClients.Managers
         
 
         Organization _organization;
-        Categories _categories;
+        Category _categories;
         CorporateNutritions _corporateNutritions;
         ManagerAPI deliveryAPI;
 
-        public ManagerCustomers(Organization organization, Categories categories, CorporateNutritions corporateNutritions, ManagerAPI managerAPI)
+        public ManagerCustomers(Organization organization, Category categories, CorporateNutritions corporateNutritions, ManagerAPI managerAPI)
         {
             _organization = organization;
             _categories = categories;

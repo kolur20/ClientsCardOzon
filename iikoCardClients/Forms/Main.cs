@@ -31,6 +31,12 @@ namespace iikoCardClients
             tb_Organization_Name.Text = Properties.Settings.Default.Organization;
             tb_CorporateNutritions_Name.Text = Properties.Settings.Default.CorporateNutritions;
 
+            tb_DataBase_Folder.Text = Properties.Settings.Default.DataBase_Folder;
+            tb_DataBase_Name.Text = Properties.Settings.Default.DataBase_Name;
+
+
+            var managerSql = ManagerSQL.GetInstance();
+
             logger.Info("Приложение запущено");
         }
         string strFilePath = "";
@@ -334,6 +340,9 @@ namespace iikoCardClients
 
             Properties.Settings.Default.Organization = cb_organizations.Text;
             Properties.Settings.Default.CorporateNutritions = cb_CorporateNutritions.Text;
+
+            Properties.Settings.Default.DataBase_Folder = tb_DataBase_Folder.Text;
+            Properties.Settings.Default.DataBase_Name = tb_DataBase_Name.Text;
             Properties.Settings.Default.Save();
             logger.Info("Сохранение настроек");
         }

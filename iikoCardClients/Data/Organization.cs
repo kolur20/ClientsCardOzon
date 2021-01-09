@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace iikoCardClients.Data
 {
-    class Organization
+    public class Organization : iikoCardClients.SQL.IDataSql
     {
-        [JsonProperty("fullName")]
         public string Name { get; set; }
-        [JsonProperty("id")]
+
         public string Id { get; set; }
-        [JsonProperty("isActive")]
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
     }
 }
