@@ -716,7 +716,6 @@
             this.cb_ManagerCard.AutoSize = true;
             this.tableLayoutPanel3.SetColumnSpan(this.cb_ManagerCard, 2);
             this.cb_ManagerCard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cb_ManagerCard.Enabled = false;
             this.cb_ManagerCard.Location = new System.Drawing.Point(3, 67);
             this.cb_ManagerCard.Name = "cb_ManagerCard";
             this.cb_ManagerCard.Size = new System.Drawing.Size(544, 23);
@@ -841,7 +840,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 28);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(556, 608);
+            this.tabPage4.Size = new System.Drawing.Size(556, 461);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Отчеты";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -869,7 +868,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 602);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 455);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tb_fileTabNumber

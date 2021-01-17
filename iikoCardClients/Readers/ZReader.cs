@@ -445,7 +445,7 @@ namespace ZREADER
         public const uint ZR_RNF_ONLY_NOTIFY = 0x8000;
         #endregion
 
-        public const string ZrDllName = "Resources//ZReader.dll";
+        public const string ZrDllName = @"Resources/ZReader.dll";
 
         //Функции библиотеки
         [DllImport(ZrDllName, CallingConvention = CallingConvention.StdCall, EntryPoint = "ZR_GetVersion")]

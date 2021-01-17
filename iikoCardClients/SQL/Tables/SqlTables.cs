@@ -14,17 +14,19 @@ namespace iikoCardClients.SQL
         public TableOrganization Organization;
         public TableCategory Category;
         public TableCard Card;
+        public TableCustomer Customer;
 
 
         public SqlTables(SQLiteConnection connection)
         {
             try
             { 
-            Wallet = new TableWallet(connection);
-            WalletName = new TableWalletName(connection);
-            Organization = new TableOrganization(connection);
-            Category = new TableCategory(connection);
-            Card = new TableCard(connection);
+                Wallet = new TableWallet(connection);
+                WalletName = new TableWalletName(connection);
+                Organization = new TableOrganization(connection);
+                Category = new TableCategory(connection);
+                Card = new TableCard(connection);
+                Customer = new TableCustomer(connection);
             }
             catch (Exception ex)
             {

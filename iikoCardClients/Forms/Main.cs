@@ -35,7 +35,7 @@ namespace iikoCardClients
             tb_DataBase_Name.Text = Properties.Settings.Default.DataBase_Name;
 
 
-            var managerSql = ManagerSQL.GetInstance();
+            //var managerSql = ManagerSQL.GetInstance();
 
             logger.Info("Приложение запущено");
         }
@@ -344,6 +344,9 @@ namespace iikoCardClients
             Properties.Settings.Default.DataBase_Folder = tb_DataBase_Folder.Text;
             Properties.Settings.Default.DataBase_Name = tb_DataBase_Name.Text;
             Properties.Settings.Default.Save();
+
+            tb_CorporateNutritions_Name.Text = Properties.Settings.Default.CorporateNutritions;
+            tb_Organization_Name.Text = Properties.Settings.Default.Organization;
             logger.Info("Сохранение настроек");
         }
 

@@ -39,6 +39,26 @@
   <PropertyGroup>
     <ApplicationIcon>iikocardClient.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.15.0.8\lib\net45\CsvHelper.dll</HintPath>
@@ -102,6 +122,8 @@
     <Compile Include="Data\Category.cs" />
     <Compile Include="Data\Client.cs" />
     <Compile Include="Data\CorporateNutritions.cs" />
+    <Compile Include="Data\Customer.cs" />
+    <Compile Include="Data\CustomerXml.cs" />
     <Compile Include="Data\Organization.cs" />
     <Compile Include="Data\ReportBiz.cs" />
     <Compile Include="Data\ShortGuestInfo.cs" />
@@ -135,9 +157,20 @@
     <Compile Include="SQL\Tables\Table.cs" />
     <Compile Include="SQL\Tables\TableCard.cs" />
     <Compile Include="SQL\Tables\TableCategory.cs" />
+    <Compile Include="SQL\Tables\TableCustomer.cs" />
     <Compile Include="SQL\Tables\TableOrganization.cs" />
     <Compile Include="SQL\Tables\TableWallet.cs" />
     <Compile Include="SQL\Tables\TableWalletName.cs" />
+    <None Include="Resources\interface\info_logo_faild.png" />
+    <None Include="Resources\interface\info_logo_ok.png" />
+    <None Include="Resources\interface\info_logo_field_ok.png" />
+    <None Include="Resources\interface\info_logo_field_error.png" />
+    <None Include="Resources\interface\info_logo_error.png" />
+    <None Include="Resources\interface\background_up.png" />
+    <None Include="Resources\interface\background_logo.png" />
+    <None Include="Resources\interface\background_info.png" />
+    <None Include="Resources\interface\background_down.png" />
+    <None Include="Resources\interface\background_all.png" />
     <None Include="ClassDiagram1.cd" />
     <None Include="Resources\ZReader.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

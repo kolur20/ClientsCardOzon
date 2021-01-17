@@ -81,9 +81,9 @@ namespace iikoCardClients.Managers
                         logger.Info(string.Format("Создание таблицы {0} - {1} создана",
                             Tables.Organization.GetType(),
                             Tables.Organization.Create() ? "" : "НЕ"));
-                        //logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                        //    Tables.WalletName.GetType(),
-                        //    Tables.WalletName.Create() ? "" : "НЕ"));
+                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
+                            Tables.Customer.GetType(),
+                            Tables.Customer.Create() ? "" : "НЕ"));
 
                         connection.Close();
                         logger.Info("Таблицы базы данных созданы");
