@@ -123,9 +123,9 @@ namespace iikoCardClients.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap info_logo_faild {
+        public static System.Drawing.Bitmap info_logo_failed {
             get {
-                object obj = ResourceManager.GetObject("info_logo_faild", resourceCulture);
+                object obj = ResourceManager.GetObject("info_logo_failed", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -156,6 +156,36 @@ namespace iikoCardClients.Properties {
         public static System.Drawing.Bitmap info_logo_ok {
             get {
                 object obj = ResourceManager.GetObject("info_logo_ok", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_deleted {
+            get {
+                object obj = ResourceManager.GetObject("text_deleted", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_failed {
+            get {
+                object obj = ResourceManager.GetObject("text_failed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_ok {
+            get {
+                object obj = ResourceManager.GetObject("text_ok", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -136,9 +136,6 @@
   <data name="info_logo_error" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\interface\info_logo_error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="info_logo_faild" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\interface\info_logo_faild.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="info_logo_field_error" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\interface\info_logo_field_error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -150,5 +147,17 @@
   </data>
   <data name="ZReader" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ZReader.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="info_logo_failed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\interface\info_logo_failed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="text_deleted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\interface\text_deleted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="text_failed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\interface\text_failed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="text_ok" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\interface\text_ok.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

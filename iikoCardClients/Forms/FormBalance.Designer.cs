@@ -30,22 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormBalance));
-            this.label4 = new System.Windows.Forms.Label();
-            this.l_Description = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.l_stat = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.l_Name = new System.Windows.Forms.Label();
-            this.l_Balance = new System.Windows.Forms.Label();
-            this.l_Card = new System.Windows.Forms.Label();
             this.timer_settings = new System.Windows.Forms.Timer(this.components);
             this.timer_readerConnection = new System.Windows.Forms.Timer(this.components);
             this.tl_BackGround = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.l_Customer_Fname = new System.Windows.Forms.Label();
+            this.l_Customer_Sname = new System.Windows.Forms.Label();
+            this.l_Customer_Balance = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.l_Customer_Card = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -58,191 +52,16 @@
             this.label11 = new System.Windows.Forms.Label();
             this.pb_info_logo = new System.Windows.Forms.PictureBox();
             this.pb_info_field = new System.Windows.Forms.PictureBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.l_Customer_Fname = new System.Windows.Forms.Label();
-            this.l_Customer_Sname = new System.Windows.Forms.Label();
-            this.l_Customer_Balance = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.l_Customer_Card = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
             this.tl_BackGround.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_info_logo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_info_field)).BeginInit();
-            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label4.Location = new System.Drawing.Point(3, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(266, 37);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Доп информация:";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
-            // l_Description
-            // 
-            this.l_Description.AutoSize = true;
-            this.l_Description.Dock = System.Windows.Forms.DockStyle.Left;
-            this.l_Description.Location = new System.Drawing.Point(275, 0);
-            this.l_Description.Name = "l_Description";
-            this.l_Description.Size = new System.Drawing.Size(202, 37);
-            this.l_Description.TabIndex = 6;
-            this.l_Description.Text = "l_Description";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(202, 334);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(616, 37);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Баланс карты";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(202, 258);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(616, 37);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "ФИО владельца карты";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(209, 221);
-            this.label1.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(602, 37);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Прокатайте карту для проверки баланса";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.label4, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.l_Description, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(202, 667);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(616, 37);
-            this.tableLayoutPanel1.TabIndex = 8;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.l_stat, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label1, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.label3, 1, 4);
-            this.tableLayoutPanel2.Controls.Add(this.label2, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.label5, 1, 7);
-            this.tableLayoutPanel2.Controls.Add(this.l_Name, 1, 3);
-            this.tableLayoutPanel2.Controls.Add(this.l_Balance, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.l_Card, 1, 8);
-            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel1, 1, 9);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 10;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1020, 707);
-            this.tableLayoutPanel2.TabIndex = 10;
-            this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
-            // 
-            // l_stat
-            // 
-            this.l_stat.AutoSize = true;
-            this.l_stat.BackColor = System.Drawing.Color.Lime;
-            this.l_stat.Dock = System.Windows.Forms.DockStyle.Right;
-            this.l_stat.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.l_stat.Location = new System.Drawing.Point(977, 0);
-            this.l_stat.MaximumSize = new System.Drawing.Size(40, 40);
-            this.l_stat.MinimumSize = new System.Drawing.Size(40, 40);
-            this.l_stat.Name = "l_stat";
-            this.l_stat.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.l_stat.Size = new System.Drawing.Size(40, 40);
-            this.l_stat.TabIndex = 1;
-            this.l_stat.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label5
-            // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(202, 410);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(616, 37);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "Карта сотрудника";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // l_Name
-            // 
-            this.l_Name.AutoSize = true;
-            this.l_Name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.l_Name.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Name.Location = new System.Drawing.Point(202, 295);
-            this.l_Name.Name = "l_Name";
-            this.l_Name.Size = new System.Drawing.Size(616, 39);
-            this.l_Name.TabIndex = 15;
-            this.l_Name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // l_Balance
-            // 
-            this.l_Balance.AutoSize = true;
-            this.l_Balance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.l_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Balance.Location = new System.Drawing.Point(202, 371);
-            this.l_Balance.Name = "l_Balance";
-            this.l_Balance.Size = new System.Drawing.Size(616, 39);
-            this.l_Balance.TabIndex = 16;
-            this.l_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // l_Card
-            // 
-            this.l_Card.AutoSize = true;
-            this.l_Card.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.l_Card.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Card.Location = new System.Drawing.Point(202, 447);
-            this.l_Card.Name = "l_Card";
-            this.l_Card.Size = new System.Drawing.Size(616, 39);
-            this.l_Card.TabIndex = 17;
-            this.l_Card.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.l_Card.TextChanged += new System.EventHandler(this.l_Card_TextChanged);
             // 
             // timer_settings
             // 
@@ -303,6 +122,87 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(816, 247);
             this.tableLayoutPanel3.TabIndex = 0;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.flowLayoutPanel2.Controls.Add(this.l_Customer_Fname);
+            this.flowLayoutPanel2.Controls.Add(this.l_Customer_Sname);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(50, 7);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(50, 0, 50, 0);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(353, 116);
+            this.flowLayoutPanel2.TabIndex = 0;
+            this.flowLayoutPanel2.WrapContents = false;
+            // 
+            // l_Customer_Fname
+            // 
+            this.l_Customer_Fname.AutoSize = true;
+            this.l_Customer_Fname.Font = new System.Drawing.Font("Arial", 41.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.l_Customer_Fname.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(200)))), ((int)(((byte)(9)))));
+            this.l_Customer_Fname.Location = new System.Drawing.Point(3, 0);
+            this.l_Customer_Fname.Name = "l_Customer_Fname";
+            this.l_Customer_Fname.Size = new System.Drawing.Size(277, 63);
+            this.l_Customer_Fname.TabIndex = 0;
+            this.l_Customer_Fname.Text = "Федченко";
+            // 
+            // l_Customer_Sname
+            // 
+            this.l_Customer_Sname.AutoSize = true;
+            this.l_Customer_Sname.Font = new System.Drawing.Font("Arial", 41.25F);
+            this.l_Customer_Sname.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(200)))), ((int)(((byte)(9)))));
+            this.l_Customer_Sname.Location = new System.Drawing.Point(3, 63);
+            this.l_Customer_Sname.Name = "l_Customer_Sname";
+            this.l_Customer_Sname.Size = new System.Drawing.Size(263, 126);
+            this.l_Customer_Sname.TabIndex = 1;
+            this.l_Customer_Sname.Text = "Альберт Юрьевич";
+            // 
+            // l_Customer_Balance
+            // 
+            this.l_Customer_Balance.AutoSize = true;
+            this.l_Customer_Balance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.l_Customer_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Customer_Balance.Font = new System.Drawing.Font("Arial", 95F, System.Drawing.FontStyle.Bold);
+            this.l_Customer_Balance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(180)))), ((int)(((byte)(9)))));
+            this.l_Customer_Balance.Location = new System.Drawing.Point(456, 7);
+            this.l_Customer_Balance.Margin = new System.Windows.Forms.Padding(3, 0, 80, 0);
+            this.l_Customer_Balance.Name = "l_Customer_Balance";
+            this.l_Customer_Balance.Size = new System.Drawing.Size(190, 116);
+            this.l_Customer_Balance.TabIndex = 1;
+            this.l_Customer_Balance.Text = "8650";
+            this.l_Customer_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label13.Font = new System.Drawing.Font("Verdana", 18.75F);
+            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
+            this.label13.Location = new System.Drawing.Point(50, 147);
+            this.label13.Margin = new System.Windows.Forms.Padding(50, 0, 0, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(403, 24);
+            this.label13.TabIndex = 2;
+            this.label13.Text = "ID карты";
+            // 
+            // l_Customer_Card
+            // 
+            this.l_Customer_Card.AutoSize = true;
+            this.l_Customer_Card.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.l_Customer_Card.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Customer_Card.Font = new System.Drawing.Font("Arial", 41.25F, System.Drawing.FontStyle.Bold);
+            this.l_Customer_Card.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(71)))), ((int)(((byte)(71)))));
+            this.l_Customer_Card.Location = new System.Drawing.Point(50, 171);
+            this.l_Customer_Card.Margin = new System.Windows.Forms.Padding(50, 0, 180, 0);
+            this.l_Customer_Card.Name = "l_Customer_Card";
+            this.l_Customer_Card.Size = new System.Drawing.Size(223, 37);
+            this.l_Customer_Card.TabIndex = 3;
+            this.l_Customer_Card.Text = "00040127";
+            this.l_Customer_Card.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.l_Customer_Card.TextChanged += new System.EventHandler(this.l_Customer_Card_TextChanged);
             // 
             // tableLayoutPanel4
             // 
@@ -469,95 +369,20 @@
             this.pb_info_logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pb_info_logo.TabIndex = 2;
             this.pb_info_logo.TabStop = false;
+            this.pb_info_logo.Click += new System.EventHandler(this.pb_info_logo_Click);
             // 
             // pb_info_field
             // 
             this.pb_info_field.BackColor = System.Drawing.Color.Transparent;
-            this.pb_info_field.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_info_field.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pb_info_field.InitialImage = null;
             this.pb_info_field.Location = new System.Drawing.Point(102, 592);
             this.pb_info_field.Margin = new System.Windows.Forms.Padding(0);
             this.pb_info_field.Name = "pb_info_field";
             this.pb_info_field.Size = new System.Drawing.Size(816, 70);
+            this.pb_info_field.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pb_info_field.TabIndex = 2;
             this.pb_info_field.TabStop = false;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.l_Customer_Fname);
-            this.flowLayoutPanel2.Controls.Add(this.l_Customer_Sname);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(50, 7);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(50, 0, 0, 0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(403, 116);
-            this.flowLayoutPanel2.TabIndex = 0;
-            this.flowLayoutPanel2.WrapContents = false;
-            // 
-            // l_Customer_Fname
-            // 
-            this.l_Customer_Fname.AutoSize = true;
-            this.l_Customer_Fname.Font = new System.Drawing.Font("Arial", 41.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.l_Customer_Fname.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(200)))), ((int)(((byte)(9)))));
-            this.l_Customer_Fname.Location = new System.Drawing.Point(3, 0);
-            this.l_Customer_Fname.Name = "l_Customer_Fname";
-            this.l_Customer_Fname.Size = new System.Drawing.Size(277, 63);
-            this.l_Customer_Fname.TabIndex = 0;
-            this.l_Customer_Fname.Text = "Федченко";
-            // 
-            // l_Customer_Sname
-            // 
-            this.l_Customer_Sname.AutoSize = true;
-            this.l_Customer_Sname.Font = new System.Drawing.Font("Arial", 41.25F);
-            this.l_Customer_Sname.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(200)))), ((int)(((byte)(9)))));
-            this.l_Customer_Sname.Location = new System.Drawing.Point(3, 63);
-            this.l_Customer_Sname.Name = "l_Customer_Sname";
-            this.l_Customer_Sname.Size = new System.Drawing.Size(263, 126);
-            this.l_Customer_Sname.TabIndex = 1;
-            this.l_Customer_Sname.Text = "Альберт Юрьевич";
-            // 
-            // l_Customer_Balance
-            // 
-            this.l_Customer_Balance.AutoSize = true;
-            this.l_Customer_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Customer_Balance.Font = new System.Drawing.Font("Arial", 95F, System.Drawing.FontStyle.Bold);
-            this.l_Customer_Balance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(180)))), ((int)(((byte)(9)))));
-            this.l_Customer_Balance.Location = new System.Drawing.Point(456, 7);
-            this.l_Customer_Balance.Name = "l_Customer_Balance";
-            this.l_Customer_Balance.Size = new System.Drawing.Size(267, 116);
-            this.l_Customer_Balance.TabIndex = 1;
-            this.l_Customer_Balance.Text = "8650";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label13.Font = new System.Drawing.Font("Verdana", 18.75F);
-            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(110)))), ((int)(((byte)(110)))));
-            this.label13.Location = new System.Drawing.Point(50, 147);
-            this.label13.Margin = new System.Windows.Forms.Padding(50, 0, 0, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(403, 24);
-            this.label13.TabIndex = 2;
-            this.label13.Text = "ID карты";
-            // 
-            // l_Customer_Card
-            // 
-            this.l_Customer_Card.AutoSize = true;
-            this.l_Customer_Card.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.l_Customer_Card.Font = new System.Drawing.Font("Arial", 41.25F, System.Drawing.FontStyle.Bold);
-            this.l_Customer_Card.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(71)))), ((int)(((byte)(71)))));
-            this.l_Customer_Card.Location = new System.Drawing.Point(50, 171);
-            this.l_Customer_Card.Margin = new System.Windows.Forms.Padding(50, 0, 0, 0);
-            this.l_Customer_Card.Name = "l_Customer_Card";
-            this.l_Customer_Card.Size = new System.Drawing.Size(403, 37);
-            this.l_Customer_Card.TabIndex = 3;
-            this.l_Customer_Card.Text = "00040127";
-            this.l_Customer_Card.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.l_Customer_Card.TextChanged += new System.EventHandler(this.l_Customer_Card_TextChanged);
             // 
             // FormBalance
             // 
@@ -567,7 +392,6 @@
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(1020, 707);
             this.Controls.Add(this.tl_BackGround);
-            this.Controls.Add(this.tableLayoutPanel2);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -577,13 +401,11 @@
             this.Text = "Balance";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormBalance_FormClosed);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.tl_BackGround.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -593,27 +415,12 @@
             this.tableLayoutPanel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pb_info_logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pb_info_field)).EndInit();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label l_Description;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Timer timer_settings;
-        private System.Windows.Forms.Label l_stat;
-        private System.Windows.Forms.Label l_Name;
-        private System.Windows.Forms.Label l_Balance;
-        private System.Windows.Forms.Label l_Card;
         private System.Windows.Forms.Timer timer_readerConnection;
         private System.Windows.Forms.TableLayoutPanel tl_BackGround;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;

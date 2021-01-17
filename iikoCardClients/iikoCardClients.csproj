@@ -161,6 +161,10 @@
     <Compile Include="SQL\Tables\TableOrganization.cs" />
     <Compile Include="SQL\Tables\TableWallet.cs" />
     <Compile Include="SQL\Tables\TableWalletName.cs" />
+    <None Include="Resources\interface\info_logo_failed.png" />
+    <None Include="Resources\interface\text_failed.png" />
+    <None Include="Resources\interface\text_deleted.png" />
+    <None Include="Resources\interface\text_ok.png" />
     <None Include="Resources\interface\info_logo_faild.png" />
     <None Include="Resources\interface\info_logo_ok.png" />
     <None Include="Resources\interface\info_logo_field_ok.png" />

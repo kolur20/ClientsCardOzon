@@ -27,16 +27,13 @@ namespace iikoCardClients
 
             //очищаем вся поля, которые будут использоваться
             ClearAllFields();
-          
-
-            //l_Description.Text = string.Empty;
+            pb_info_logo.BackgroundImage = Properties.Resources.info_logo_failed;
 
 
 
+              logger = NLog.LogManager.GetCurrentClassLogger();
 
-            logger = NLog.LogManager.GetCurrentClassLogger();
-
-            Reader.Reader.SetFiel(l_Card);
+            Reader.Reader.SetFiel(l_Customer_Card);
             ManagerAPI.Initialization();
             logger.Info("Старт приложения...");
             //ускоряем подключение путем использования таймера при отвале
@@ -51,6 +48,7 @@ namespace iikoCardClients
             l_Customer_Sname.Text = string.Empty;
             l_Customer_Card.Text = string.Empty;
             pb_info_field.BackgroundImage = null;
+            pb_info_field.Image = null;
         }
 
         private bool ConnectToBiz()
@@ -95,7 +93,7 @@ namespace iikoCardClients
         {
             try
             {
-                Reader.Reader.InitializaeZ2(l_stat);
+                Reader.Reader.InitializaeZ2(new Label());
                 return true;
             }
             catch (Reader.ReaderExceptions)
@@ -106,30 +104,7 @@ namespace iikoCardClients
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-            CountClick++;
-
-            if (CountClick == 7)
-            {
-                CountClick = 0;
-                timer_settings.Stop();
-                new FormMain().ShowDialog();
-                this.Close();
-                
-            }
-        }
-
+       
         private void timer_settings_Tick(object sender, EventArgs e)
         {
             CountClick = 0;
@@ -144,11 +119,15 @@ namespace iikoCardClients
             logger.Info(string.Format("Подключение к iiko.biz... {0}", biz ? "Успешно" : "Не успешно"));
             if (reader & biz)
             {
-                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_error;
+                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_ok;
+            }
+            else if (reader || biz)
+            {
+                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_failed;
             }
             else
             {
-                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_ok;
+                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_error;
             }
             
 
@@ -161,10 +140,7 @@ namespace iikoCardClients
             Reader.Reader.Dispose();
         }
 
-        private void l_Card_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
+        
 
         private void l_Customer_Card_TextChanged(object sender, EventArgs e)
         {
@@ -175,22 +151,25 @@ namespace iikoCardClients
                 {
                     var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
                     var fielName = customer.Name.Split(' ');
-                    l_Customer_Fname.Text = fielName.First();
-                    l_Customer_Sname.Text = customer.Name.Remove(fielName.First().Length + 1);
-
+                    //защита от неправильного имени
+                    try
+                    {
+                        l_Customer_Fname.Text = fielName.First();
+                        l_Customer_Sname.Text = customer.Name.Remove(0, fielName.First().Length + 1);
+                    }
+                    catch (Exception) { }
                     l_Customer_Balance.Text = customer.Wallet.Balance.ToString();
 
                     //проверяем удален ли гость
                     if (customer.Category.Any(data => data.Contains("Удален")))
                     {
                         pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_error;
-                        Graphics g = Graphics.FromImage(pb_info_field.BackgroundImage);
-                        g.DrawString("Удален из системы корпоративного питания", new Font("Arial", 37), Brushes.White, 2, 2);
+                        pb_info_field.Image = Properties.Resources.text_deleted;
                     }
                     else
                     { 
                         pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_ok;
-                        g.DrawString("Приятного аппетита!", new Font("Arial", 37), Brushes.White, 2, 2);
+                        pb_info_field.Image = Properties.Resources.text_ok;
                     }
                     //l_Description.Text = "Организация: ";
                     //foreach (var i in customer.Category)
@@ -202,13 +181,12 @@ namespace iikoCardClients
                     //else
                     //    l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
 
-                    logger.Info($"Гость - {customer.Name} баланс: {l_Balance.Text}");
+                    logger.Info($"Гость - {customer.Name} баланс: {customer.Wallet.Balance.ToString()}");
                 }
                 catch (AggregateException)
                 {
                     pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_error;
-                    Graphics g = Graphics.FromImage(pb_info_field.BackgroundImage);
-                    g.DrawString("Гость с такой картой не найден", new Font("Arial", 37), Brushes.White, 2, 2);
+                    pb_info_field.Image = Properties.Resources.text_failed;
                     logger.Warn("Гость с такой картой не найден");
                 }
                 catch (Exception ex)
@@ -220,6 +198,20 @@ namespace iikoCardClients
             else
             {
                 ClearAllFields();
+            }
+        }
+
+        private void pb_info_logo_Click(object sender, EventArgs e)
+        {
+            CountClick++;
+
+            if (CountClick == 7)
+            {
+                CountClick = 0;
+                timer_settings.Stop();
+                new FormMain().ShowDialog();
+                this.Close();
+
             }
         }
     }
