@@ -61,9 +61,9 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.l_Customer_Fname = new System.Windows.Forms.Label();
             this.l_Customer_Sname = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
+            this.l_Customer_Balance = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
+            this.l_Customer_Card = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tl_BackGround.SuspendLayout();
@@ -287,9 +287,9 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.57154F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.91075F));
             this.tableLayoutPanel3.Controls.Add(this.flowLayoutPanel2, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.label12, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.l_Customer_Balance, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.label13, 0, 3);
-            this.tableLayoutPanel3.Controls.Add(this.label14, 0, 4);
+            this.tableLayoutPanel3.Controls.Add(this.l_Customer_Card, 0, 4);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(102, 338);
             this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
@@ -473,7 +473,6 @@
             // pb_info_field
             // 
             this.pb_info_field.BackColor = System.Drawing.Color.Transparent;
-            this.pb_info_field.BackgroundImage = global::iikoCardClients.Properties.Resources.info_logo_field_error;
             this.pb_info_field.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pb_info_field.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pb_info_field.Location = new System.Drawing.Point(102, 592);
@@ -520,17 +519,17 @@
             this.l_Customer_Sname.TabIndex = 1;
             this.l_Customer_Sname.Text = "Альберт Юрьевич";
             // 
-            // label12
+            // l_Customer_Balance
             // 
-            this.label12.AutoSize = true;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label12.Font = new System.Drawing.Font("Arial", 95F, System.Drawing.FontStyle.Bold);
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(180)))), ((int)(((byte)(9)))));
-            this.label12.Location = new System.Drawing.Point(456, 7);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(267, 116);
-            this.label12.TabIndex = 1;
-            this.label12.Text = "8650";
+            this.l_Customer_Balance.AutoSize = true;
+            this.l_Customer_Balance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Customer_Balance.Font = new System.Drawing.Font("Arial", 95F, System.Drawing.FontStyle.Bold);
+            this.l_Customer_Balance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(180)))), ((int)(((byte)(9)))));
+            this.l_Customer_Balance.Location = new System.Drawing.Point(456, 7);
+            this.l_Customer_Balance.Name = "l_Customer_Balance";
+            this.l_Customer_Balance.Size = new System.Drawing.Size(267, 116);
+            this.l_Customer_Balance.TabIndex = 1;
+            this.l_Customer_Balance.Text = "8650";
             // 
             // label13
             // 
@@ -545,19 +544,20 @@
             this.label13.TabIndex = 2;
             this.label13.Text = "ID карты";
             // 
-            // label14
+            // l_Customer_Card
             // 
-            this.label14.AutoSize = true;
-            this.label14.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label14.Font = new System.Drawing.Font("Arial", 41.25F, System.Drawing.FontStyle.Bold);
-            this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(71)))), ((int)(((byte)(71)))));
-            this.label14.Location = new System.Drawing.Point(50, 171);
-            this.label14.Margin = new System.Windows.Forms.Padding(50, 0, 0, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(403, 37);
-            this.label14.TabIndex = 3;
-            this.label14.Text = "00040127";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.l_Customer_Card.AutoSize = true;
+            this.l_Customer_Card.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.l_Customer_Card.Font = new System.Drawing.Font("Arial", 41.25F, System.Drawing.FontStyle.Bold);
+            this.l_Customer_Card.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(71)))), ((int)(((byte)(71)))));
+            this.l_Customer_Card.Location = new System.Drawing.Point(50, 171);
+            this.l_Customer_Card.Margin = new System.Windows.Forms.Padding(50, 0, 0, 0);
+            this.l_Customer_Card.Name = "l_Customer_Card";
+            this.l_Customer_Card.Size = new System.Drawing.Size(403, 37);
+            this.l_Customer_Card.TabIndex = 3;
+            this.l_Customer_Card.Text = "00040127";
+            this.l_Customer_Card.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.l_Customer_Card.TextChanged += new System.EventHandler(this.l_Customer_Card_TextChanged);
             // 
             // FormBalance
             // 
@@ -632,8 +632,8 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Label l_Customer_Fname;
         private System.Windows.Forms.Label l_Customer_Sname;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label l_Customer_Balance;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label l_Customer_Card;
     }
 }

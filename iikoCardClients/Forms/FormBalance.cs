@@ -24,7 +24,16 @@ namespace iikoCardClients
             InitializeComponent();
             CountClick = 0;
             timer_settings.Start();
-            l_Description.Text = string.Empty;
+
+            //очищаем вся поля, которые будут использоваться
+            ClearAllFields();
+          
+
+            //l_Description.Text = string.Empty;
+
+
+
+
             logger = NLog.LogManager.GetCurrentClassLogger();
 
             Reader.Reader.SetFiel(l_Card);
@@ -33,6 +42,15 @@ namespace iikoCardClients
             //ускоряем подключение путем использования таймера при отвале
             timer_readerConnection_Tick(null, null);
 
+        }
+
+        private void ClearAllFields()
+        {
+            l_Customer_Balance.Text = string.Empty;
+            l_Customer_Fname.Text = string.Empty;
+            l_Customer_Sname.Text = string.Empty;
+            l_Customer_Card.Text = string.Empty;
+            pb_info_field.BackgroundImage = null;
         }
 
         private bool ConnectToBiz()
@@ -126,12 +144,11 @@ namespace iikoCardClients
             logger.Info(string.Format("Подключение к iiko.biz... {0}", biz ? "Успешно" : "Не успешно"));
             if (reader & biz)
             {
-                l_stat.BackColor = Color.LightGreen;
+                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_error;
             }
             else
             {
-
-                l_stat.BackColor = reader | biz ? Color.Yellow : Color.Red;
+                pb_info_logo.BackgroundImage = Properties.Resources.info_logo_ok;
             }
             
 
@@ -146,44 +163,64 @@ namespace iikoCardClients
 
         private void l_Card_TextChanged(object sender, EventArgs e)
         {
+            
+        }
+
+        private void l_Customer_Card_TextChanged(object sender, EventArgs e)
+        {
             if (((Label)sender).Text != string.Empty)
             {
                 logger.Info($"Карта {((Label)sender).Text} поднесена к считывателю");
                 try
                 {
                     var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
-                    l_Name.Text = customer.Name;
-                    l_Balance.Text = customer.Wallet.Balance.ToString();
-                    l_Description.Text = "Организация: ";
-                    foreach (var i in customer.Category)
-                        l_Description.Text += i + ", ";
-                    if (l_Description.Text.Contains("Удален"))
+                    var fielName = customer.Name.Split(' ');
+                    l_Customer_Fname.Text = fielName.First();
+                    l_Customer_Sname.Text = customer.Name.Remove(fielName.First().Length + 1);
+
+                    l_Customer_Balance.Text = customer.Wallet.Balance.ToString();
+
+                    //проверяем удален ли гость
+                    if (customer.Category.Any(data => data.Contains("Удален")))
                     {
-                        l_Description.Text = "Гость - " + customer.Name + ", удален из программы корпоративного питания!";
+                        pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_error;
+                        Graphics g = Graphics.FromImage(pb_info_field.BackgroundImage);
+                        g.DrawString("Удален из системы корпоративного питания", new Font("Arial", 37), Brushes.White, 2, 2);
                     }
                     else
-                        l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
+                    { 
+                        pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_ok;
+                        g.DrawString("Приятного аппетита!", new Font("Arial", 37), Brushes.White, 2, 2);
+                    }
+                    //l_Description.Text = "Организация: ";
+                    //foreach (var i in customer.Category)
+                    //    l_Description.Text += i + ", ";
+                    //if (l_Description.Text.Contains("Удален"))
+                    //{
+                    //    l_Description.Text = "Гость - " + customer.Name + ", удален из программы корпоративного питания!";
+                    //}
+                    //else
+                    //    l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
 
-                    logger.Info($"Гость - {customer.Name} баланс: {l_Balance.Text} {l_Description.Text}");
+                    logger.Info($"Гость - {customer.Name} баланс: {l_Balance.Text}");
                 }
-                catch (AggregateException ex)
+                catch (AggregateException)
                 {
-                    l_Description.Text= "Гость с такой картой не найден";
+                    pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_error;
+                    Graphics g = Graphics.FromImage(pb_info_field.BackgroundImage);
+                    g.DrawString("Гость с такой картой не найден", new Font("Arial", 37), Brushes.White, 2, 2);
                     logger.Warn("Гость с такой картой не найден");
                 }
                 catch (Exception ex)
                 {
-                    l_Description.Text = ex.Message;
+                    
                     logger.Error(ex.Message);
                 }
             }
             else
             {
-                l_Name.Text = l_Balance.Text = string.Empty;
-                l_Description.Text = string.Empty;
+                ClearAllFields();
             }
         }
-
-        
     }
 }
