@@ -151,7 +151,7 @@ namespace iikoCardClients
                 {
                     var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
                     var fielName = customer.Name.Split(' ');
-                    //защита от неправильного имени
+                    //защита от хуевого имени
                     try
                     {
                         l_Customer_Fname.Text = fielName.First();
@@ -171,15 +171,7 @@ namespace iikoCardClients
                         pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_ok;
                         pb_info_field.Image = Properties.Resources.text_ok;
                     }
-                    //l_Description.Text = "Организация: ";
-                    //foreach (var i in customer.Category)
-                    //    l_Description.Text += i + ", ";
-                    //if (l_Description.Text.Contains("Удален"))
-                    //{
-                    //    l_Description.Text = "Гость - " + customer.Name + ", удален из программы корпоративного питания!";
-                    //}
-                    //else
-                    //    l_Description.Text = l_Description.Text.Remove(l_Description.Text.Length - 2);
+                    
 
                     logger.Info($"Гость - {customer.Name} баланс: {customer.Wallet.Balance.ToString()}");
                 }
