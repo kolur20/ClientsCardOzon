@@ -45,7 +45,7 @@ namespace iikoCardClients
         {
             l_Customer_Balance.Text = string.Empty;
             l_Customer_Fname.Text = string.Empty;
-            l_Customer_Sname.Text = string.Empty;
+            //l_Customer_Sname.Text = string.Empty;
             l_Customer_Card.Text = string.Empty;
             pb_info_field.BackgroundImage = null;
             pb_info_field.Image = null;
@@ -150,14 +150,15 @@ namespace iikoCardClients
                 try
                 {
                     var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
-                    var fielName = customer.Name.Split(' ');
-                    //защита от хуевого имени
-                    try
-                    {
-                        l_Customer_Fname.Text = fielName.First();
-                        l_Customer_Sname.Text = customer.Name.Remove(0, fielName.First().Length + 1);
-                    }
-                    catch (Exception) { }
+                    l_Customer_Fname.Text = customer.Name;
+                    //var fielName = customer.Name.Split(' ');
+                    ////защита от хуевого имени
+                    //try
+                    //{
+                    //    l_Customer_Fname.Text = fielName.First();
+                    //    l_Customer_Sname.Text = customer.Name.Remove(0, fielName.First().Length + 1);
+                    //}
+                    //catch (Exception) { }
                     l_Customer_Balance.Text = customer.Wallet.Balance.ToString();
 
                     //проверяем удален ли гость
