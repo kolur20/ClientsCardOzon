@@ -167,11 +167,11 @@ namespace iikoCardClients
                         pb_info_field.Image = Properties.Resources.text_deleted;
                     }
                     else
-                    { 
+                    {
                         pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_ok;
                         pb_info_field.Image = Properties.Resources.text_ok;
                     }
-                    
+
 
                     logger.Info($"Гость - {customer.Name} баланс: {customer.Wallet.Balance.ToString()}");
                 }
