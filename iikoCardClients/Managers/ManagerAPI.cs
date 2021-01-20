@@ -69,9 +69,13 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                var uri = $"organization/list?access_token={token}";
+                //var uri = $"organization/list?access_token={token}";
+                //var response = await client.GetAsync(uri).ConfigureAwait(false);
+                //return response.StatusCode == System.Net.HttpStatusCode.OK ? true : false;
+
+                var uri = $"auth/echo?msg=successfully&access_token={token}";
                 var response = await client.GetAsync(uri).ConfigureAwait(false);
-                return response.StatusCode == System.Net.HttpStatusCode.OK ? true : false;
+                return (await response.Content.ReadAsStringAsync()).Contains("successfully") ? true : false;
             }
             catch (Exception) { return false; }
         }
