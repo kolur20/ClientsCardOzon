@@ -151,15 +151,8 @@ namespace iikoCardClients
                 {
                     var customer = Task.Run(() => deliveryAPI.GetCustomerInfoByCard(((Label)sender).Text, OrganizationId, WalletID)).Result;
                     l_Customer_Fname.Text = customer.Name;
-                    //var fielName = customer.Name.Split(' ');
-                    ////защита от хуевого имени
-                    //try
-                    //{
-                    //    l_Customer_Fname.Text = fielName.First();
-                    //    l_Customer_Sname.Text = customer.Name.Remove(0, fielName.First().Length + 1);
-                    //}
-                    //catch (Exception) { }
-                    l_Customer_Balance.Text = customer.Wallet.Balance.ToString();
+                    
+                    
 
                     //проверяем удален ли гость
                     if (customer.Category.Any(data => data.Contains("Удален")))
@@ -169,6 +162,7 @@ namespace iikoCardClients
                     }
                     else
                     {
+                        l_Customer_Balance.Text = customer.Wallet.Balance.ToString();
                         pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_ok;
                         pb_info_field.Image = Properties.Resources.text_ok;
                     }
@@ -180,6 +174,7 @@ namespace iikoCardClients
                 {
                     pb_info_field.BackgroundImage = Properties.Resources.info_logo_field_error;
                     pb_info_field.Image = Properties.Resources.text_failed;
+                    l_Customer_Fname.Text = "Обратитесь к администратору столовой";
                     logger.Warn("Гость с такой картой не найден");
                 }
                 catch (Exception ex)

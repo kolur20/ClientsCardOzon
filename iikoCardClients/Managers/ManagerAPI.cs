@@ -52,16 +52,16 @@ namespace iikoCardClients.Managers
         }
         private async Task<string> GetToken()
         {
-            if (token == string.Empty || !Task.Run(() => isValidToken()).Result)
-            {
+            //if (token == string.Empty || !Task.Run(() => isValidToken()).Result)
+            //{
                 var uri = $"auth/access_token?user_id={API_Login}&user_secret={API_Password}";
                 var response = await client.GetAsync(uri).ConfigureAwait(false);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     return (await response.Content.ReadAsStringAsync()).Trim('"');
                 throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
-            }
-            return token;
+            //}
+            //return token;
         }
 
       
@@ -69,10 +69,6 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                //var uri = $"organization/list?access_token={token}";
-                //var response = await client.GetAsync(uri).ConfigureAwait(false);
-                //return response.StatusCode == System.Net.HttpStatusCode.OK ? true : false;
-
                 var uri = $"auth/echo?msg=successfully&access_token={token}";
                 var response = await client.GetAsync(uri).ConfigureAwait(false);
                 return (await response.Content.ReadAsStringAsync()).Contains("successfully") ? true : false;
@@ -86,12 +82,16 @@ namespace iikoCardClients.Managers
 
         public async Task<IEnumerable<Organization>> GetOrganizations()
         {
-            token = Task.Run(() => GetToken()).Result;
             try
             {
                 var response = await client.GetAsync($"organization/list?access_token={token}&request_timeout={new TimeSpan(0, 0, 3)}")
                     .ConfigureAwait(false);
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"organization/list?access_token={token}&request_timeout={new TimeSpan(0, 0, 3)}")
+                    .ConfigureAwait(false);
+                }
                 
                 return JArray.Parse(await response.Content.ReadAsStringAsync())
                     .SelectTokens(@"$.[?(@.isActive === true)]")
@@ -120,19 +120,18 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                token = Task.Run(() => GetToken()).Result;
+                
                 var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
                    .ConfigureAwait(false);
-                switch (response.StatusCode)
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    case System.Net.HttpStatusCode.BadRequest:
-                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
-
-                    case System.Net.HttpStatusCode.Unauthorized:
-                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
-                    default:
-                        break;
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
+                   .ConfigureAwait(false);
                 }
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                    throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+               
                 var jObj = JObject.Parse(await response.Content.ReadAsStringAsync());
 
                 return new ShortCustomerInfo()
@@ -172,22 +171,21 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                token = Task.Run(() => GetToken()).Result;
+               
                 var organizationId = organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id;
 
                 var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
                     .ConfigureAwait(false);
 
-                switch (response.StatusCode)
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    case System.Net.HttpStatusCode.BadRequest:
-                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
-
-                    case System.Net.HttpStatusCode.Unauthorized:
-                        throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
-                    default:
-                        break;
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
+                    .ConfigureAwait(false);
                 }
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                    throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+                
                 
                 return JObject.Parse(await response.Content.ReadAsStringAsync())["walletBalances"]
                     .Select(data => new
@@ -215,7 +213,7 @@ namespace iikoCardClients.Managers
 
         public async Task<IEnumerable<ShortCustomerInfo>> GetShortGuestInfo(DateTime dateFrom, DateTime dateTo, Organization organization = null)
         {
-            token = Task.Run(() => GetToken()).Result;
+            
             try
             {
                 var response = await client.GetAsync(string.Format("customers/get_customers_by_organization_and_by_period?access_token={0}&organization={1}&dateFrom={2}&dateTo={3}",
@@ -224,7 +222,16 @@ namespace iikoCardClients.Managers
                     dateFrom.ToString("yyyy-MM-dd"),
                     dateTo.ToString("yyyy-MM-dd")))
                     .ConfigureAwait(false);
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync(string.Format("customers/get_customers_by_organization_and_by_period?access_token={0}&organization={1}&dateFrom={2}&dateTo={3}",
+                    token,
+                    organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
+                    dateFrom.ToString("yyyy-MM-dd"),
+                    dateTo.ToString("yyyy-MM-dd")))
+                    .ConfigureAwait(false);
+                }
 
                 return JArray.Parse(await response.Content.ReadAsStringAsync())
                     //.SelectTokens(@"$.[?(@.isActive === true)]")
@@ -270,7 +277,13 @@ namespace iikoCardClients.Managers
                 var response = await client.PostAsync(
                     $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.PostAsync(
+                    $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
+                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                }
               
                 var guests = JArray.Parse(await response.Content.ReadAsStringAsync())
                     .Select(data => new
@@ -299,12 +312,17 @@ namespace iikoCardClients.Managers
 
         public async Task<IEnumerable<Category>> GetCategories(Organization organization = null)
         {
-            token = Task.Run(() => GetToken()).Result;
+            
             try
             {
                 var response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/guest_categories?access_token={token}")
                     .ConfigureAwait(false);
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/guest_categories?access_token={token}")
+                    .ConfigureAwait(false);
+                }
 
                 return JArray.Parse(await response.Content.ReadAsStringAsync())
                     .SelectTokens(@"$.[?(@.isActive === true)]")
@@ -329,12 +347,17 @@ namespace iikoCardClients.Managers
 
         public async Task<IEnumerable<CorporateNutritions>> GetCorporateNutritions(Organization organization = null)
         {
-            token = Task.Run(() => GetToken()).Result;
+            
             try
             {
                 var response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/corporate_nutritions?access_token={token}")
                     .ConfigureAwait(false);
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/corporate_nutritions?access_token={token}")
+                    .ConfigureAwait(false);
+                }
 
                 return JArray.Parse(await response.Content.ReadAsStringAsync())
                     .Select(data => new CorporateNutritions()
@@ -362,7 +385,7 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                token = Task.Run(() => GetToken()).Result;
+                
 
                 var json = new JObject()
                 {
@@ -376,7 +399,13 @@ namespace iikoCardClients.Managers
                 var response = await client.PostAsync(
                     $"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/create_or_update_guest_category?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.PostAsync(
+                    $"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/create_or_update_guest_category?access_token={token}",
+                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                }
                 return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync())); 
                
             }
@@ -395,8 +424,7 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                token = Task.Run(() => GetToken()).Result;
-
+                
                 var json = name != null ? new JObject()
                     {
                         { "name", name },
@@ -412,6 +440,13 @@ namespace iikoCardClients.Managers
                 var response = await client.PostAsync(
                     $"customers/create_or_update?access_token={token}&organization={ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
                     new StringContent("{ \"customer\" : " + json.ToString() + "}", Encoding.UTF8, "application/json"));
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.PostAsync(
+                    $"customers/create_or_update?access_token={token}&organization={ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
+                    new StringContent("{ \"customer\" : " + json.ToString() + "}", Encoding.UTF8, "application/json"));
+                }
                 var answer = await response.Content.ReadAsStringAsync();
                 
                 return response.StatusCode == HttpStatusCode.OK ? answer.Trim('"') : throw new Exception(GetErrorMessage(answer));
@@ -441,6 +476,18 @@ namespace iikoCardClients.Managers
                         organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
                         categories.Id),
                     new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+
+                    response = await client.PostAsync(
+                        String.Format("customers/{0}/add_category?access_token={1}&organization={2}&categoryId={3}",
+                            customerInfo.Id,
+                            token,
+                            organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
+                            categories.Id),
+                        new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
+                }
                return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
@@ -474,7 +521,18 @@ namespace iikoCardClients.Managers
                         organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
                         corporateNutritions.Id),
                     new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
 
+                    response = await client.PostAsync(
+                        String.Format("customers/{0}/add_to_nutrition_organization?access_token={1}&organization={2}&corporate_nutrition_id={3}",
+                            customerInfo.Id,
+                            token,
+                            organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
+                            corporateNutritions.Id),
+                        new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
+                }
                 return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
@@ -493,7 +551,7 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                token = Task.Run(() => GetToken()).Result;
+                
 
 
                 var json = new JObject()
@@ -508,7 +566,13 @@ namespace iikoCardClients.Managers
                 var response = await client.PostAsync(
                     $"customers/refill_balance?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.PostAsync(
+                    $"customers/refill_balance?access_token={token}",
+                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                }
                 return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
@@ -526,10 +590,7 @@ namespace iikoCardClients.Managers
         {
             try
             {
-                token = Task.Run(() => GetToken()).Result;
-
-
-                var json = new JObject()
+               var json = new JObject()
                 {
                     { "customerId", customerInfo.Id},
                     {"organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
@@ -541,7 +602,13 @@ namespace iikoCardClients.Managers
                 var response = await client.PostAsync(
                     $"customers/withdraw_balance?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.PostAsync(
+                    $"customers/withdraw_balance?access_token={token}",
+                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                }
                 return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }

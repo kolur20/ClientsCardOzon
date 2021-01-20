@@ -146,12 +146,12 @@
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label3.Font = new System.Drawing.Font("Verdana", 24F);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(39)))), ((int)(((byte)(39)))));
-            this.label3.Location = new System.Drawing.Point(368, 230);
-            this.label3.Margin = new System.Windows.Forms.Padding(30, 0, 3, 0);
+            this.label3.Location = new System.Drawing.Point(348, 230);
+            this.label3.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(549, 38);
+            this.label3.Size = new System.Drawing.Size(569, 38);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Приложите карту к терминалу";
+            this.label3.Text = "Приложите карту к считывателю";
             this.label3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // pb_info_field
@@ -175,7 +175,7 @@
             this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 63.57243F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.42757F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 102F));
             this.tableLayoutPanel2.Controls.Add(this.label13, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.pb_info_logo, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.label11, 1, 0);
@@ -213,7 +213,7 @@
             this.pb_info_logo.BackColor = System.Drawing.Color.Transparent;
             this.pb_info_logo.BackgroundImage = global::iikoCardClients.Properties.Resources.info_logo_error;
             this.pb_info_logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pb_info_logo.Location = new System.Drawing.Point(713, 35);
+            this.pb_info_logo.Location = new System.Drawing.Point(712, 35);
             this.pb_info_logo.Name = "pb_info_logo";
             this.pb_info_logo.Size = new System.Drawing.Size(42, 42);
             this.pb_info_logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -229,7 +229,7 @@
             this.label11.Location = new System.Drawing.Point(451, 0);
             this.label11.Margin = new System.Windows.Forms.Padding(0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(259, 80);
+            this.label11.Size = new System.Drawing.Size(258, 80);
             this.label11.TabIndex = 1;
             this.label11.Text = "Баланс / Рублей";
             this.label11.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -255,7 +255,7 @@
             this.l_Customer_Balance.Location = new System.Drawing.Point(451, 85);
             this.l_Customer_Balance.Margin = new System.Windows.Forms.Padding(0);
             this.l_Customer_Balance.Name = "l_Customer_Balance";
-            this.l_Customer_Balance.Size = new System.Drawing.Size(259, 158);
+            this.l_Customer_Balance.Size = new System.Drawing.Size(258, 158);
             this.l_Customer_Balance.TabIndex = 1;
             this.l_Customer_Balance.Text = "8650";
             this.l_Customer_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
