@@ -26,18 +26,18 @@ namespace iikoCardClients.SQL
             catch (Exception) { }
         }
 
-        public bool Create()
+        public bool Create(bool IfNotExists = false)
         {
             try
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                string q = @"CREATE TABLE IF NOT EXISTS Wallet (	Id	TEXT NOT NULL UNIQUE,	Balance	REAL NOT NULL,	IdName	TEXT NOT NULL,	PRIMARY KEY(Id))";
+                string q = $@"CREATE TABLE {(IfNotExists ? "IF NOT EXISTS" : "")} Wallet (	Id	TEXT NOT NULL UNIQUE,	Balance	REAL NOT NULL,	IdName	TEXT NOT NULL,	PRIMARY KEY(Id))";
 
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         public bool Delete(string conditions = null)

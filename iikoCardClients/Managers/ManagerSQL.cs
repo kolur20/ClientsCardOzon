@@ -25,7 +25,7 @@ namespace iikoCardClients.Managers
         SQLiteConnection connection;
         //SQLiteCommand command;
 
-        SqlTables Tables;
+        public SqlTables Tables;
 
         static NLog.Logger logger;
 
@@ -66,25 +66,6 @@ namespace iikoCardClients.Managers
                         Tables = new SqlTables(connection);
                         logger.Info($"Подключение к базе произведено, создание таблиц");
 
-                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                            Tables.Wallet.GetType(),
-                            Tables.Wallet.Create() ? "" : "НЕ"));
-                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                            Tables.WalletName.GetType(),
-                            Tables.WalletName.Create() ? "" : "НЕ"));
-                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                            Tables.Category.GetType(),
-                            Tables.Category.Create() ? "" : "НЕ"));
-                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                            Tables.Card.GetType(),
-                            Tables.Card.Create() ? "" : "НЕ"));
-                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                            Tables.Organization.GetType(),
-                            Tables.Organization.Create() ? "" : "НЕ"));
-                        logger.Info(string.Format("Создание таблицы {0} - {1} создана",
-                            Tables.Customer.GetType(),
-                            Tables.Customer.Create() ? "" : "НЕ"));
-
                         connection.Close();
                         logger.Info("Таблицы базы данных созданы");
                     }
@@ -99,10 +80,28 @@ namespace iikoCardClients.Managers
                 }
                 else
                 {
-                    //подключениt к базе данных для создания таблиц
+                    //подключениt к базе данных для проверки таблиц
                     if (connection.State != System.Data.ConnectionState.Open)
                         connection.Open();
                     Tables = new SqlTables(connection);
+                    logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.Wallet.GetType(),
+                            Tables.Wallet.Create() ? "создана" : "успешно"));
+                    logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                        Tables.WalletName.GetType(),
+                        Tables.WalletName.Create() ? "создана" : "успешно"));
+                    logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                        Tables.Category.GetType(),
+                        Tables.Category.Create() ? "создана" : "успешно"));
+                    logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                        Tables.Card.GetType(),
+                        Tables.Card.Create() ? "создана" : "успешно"));
+                    logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                        Tables.Organization.GetType(),
+                        Tables.Organization.Create() ? "создана" : "успешно"));
+                    logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                        Tables.Customer.GetType(),
+                        Tables.Customer.Create() ? "создана" : "успешно"));
                     connection.Close();
                     logger.Info($"Проверка базы данных произведена");
                 }

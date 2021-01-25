@@ -23,18 +23,18 @@ namespace iikoCardClients.SQL
         }
 
        
-        public bool Create()
+        public bool Create(bool IfNotExists = false)
         {
             try
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                string q = @"CREATE TABLE IF NOT EXISTS WalletName (Id TEXT NOT NULL UNIQUE, Name	TEXT NOT NULL, IdWallet	TEXT NOT NULL,	PRIMARY KEY(Id))";
+                string q = $@"CREATE TABLE {(IfNotExists ? "IF NOT EXISTS" : "")} WalletName (Id TEXT NOT NULL UNIQUE, Name	TEXT NOT NULL, IdWallet	TEXT NOT NULL,	PRIMARY KEY(Id))";
 
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         override public bool Insert(IDataSql data)
@@ -50,7 +50,7 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
 

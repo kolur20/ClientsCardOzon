@@ -10,7 +10,7 @@ namespace iikoCardClients.SQL
     public interface ITableSql
     {
         void SetConnection(SQLiteConnection connection);
-        bool Create();
+        bool Create(bool IfNotExists = false);
         bool Insert(IDataSql data);
 
         bool Insert(IEnumerable<IDataSql> data);

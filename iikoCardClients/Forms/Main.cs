@@ -34,8 +34,12 @@ namespace iikoCardClients
             tb_DataBase_Folder.Text = Properties.Settings.Default.DataBase_Folder;
             tb_DataBase_Name.Text = Properties.Settings.Default.DataBase_Name;
 
-
+            //проверка бд
             //var managerSql = ManagerSQL.GetInstance();
+            //получение данных из бд и заполнение полей
+            //managerSql.Tables.Organization.Organizations
+            
+
 
             logger.Info("Приложение запущено");
         }
@@ -382,6 +386,13 @@ namespace iikoCardClients
                 cb_Categories.Items.AddRange(categoryes.Select(data => data.Name).ToArray());
                 cb_Categories.SelectedIndex = 0;
 
+
+
+                ///ЗАНЕСЕНИЕ ДАННЫХ В БД
+                //var managerSQLTables = ManagerSQL.GetInstance().Tables;
+                //managerSQLTables.Organization.Insert(organizations);
+                //managerSQLTables.Category.Insert(categoryes);
+                //managerSQLTables.WalletName.Insert(corporateNutritions);
             }
             catch (Exception ex)
             {

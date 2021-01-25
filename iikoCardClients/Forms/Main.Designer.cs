@@ -800,7 +800,7 @@
             // 
             // tb_Organization_Name
             // 
-            this.tb_Organization_Name.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.tb_Organization_Name.BackColor = System.Drawing.SystemColors.Control;
             this.tb_Organization_Name.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb_Organization_Name.Location = new System.Drawing.Point(150, 282);
             this.tb_Organization_Name.Name = "tb_Organization_Name";
@@ -810,7 +810,7 @@
             // 
             // tb_CorporateNutritions_Name
             // 
-            this.tb_CorporateNutritions_Name.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.tb_CorporateNutritions_Name.BackColor = System.Drawing.SystemColors.Control;
             this.tb_CorporateNutritions_Name.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb_CorporateNutritions_Name.Location = new System.Drawing.Point(150, 314);
             this.tb_CorporateNutritions_Name.Name = "tb_CorporateNutritions_Name";
