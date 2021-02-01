@@ -89,7 +89,7 @@ namespace iikoCardClients.SQL
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
                 var q = string.Format("INSERT INTO Customer ('Id','IdOrganization','Name','TabNumber','DateCreate','Xml','Phone','Comment','IdiikoBiz')" +
-                    " VALUES '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}'",
+                    " VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                     data.Id,
                     ((Customer)data).IdOrganization,
                     ((Customer)data).Name,

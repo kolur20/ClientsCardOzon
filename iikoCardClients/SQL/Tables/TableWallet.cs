@@ -61,7 +61,7 @@ namespace iikoCardClients.SQL
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                var q = string.Format("INSERT INTO Wallet ('Id','Balance','IdName') VALUES '{0}','{1}','{2}'",
+                var q = string.Format("INSERT INTO Wallet ('Id','Balance','IdName') VALUES ('{0}','{1}','{2}')",
                     data.Id,
                     ((Wallet)data).Balance,
                     ((Wallet)data).IdName);

@@ -1,4 +1,5 @@
 ﻿using iikoCardClients.Data;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,11 @@ namespace iikoCardClients.Managers
     class ManagerAPI
     {
         const string URL = @"https://iiko.biz:9900/api/0/";
-       
+
 
         static string token = string.Empty;
-        static HttpClientHandler httpClientHandler; 
-        static TimeSpan cancellationTime = new TimeSpan(0,0,20);
+        static HttpClientHandler httpClientHandler;
+        static TimeSpan cancellationTime = new TimeSpan(0, 0, 20);
         static HttpClient client;
 
         readonly int TimeDelayThread = 600;
@@ -48,23 +49,23 @@ namespace iikoCardClients.Managers
 
 
             token = Task.Run(() => GetToken()).Result;
-            
+
         }
         private async Task<string> GetToken()
         {
             //if (token == string.Empty || !Task.Run(() => isValidToken()).Result)
             //{
-                var uri = $"auth/access_token?user_id={API_Login}&user_secret={API_Password}";
-                var response = await client.GetAsync(uri).ConfigureAwait(false);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    return (await response.Content.ReadAsStringAsync()).Trim('"');
-                throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+            var uri = $"auth/access_token?user_id={API_Login}&user_secret={API_Password}";
+            var response = await client.GetAsync(uri).ConfigureAwait(false);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                return (await response.Content.ReadAsStringAsync()).Trim('"');
+            throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             //}
             //return token;
         }
 
-      
+
         private async Task<bool> isValidToken()
         {
             try
@@ -92,7 +93,7 @@ namespace iikoCardClients.Managers
                     response = await client.GetAsync($"organization/list?access_token={token}&request_timeout={new TimeSpan(0, 0, 3)}")
                     .ConfigureAwait(false);
                 }
-                
+
                 return JArray.Parse(await response.Content.ReadAsStringAsync())
                     .SelectTokens(@"$.[?(@.isActive === true)]")
                     .Select(data => new Organization()
@@ -115,6 +116,39 @@ namespace iikoCardClients.Managers
             }
 
         }
+
+        //получение полного объекта гостя с биза
+        public async Task<Data.Biz.Customer> GetCustomerBizByCard(string card, string organizationId, string walletId)
+        {
+            try
+            {
+                var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
+                  .ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
+                   .ConfigureAwait(false);
+                }
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                    throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+
+                return JsonConvert.DeserializeObject<Data.Biz.Customer>(await response.Content.ReadAsStringAsync());
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetCustomerBizByCard(card, organizationId, walletId)).Result;
+                }
+                throw new Exception(ex.Message);
+
+            }
+        }
+
+
 
         public async Task<ShortCustomerInfo> GetCustomerInfoByCard(string card, string organizationId, string walletId)
         {
@@ -329,7 +363,8 @@ namespace iikoCardClients.Managers
                     .Select(data => new Category()
                     {
                         Name = (string)data["name"],
-                        Id = (string)data["id"]
+                        Id = (string)data["id"],
+                        IsActive = true
                     })
                     .ToList();
 

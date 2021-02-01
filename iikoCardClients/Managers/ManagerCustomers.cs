@@ -94,6 +94,7 @@ namespace iikoCardClients.Managers
                         _customer.Card, 
                         _organization)).Result
                 };
+                
                 //падаем в ошибку для обработки категорий и корпоративного питания
                 throw new Exception();
             }

@@ -182,7 +182,7 @@ namespace iikoCardClients.Managers
                         if (row[3].ToString().Length > 0)
                             row[row.ItemArray.Count()-1] = s;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
 
                     }

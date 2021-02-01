@@ -56,16 +56,35 @@ namespace iikoCardClients.SQL
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                var q = string.Format("INSERT INTO Category ('Id','Name','IsActive') VALUES '{0}','{1}','{2}'",
+                var q = string.Format("INSERT INTO Category ('Id','Name','IsActive') VALUES ('{0}','{1}','{2}')",
                     data.Id,
                     ((Category)data).Name,
-                    ((Category)data).IsActive);
+                    ((Category)data).IsActive ? "1" : "0");
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
             catch (Exception) { return false; }
         }
 
+        public bool Deactivation(IEnumerable<IDataSql> data)
+        {
+            try
+            {
+                if (connection.State != System.Data.ConnectionState.Open)
+                    connection.Open();
+                var content = "";
+                foreach (var i in data)
+                {
+                    content += $"'{i.Id}',";
+                }
+                
+                var q = string.Format("UPDATE Category SET IsActive = 0 WHERE Id NOT IN ({0})",
+                    content.Remove(content.Length - 1));
+                new SQLiteCommand(q, connection).ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception) { return false; }
+        }
 
 
         public IEnumerable<IDataSql> Select(string conditions = null)

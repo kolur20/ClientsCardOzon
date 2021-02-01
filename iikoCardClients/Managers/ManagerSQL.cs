@@ -13,11 +13,14 @@ namespace iikoCardClients.Managers
     {
 
         static readonly ManagerSQL instance = new ManagerSQL();
-        public static ManagerSQL GetInstance()
+        public static ManagerSQL GetInstance
         {
-            return instance;
+            get { return instance; }
         }
-
+        static public SqlTables GetTables
+        {
+            get { return instance.Tables; }
+        }
 
         public string FolderDB { get; private set; }
         public string NameDB { get; private set; }
@@ -65,6 +68,25 @@ namespace iikoCardClients.Managers
                             connection.Open();
                         Tables = new SqlTables(connection);
                         logger.Info($"Подключение к базе произведено, создание таблиц");
+
+                        logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.Wallet.GetType(),
+                            Tables.Wallet.Create(true) ? "создана" : "успешно"));
+                        logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.WalletName.GetType(),
+                            Tables.WalletName.Create(true) ? "создана" : "успешно"));
+                        logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.Category.GetType(),
+                            Tables.Category.Create(true) ? "создана" : "успешно"));
+                        logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.Card.GetType(),
+                            Tables.Card.Create(true) ? "создана" : "успешно"));
+                        logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.Organization.GetType(),
+                            Tables.Organization.Create(true) ? "создана" : "успешно"));
+                        logger.Info(string.Format("Поверка таблицы {0} - {1} ",
+                            Tables.Customer.GetType(),
+                            Tables.Customer.Create(true) ? "создана" : "успешно"));
 
                         connection.Close();
                         logger.Info("Таблицы базы данных созданы");

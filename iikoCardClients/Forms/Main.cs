@@ -35,10 +35,32 @@ namespace iikoCardClients
             tb_DataBase_Name.Text = Properties.Settings.Default.DataBase_Name;
 
             //проверка бд
-            //var managerSql = ManagerSQL.GetInstance();
+            var managerSql = ManagerSQL.GetInstance;
             //получение данных из бд и заполнение полей
-            //managerSql.Tables.Organization.Organizations
+            if (managerSql.Tables.Organization.Organizations != null && managerSql.Tables.Organization.Organizations.Count > 0)
+            {
+                cb_organizations.Items.Clear();
+                cb_organizations.Items.AddRange(managerSql.Tables.Organization.Organizations.Select(data => data.Name).ToArray());
+                cb_organizations.SelectedIndex = 0;
+            }
+            if (managerSql.Tables.Category.Categories != null && managerSql.Tables.Category.Categories.Count > 0)
+            {
+                cb_Categories.Items.Clear();
+                cb_Categories.Items.AddRange(managerSql.Tables.Category.Categories.Select(data => data.Name).ToArray());
+                //необходимо принудительно выбирать вручную
+                //cb_Categories.SelectedIndex = 0;
+            }
+            if (managerSql.Tables.WalletName.WalletsName != null && managerSql.Tables.WalletName.WalletsName.Count > 0)
+            {
+                cb_CorporateNutritions.Items.Clear();
+                cb_CorporateNutritions.Items.AddRange(managerSql.Tables.WalletName.WalletsName.Select(data => data.Name).ToArray());
+                cb_CorporateNutritions.SelectedIndex = 0;
+            }
+
+               
+           
             
+
 
 
             logger.Info("Приложение запущено");
@@ -77,14 +99,16 @@ namespace iikoCardClients
         }
 
 
-        void CallBackFunc()
+        void CallBackFunc(bool cancelFlag = false)
         {
             pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
             l_UploadCustomers.Invoke(new Action(() => l_UploadCustomers.Visible = false));
             l_AllCustomers.Invoke(new Action(() => l_AllCustomers.Visible = false));
 
             stopWatch.Stop();
-           
+
+            if (cancelFlag) return;
+
             var info = $"Гостей обработано {ManagerCustomers.GetCountAll} \r\n" +
                 $"Гостей выгружено {ManagerCustomers.GetCountUpload} \r\n" +
                 $"Гостям присвоена категория {ManagerCustomers.GetCountCategory} \r\n" +
@@ -96,10 +120,13 @@ namespace iikoCardClients
             logger.Info(info);
         }
 
-        void CallBackFucnReport()
+        void CallBackFucnReport(bool cancelFlag = false)
         {
             pb_load.Invoke(new Action(() => pb_load.Enabled = pb_load.Visible = false));
             stopWatch.Stop();
+
+            if (cancelFlag) return;
+
             var info = $"Файл успешно создан, затрачено {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
             MessageBox.Show(info, "Успешно");
             logger.Info(info);
@@ -124,18 +151,13 @@ namespace iikoCardClients
                 if (org == "" || cat == "" || cor == "")
                     throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
                 stopWatch.Restart();
-                var deliveryAPI = new Managers.ManagerAPI(api, login);
-                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+               
 
-
-
-                var managerCustomers = new ManagerCustomers(
-                    organizations.Where(data => data.Name == org).FirstOrDefault(),
-                    categories.Where(data => data.Name == cat).FirstOrDefault(),
-                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                    deliveryAPI);
+               var managerCustomers = new ManagerCustomers(
+                    ManagerSQL.GetInstance.Tables.Organization.Organizations.Where(data => data.IsActive && data.Name == org).FirstOrDefault(),
+                    ManagerSQL.GetInstance.Tables.Category.Categories.Where(data => data.IsActive && data.Name == cat).FirstOrDefault(),
+                    ManagerSQL.GetInstance.Tables.WalletName.WalletsName.Where(data => data.Name == cor).FirstOrDefault(),
+                    new ManagerAPI(api, login));
 
                 var customer = new ShortCustomerInfo()
                 {
@@ -198,18 +220,14 @@ namespace iikoCardClients
                     var excelManager = new ManagerExcel(file);
                     list = excelManager.GetClients().ToArray();
                 }
-                
 
-                var deliveryAPI = new Managers.ManagerAPI(api, login);
-                var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                var categories = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
 
                 managerCustomers = new ManagerCustomers(
-                    organizations.Where(data => data.Name == org).FirstOrDefault(),
-                    categories.Where(data => data.Name == cat).FirstOrDefault(),
-                    corporateNutritions.Where(data => data.Name == cor).FirstOrDefault(),
-                    deliveryAPI);
+                    ManagerSQL.GetInstance.Tables.Organization.Organizations.Where(data => data.IsActive && data.Name == org).FirstOrDefault(),
+                    ManagerSQL.GetInstance.Tables.Category.Categories.Where(data => data.IsActive && data.Name == cat).FirstOrDefault(),
+                    ManagerSQL.GetInstance.Tables.WalletName.WalletsName.Where(data => data.Name == cor).FirstOrDefault(),
+                    new ManagerAPI(api, login));
+
                 logger.Info($"Начата робота с категорией {cat} и программой {cor}");
                 logger.Info(balance is null ?
                     $"Запрошено массовое добавление {list.Count()} гостей без баланса" :
@@ -389,10 +407,11 @@ namespace iikoCardClients
 
 
                 ///ЗАНЕСЕНИЕ ДАННЫХ В БД
-                //var managerSQLTables = ManagerSQL.GetInstance().Tables;
-                //managerSQLTables.Organization.Insert(organizations);
-                //managerSQLTables.Category.Insert(categoryes);
-                //managerSQLTables.WalletName.Insert(corporateNutritions);
+                var managerSQLTables = ManagerSQL.GetInstance.Tables;
+                managerSQLTables.Organization.Insert(organizations);
+                managerSQLTables.Category.Insert(categoryes);
+                managerSQLTables.Category.Deactivation(categoryes);
+                managerSQLTables.WalletName.Insert(corporateNutritions);
             }
             catch (Exception ex)
             {
@@ -418,6 +437,8 @@ namespace iikoCardClients
             {
                 MessageBox.Show("Категория " + cat + " добавлена", "Успешно");
                 var categoryes = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+                ManagerSQL.GetInstance.Tables.Category.Insert(categoryes);
+
                 cb_Categories.Items.Clear();
                 cb_Categories.Items.AddRange(categoryes.Select(data => data.Name).ToArray());
             }
@@ -445,7 +466,15 @@ namespace iikoCardClients
             try
             {
                 pb_load.Enabled = pb_load.Visible = true;
-                
+                if (!ManagerSQL.GetInstance.Tables.Category.Categories
+                    .Select(Data => Data.Name)
+                    .ToArray()
+                    .Contains(cb_Categories.Text))
+                {
+                    MessageBox.Show("Укажите правильную категория гостя", "Ошибка");
+                    CallBackFunc(true);
+                    return;
+                }
 
                 del_Customer.BeginInvoke(
                     cb_organizations.SelectedItem.ToString(),
@@ -478,7 +507,14 @@ namespace iikoCardClients
             {
                 pb_load.Enabled = pb_load.Visible = true;
                 l_AllCustomers.Visible = l_UploadCustomers.Visible = true;
-                
+                if (!ManagerSQL.GetInstance.Tables.Category.Categories
+                    .Select(Data => Data.Name)
+                    .Contains(cb_Categories.Text))
+                {
+                    MessageBox.Show("Укажите правильную категория гостя", "Ошибка");
+                    CallBackFunc(true);
+                    return;
+                }
 
                 del_Customers.BeginInvoke(
                     cb_organizations.SelectedItem.ToString(), 

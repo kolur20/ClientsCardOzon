@@ -58,7 +58,7 @@ namespace iikoCardClients.SQL
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                var q = string.Format("INSERT INTO Organization ('Id','Name','IsActive') VALUES '{0}','{1}','{2}'",
+                var q = string.Format("INSERT INTO Organization ('Id','Name','IsActive') VALUES ('{0}','{1}','{2}')",
                     data.Id,
                     ((Organization)data).Name,
                     ((Organization)data).IsActive ? "1" : "0");
@@ -76,7 +76,7 @@ namespace iikoCardClients.SQL
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
 
-                var request = string.Format("SELECT * FROM Wallet {0}",
+                var request = string.Format("SELECT * FROM Organization {0}",
                     conditions is null ? "" : "WHERE " + conditions);
                 Organizations = new List<Organization>();
                 var reader = new SQLiteCommand(request, connection).ExecuteReader();

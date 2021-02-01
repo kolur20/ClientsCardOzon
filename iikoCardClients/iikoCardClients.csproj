@@ -123,6 +123,7 @@
     <Compile Include="Data\Client.cs" />
     <Compile Include="Data\CorporateNutritions.cs" />
     <Compile Include="Data\Customer.cs" />
+    <Compile Include="Data\CustomerBiz.cs" />
     <Compile Include="Data\CustomerXml.cs" />
     <Compile Include="Data\Organization.cs" />
     <Compile Include="Data\ReportBiz.cs" />

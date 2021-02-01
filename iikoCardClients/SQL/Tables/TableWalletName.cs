@@ -43,7 +43,7 @@ namespace iikoCardClients.SQL
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                var q = string.Format("INSERT INTO WalletName ('Id','Name','IdWallet') VALUES '{0}','{1}','{2}'",
+                var q = string.Format("INSERT INTO WalletName ('Id','Name','IdWallet') VALUES ('{0}','{1}','{2}')",
                     data.Id,
                     ((CorporateNutritions)data).Name,
                     ((CorporateNutritions)data).IdWallet);
