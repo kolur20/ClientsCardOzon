@@ -82,9 +82,8 @@ namespace iikoCardClients.SQL
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                var q = string.Format("INSERT INTO Card ('Id','Track','Create') VALUES ('{0}','{1}','{2}')",
+                var q = string.Format("INSERT INTO Card ('Id','Track','DateCreate') VALUES ('{0}','{1}','{2}')",
                     data.Id,
-                    ((Card)data).Id,
                     ((Card)data).Track,
                     ((Card)data).Create);
                 new SQLiteCommand(q, connection).ExecuteNonQuery();

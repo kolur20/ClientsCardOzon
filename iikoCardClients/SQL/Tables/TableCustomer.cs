@@ -48,7 +48,7 @@ namespace iikoCardClients.SQL
 
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         public IEnumerable<IDataSql> Select(string conditions = null)
@@ -58,7 +58,7 @@ namespace iikoCardClients.SQL
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
 
-                var request = string.Format("SELECT * FROM Wallet {0}",
+                var request = string.Format("SELECT * FROM Customer {0}",
                     conditions is null ? "" : "WHERE " + conditions);
                 Customers = new List<Customer>();
                 var reader = new SQLiteCommand(request, connection).ExecuteReader();
@@ -67,12 +67,12 @@ namespace iikoCardClients.SQL
                     var data = new Customer();
                     data.Id = reader.GetString(reader.GetOrdinal("Id"));
                     data.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    data.IdOrganization = reader.GetString(reader.GetOrdinal("Organization"));
+                    data.IdOrganization = reader.GetString(reader.GetOrdinal("IdOrganization"));
                     data.TabNumber = reader.GetString(reader.GetOrdinal("TabNumber"));
                     data.Phone = reader.GetString(reader.GetOrdinal("Phone"));
                     data.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
-                    data.Create = reader.GetDateTime(reader.GetOrdinal("DateCreate"));
-                    data.IdiikoBiz = reader.GetString(reader.GetOrdinal("IdiikoBiz"));
+                    data.Create = Convert.ToDateTime(reader.GetString(reader.GetOrdinal("DateCreate")));
+                    data.IdiikoBiz = reader.GetString(reader.GetOrdinal("IdBiz"));
                     data.Xml = CustomerXml.Deserialize(reader.GetString(reader.GetOrdinal("Xml")));
 
                     Customers.Add(data);
@@ -88,7 +88,7 @@ namespace iikoCardClients.SQL
             {
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
-                var q = string.Format("INSERT INTO Customer ('Id','IdOrganization','Name','TabNumber','DateCreate','Xml','Phone','Comment','IdiikoBiz')" +
+                var q = string.Format("INSERT INTO Customer ('Id','IdOrganization','Name','TabNumber','DateCreate','Xml','Phone','Comment','IdBiz')" +
                     " VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                     data.Id,
                     ((Customer)data).IdOrganization,
@@ -102,7 +102,37 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception ex) { return false; }
+        }
+
+        public bool UpdateXML(IDataSql data)
+        {
+            try
+            {
+                if (connection.State != System.Data.ConnectionState.Open)
+                    connection.Open();
+                var q = string.Format("UPDATE Customer SET Xml = '{0}' WHERE Id = '{1}'",
+                    ((Customer)data).Xml,
+                    data.Id);
+                new SQLiteCommand(q, connection).ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception) { connection.Close(); return false; }
+        }
+
+        public bool UpdateTabNumber(IDataSql data)
+        {
+            try
+            {
+                if (connection.State != System.Data.ConnectionState.Open)
+                    connection.Open();
+                var q = string.Format("UPDATE Customer SET TabNumber = '{0}' WHERE Id = '{1}'",
+                    ((Customer)data).TabNumber,
+                    data.Id);
+                new SQLiteCommand(q, connection).ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception) { connection.Close(); return false; }
         }
     }
 }

@@ -21,7 +21,7 @@
         public object personalDataConsentTo { get; set; }
         public object personalDataProcessingFrom { get; set; }
         public object personalDataProcessingTo { get; set; }
-        public object phone { get; set; }
+        public string phone { get; set; }
         public object rank { get; set; }
         public object referrerId { get; set; }
         public int sex { get; set; }
@@ -55,7 +55,7 @@ public class Category
 
 public class Walletbalance
 {
-    public float balance { get; set; }
+    public decimal balance { get; set; }
     public Wallet wallet { get; set; }
 }
 

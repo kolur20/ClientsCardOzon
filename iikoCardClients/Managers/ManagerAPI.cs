@@ -117,8 +117,38 @@ namespace iikoCardClients.Managers
 
         }
 
+        public async Task<Data.Biz.Customer> GetCustomerBizById(string idiikoBiz, string organizationId)
+        {
+            try
+            {
+                var response = await client.GetAsync($"customers/get_customer_by_id?access_token={token}&organization={organizationId}&id={idiikoBiz}")
+                  .ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync($"customers/get_customer_by_id?access_token={token}&organization={organizationId}&id={idiikoBiz}")
+                   .ConfigureAwait(false);
+                }
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                    throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+
+                return JsonConvert.DeserializeObject<Data.Biz.Customer>(await response.Content.ReadAsStringAsync());
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetCustomerBizById(idiikoBiz, organizationId)).Result;
+                }
+                throw new Exception(ex.Message);
+
+            }
+        }
+
         //получение полного объекта гостя с биза
-        public async Task<Data.Biz.Customer> GetCustomerBizByCard(string card, string organizationId, string walletId)
+        public async Task<Data.Biz.Customer> GetCustomerBizByCard(string card, string organizationId)
         {
             try
             {
@@ -141,7 +171,7 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => GetCustomerBizByCard(card, organizationId, walletId)).Result;
+                    return Task.Run(() => GetCustomerBizByCard(card, organizationId)).Result;
                 }
                 throw new Exception(ex.Message);
 
@@ -201,12 +231,12 @@ namespace iikoCardClients.Managers
             }
         }
 
-        public async Task<decimal> GetCastomerBalance(string card, CorporateNutritions corporateNutritions, Organization organization = null)
+        public async Task<decimal> GetCastomerBalance(string card, string corporateNutritionsIdWallet, string organizationId = null)
         {
             try
             {
                
-                var organizationId = organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id;
+                organizationId = organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId;
 
                 var response = await client.GetAsync($"customers/get_customer_by_card?access_token={token}&organization={organizationId}&card={card}")
                     .ConfigureAwait(false);
@@ -227,7 +257,7 @@ namespace iikoCardClients.Managers
                         Balance = (decimal)data.SelectToken("balance"),
                         WalletId = (string)data["wallet"].SelectToken("id")
                     })
-                    .Where(data => data.WalletId == corporateNutritions.IdWallet)
+                    .Where(data => data.WalletId == corporateNutritionsIdWallet)
                     .FirstOrDefault()
                     .Balance;
             }
@@ -236,7 +266,7 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => GetCastomerBalance(card, corporateNutritions, organization)).Result;
+                    return Task.Run(() => GetCastomerBalance(card, corporateNutritionsIdWallet, organizationId)).Result;
                 }
                 throw new Exception(ex.Message);
                 
@@ -245,14 +275,14 @@ namespace iikoCardClients.Managers
 
         }
 
-        public async Task<IEnumerable<ShortCustomerInfo>> GetShortGuestInfo(DateTime dateFrom, DateTime dateTo, Organization organization = null)
+        public async Task<IEnumerable<ShortCustomerInfo>> GetShortGuestInfo(DateTime dateFrom, DateTime dateTo, string organizationId = null)
         {
             
             try
             {
                 var response = await client.GetAsync(string.Format("customers/get_customers_by_organization_and_by_period?access_token={0}&organization={1}&dateFrom={2}&dateTo={3}",
                     token,
-                    organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
+                    organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId,
                     dateFrom.ToString("yyyy-MM-dd"),
                     dateTo.ToString("yyyy-MM-dd")))
                     .ConfigureAwait(false);
@@ -261,7 +291,7 @@ namespace iikoCardClients.Managers
                     token = Task.Run(() => GetToken()).Result;
                     response = await client.GetAsync(string.Format("customers/get_customers_by_organization_and_by_period?access_token={0}&organization={1}&dateFrom={2}&dateTo={3}",
                     token,
-                    organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
+                    organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId,
                     dateFrom.ToString("yyyy-MM-dd"),
                     dateTo.ToString("yyyy-MM-dd")))
                     .ConfigureAwait(false);
@@ -283,78 +313,78 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => GetShortGuestInfo(dateFrom, dateTo, organization)).Result;
+                    return Task.Run(() => GetShortGuestInfo(dateFrom, dateTo, organizationId)).Result;
                 }
                 return null;
             }
         }
 
-        public async Task<IEnumerable<ShortCustomerInfo>> SetCategoryGuest(IEnumerable<ShortCustomerInfo> guestInfos, Organization organization = null)
-        {
-            if (guestInfos.Count() > 200)
-                throw new Exception("Count guests exceeds the allowed value");
-            try
-            {
-                token = Task.Run(() => GetToken()).Result;
+        //public async Task<IEnumerable<ShortCustomerInfo>> SetCategoryGuest(IEnumerable<ShortCustomerInfo> guestInfos, Organization organization = null)
+        //{
+        //    if (guestInfos.Count() > 200)
+        //        throw new Exception("Count guests exceeds the allowed value");
+        //    try
+        //    {
+        //        token = Task.Run(() => GetToken()).Result;
 
-                var json = new JObject()
-                {
-                    {
-                        "guestIds", new JArray
-                        {
-                            guestInfos.Select(guest => guest.Id)
-                        }
-                    }
-                };
+        //        var json = new JObject()
+        //        {
+        //            {
+        //                "guestIds", new JArray
+        //                {
+        //                    guestInfos.Select(guest => guest.Id)
+        //                }
+        //            }
+        //        };
                
 
-                var response = await client.PostAsync(
-                    $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
-                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    token = Task.Run(() => GetToken()).Result;
-                    response = await client.PostAsync(
-                    $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
-                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-                }
+        //        var response = await client.PostAsync(
+        //            $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
+        //            new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+        //        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        //        {
+        //            token = Task.Run(() => GetToken()).Result;
+        //            response = await client.PostAsync(
+        //            $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
+        //            new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+        //        }
               
-                var guests = JArray.Parse(await response.Content.ReadAsStringAsync())
-                    .Select(data => new
-                    {
-                        id = (string)data["guestId"],
-                        Category = data["categories"].Select(categories => (string)categories["name"]).ToArray()
-                    })
-                    .ToArray();
-                foreach (var guest in guestInfos)
-                {
-                    guest.Category = guests.Where(data => data.id == guest.Id).FirstOrDefault().Category;
-                }
-                return guestInfos;
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message.Contains(MessageTimeCollapse))
-                {
-                    Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => SetCategoryGuest(guestInfos, organization)).Result;
-                }
-                return null;
-            }
-        }
+        //        var guests = JArray.Parse(await response.Content.ReadAsStringAsync())
+        //            .Select(data => new
+        //            {
+        //                id = (string)data["guestId"],
+        //                Category = data["categories"].Select(categories => (string)categories["name"]).ToArray()
+        //            })
+        //            .ToArray();
+        //        foreach (var guest in guestInfos)
+        //        {
+        //            guest.Category = guests.Where(data => data.id == guest.Id).FirstOrDefault().Category;
+        //        }
+        //        return guestInfos;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        if (ex.Message.Contains(MessageTimeCollapse))
+        //        {
+        //            Thread.Sleep(TimeDelayThread);
+        //            return Task.Run(() => SetCategoryGuest(guestInfos, organization)).Result;
+        //        }
+        //        return null;
+        //    }
+        //}
 
 
-        public async Task<IEnumerable<Category>> GetCategories(Organization organization = null)
+        public async Task<IEnumerable<Category>> GetCategories(string organizationId = null)
         {
             
             try
             {
-                var response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/guest_categories?access_token={token}")
+                var response = await client.GetAsync($"organization/{ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}/guest_categories?access_token={token}")
                     .ConfigureAwait(false);
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     token = Task.Run(() => GetToken()).Result;
-                    response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/guest_categories?access_token={token}")
+                    response = await client.GetAsync($"organization/{ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}/guest_categories?access_token={token}")
                     .ConfigureAwait(false);
                 }
 
@@ -374,23 +404,23 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => GetCategories(organization)).Result;
+                    return Task.Run(() => GetCategories(organizationId)).Result;
                 }
                 return null;
             }
         }
 
-        public async Task<IEnumerable<CorporateNutritions>> GetCorporateNutritions(Organization organization = null)
+        public async Task<IEnumerable<CorporateNutritions>> GetCorporateNutritions(string organizationId = null)
         {
             
             try
             {
-                var response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/corporate_nutritions?access_token={token}")
+                var response = await client.GetAsync($"organization/{ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}/corporate_nutritions?access_token={token}")
                     .ConfigureAwait(false);
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     token = Task.Run(() => GetToken()).Result;
-                    response = await client.GetAsync($"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/corporate_nutritions?access_token={token}")
+                    response = await client.GetAsync($"organization/{ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}/corporate_nutritions?access_token={token}")
                     .ConfigureAwait(false);
                 }
 
@@ -410,13 +440,13 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => GetCorporateNutritions(organization)).Result;
+                    return Task.Run(() => GetCorporateNutritions(organizationId)).Result;
                 }
                 return null;
             }
         }
 
-        public async Task<bool> CreateCustomersCategory(string nameCategory, Organization organization = null)
+        public async Task<bool> CreateCustomersCategory(string nameCategory, string organizationId = null)
         {
             try
             {
@@ -432,13 +462,13 @@ namespace iikoCardClients.Managers
                 
 
                 var response = await client.PostAsync(
-                    $"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/create_or_update_guest_category?access_token={token}",
+                    $"organization/{ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}/create_or_update_guest_category?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     token = Task.Run(() => GetToken()).Result;
                     response = await client.PostAsync(
-                    $"organization/{ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}/create_or_update_guest_category?access_token={token}",
+                    $"organization/{ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}/create_or_update_guest_category?access_token={token}",
                     new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                 }
                 return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync())); 
@@ -449,13 +479,13 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => CreateCustomersCategory(nameCategory, organization)).Result;
+                    return Task.Run(() => CreateCustomersCategory(nameCategory, organizationId)).Result;
                 }
                 return false;
             }
         }
 
-        public async Task<string> CreateCustomer(string name, string card, Organization organization = null)
+        public async Task<string> CreateCustomer(string name, string card, string organizationId = null)
         {
             try
             {
@@ -473,13 +503,13 @@ namespace iikoCardClients.Managers
                     };
                 
                 var response = await client.PostAsync(
-                    $"customers/create_or_update?access_token={token}&organization={ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
+                    $"customers/create_or_update?access_token={token}&organization={ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}",
                     new StringContent("{ \"customer\" : " + json.ToString() + "}", Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     token = Task.Run(() => GetToken()).Result;
                     response = await client.PostAsync(
-                    $"customers/create_or_update?access_token={token}&organization={ (organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
+                    $"customers/create_or_update?access_token={token}&organization={ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}",
                     new StringContent("{ \"customer\" : " + json.ToString() + "}", Encoding.UTF8, "application/json"));
                 }
                 var answer = await response.Content.ReadAsStringAsync();
@@ -492,24 +522,24 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => CreateCustomer(name, card, organization)).Result;
+                    return Task.Run(() => CreateCustomer(name, card, organizationId)).Result;
                 }
                 return null;
             }
         }
 
-        public async Task<bool> SetCategoryByCustomer(ShortCustomerInfo customerInfo, Category categories, Organization organization = null)
+        public async Task<bool> SetCategoryByCustomer(string customerId, string categoriesId, string organizationId = null)
         {
             try
             {
                 token = Task.Run(() => GetToken()).Result;
 
                 var response = await client.PostAsync(
-                    String.Format("customers/{0}/add_category?access_token={1}&organization={2}&categoryId={3}", 
-                        customerInfo.Id,
+                    String.Format("customers/{0}/add_category?access_token={1}&organization={2}&categoryId={3}",
+                        customerId,
                         token,
-                        organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
-                        categories.Id),
+                        organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId,
+                        categoriesId),
                     new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
@@ -517,33 +547,33 @@ namespace iikoCardClients.Managers
 
                     response = await client.PostAsync(
                         String.Format("customers/{0}/add_category?access_token={1}&organization={2}&categoryId={3}",
-                            customerInfo.Id,
+                            customerId,
                             token,
-                            organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
-                            categories.Id),
+                            organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId,
+                            categoriesId),
                         new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
                 }
-               return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+                return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
 
             }
             catch (Exception ex)
             {
                 if (ex.Message.Contains("already binded to customer"))
                 {
-                    return false;
+                    return true;
                 }
                 
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => SetCategoryByCustomer(customerInfo, categories, organization)).Result;
+                    return Task.Run(() => SetCategoryByCustomer(customerId, categoriesId, organizationId)).Result;
                 }
                 
                 return false;
             }
         }
 
-        public async Task<bool> SetCorporateNutritionByCustomer(ShortCustomerInfo customerInfo, CorporateNutritions corporateNutritions, Organization organization = null)
+        public async Task<bool> SetCorporateNutritionByCustomer(string customerId, string corporateNutritionsId, string organizationId = null)
         {
             try
             {
@@ -551,10 +581,10 @@ namespace iikoCardClients.Managers
 
                 var response = await client.PostAsync(
                     String.Format("customers/{0}/add_to_nutrition_organization?access_token={1}&organization={2}&corporate_nutrition_id={3}",
-                        customerInfo.Id,
+                        customerId,
                         token,
-                        organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
-                        corporateNutritions.Id),
+                        organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId,
+                        corporateNutritionsId),
                     new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
@@ -562,10 +592,10 @@ namespace iikoCardClients.Managers
 
                     response = await client.PostAsync(
                         String.Format("customers/{0}/add_to_nutrition_organization?access_token={1}&organization={2}&corporate_nutrition_id={3}",
-                            customerInfo.Id,
+                            customerId,
                             token,
-                            organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id,
-                            corporateNutritions.Id),
+                            organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId,
+                            corporateNutritionsId),
                         new StringContent(new JObject().ToString(), Encoding.UTF8, "application/json"));
                 }
                 return response.StatusCode == HttpStatusCode.OK ? true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
@@ -576,13 +606,13 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => SetCorporateNutritionByCustomer(customerInfo, corporateNutritions, organization)).Result;
+                    return Task.Run(() => SetCorporateNutritionByCustomer(customerId, corporateNutritionsId, organizationId)).Result;
                 }
                 return false;
             }
         }
 
-        public async Task<bool> AddBalanceByCustomer(ShortCustomerInfo customerInfo, CorporateNutritions corporateNutritions, string Sum, Organization organization = null)
+        public async Task<bool> AddBalanceByCustomer(string customerId, string corporateNutritionsIdWallet, string Sum, string organizationId = null)
         {
             try
             {
@@ -591,9 +621,9 @@ namespace iikoCardClients.Managers
 
                 var json = new JObject()
                 {
-                    { "customerId", customerInfo.Id},
-                    { "organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
-                    { "walletId", corporateNutritions.IdWallet },
+                    { "customerId", customerId},
+                    { "organizationId", organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId },
+                    { "walletId", corporateNutritionsIdWallet },
                     { "sum", Sum }
                 };
 
@@ -616,20 +646,20 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => AddBalanceByCustomer(customerInfo, corporateNutritions, Sum, organization)).Result;
+                    return Task.Run(() => AddBalanceByCustomer(customerId, corporateNutritionsIdWallet, Sum, organizationId)).Result;
                 }
                 return false;
             }
         }
-        public async Task<bool> DelBalanceByCustomer(ShortCustomerInfo customerInfo, CorporateNutritions corporateNutritions, string Sum, Organization organization = null)
+        public async Task<bool> DelBalanceByCustomer(string customerId, string corporateNutritionsIdWallet, string Sum, string organizationId = null)
         {
             try
             {
                var json = new JObject()
                 {
-                    { "customerId", customerInfo.Id},
-                    {"organizationId", organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id },
-                    { "walletId", corporateNutritions.IdWallet },
+                    { "customerId", customerId},
+                    {"organizationId", organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId },
+                    { "walletId", corporateNutritionsIdWallet },
                     { "sum", Sum }
                 };
 
@@ -652,7 +682,7 @@ namespace iikoCardClients.Managers
                 if (ex.Message.Contains(MessageTimeCollapse))
                 {
                     Thread.Sleep(TimeDelayThread);
-                    return Task.Run(() => DelBalanceByCustomer(customerInfo, corporateNutritions, Sum, organization)).Result;
+                    return Task.Run(() => DelBalanceByCustomer(customerId, corporateNutritionsIdWallet, Sum, organizationId)).Result;
                 }
                 return false;
             }

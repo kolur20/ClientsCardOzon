@@ -161,7 +161,7 @@ namespace iikoCardClients
 
                 var customer = new ShortCustomerInfo()
                 {
-                    Name = name,
+                    Name = name.Replace("  "," "),
                     Card = card
                 };
                 var customers = new List<ShortCustomerInfo>();
@@ -390,8 +390,8 @@ namespace iikoCardClients
             {
                 var deliveryAPI = new ManagerAPI(tb_LoginAPI.Text, tb_PasswordAPI.Text);
                 var organizations = Task.Run(() => deliveryAPI.GetOrganizations()).Result;
-                var categoryes = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
-                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault())).Result;
+                var categoryes = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault().Id)).Result;
+                var corporateNutritions = Task.Run(() => deliveryAPI.GetCorporateNutritions(organizations.FirstOrDefault().Id)).Result;
 
                 cb_Categories.Items.Clear();
                 cb_organizations.Items.Clear();
@@ -430,13 +430,13 @@ namespace iikoCardClients
             var result = Task.Run(() =>
                 deliveryAPI.CreateCustomersCategory(
                     cat,
-                    organizations.Where(data => data.Name == org).FirstOrDefault())
+                    organizations.Where(data => data.Name == org).FirstOrDefault().Id)
                     ).Result;
 
             if (result)
             {
                 MessageBox.Show("Категория " + cat + " добавлена", "Успешно");
-                var categoryes = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault())).Result;
+                var categoryes = Task.Run(() => deliveryAPI.GetCategories(organizations.FirstOrDefault().Id)).Result;
                 ManagerSQL.GetInstance.Tables.Category.Insert(categoryes);
 
                 cb_Categories.Items.Clear();
