@@ -47,7 +47,7 @@ namespace iikoCardClients.SQL
 
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         override public bool Insert(IDataSql data)
@@ -108,7 +108,7 @@ namespace iikoCardClients.SQL
                 }
                 return Categories.ToList();
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return new List<Category>(); }
         }
     }
 }

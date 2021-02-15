@@ -79,7 +79,7 @@ namespace iikoCardClients.SQL
                 }
                 return Customers.ToList();
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return new List<Customer>(); }
         }
 
         override public bool Insert(IDataSql data)
@@ -102,7 +102,7 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { return false; }
+            catch (Exception) { return false; }
         }
 
         public bool UpdateXML(IDataSql data)
@@ -117,7 +117,7 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception) { connection.Close(); return false; }
+            catch (Exception) { return false; }
         }
 
         public bool UpdateTabNumber(IDataSql data)
@@ -132,7 +132,22 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception) { connection.Close(); return false; }
+            catch (Exception) { return false; }
+        }
+
+        public bool UpdateName(string id, string name)
+        {
+            try
+            {
+                if (connection.State != System.Data.ConnectionState.Open)
+                    connection.Open();
+                var q = string.Format("UPDATE Customer SET Name = '{0}' WHERE Id = '{1}'",
+                    name,
+                    id);
+                new SQLiteCommand(q, connection).ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception) { return false; }
         }
     }
 }

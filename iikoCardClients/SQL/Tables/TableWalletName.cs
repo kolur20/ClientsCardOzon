@@ -66,7 +66,7 @@ namespace iikoCardClients.SQL
 
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
        
@@ -92,7 +92,7 @@ namespace iikoCardClients.SQL
                 }
                 return WalletsName.ToList();
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return new List<CorporateNutritions>(); }
         }
     }
 }

@@ -117,6 +117,43 @@ namespace iikoCardClients.Managers
 
         }
 
+        public async Task<bool> CreateNewCardCustomer(string card, string customerId, string organizationId = null)
+        {
+            try
+            {
+
+                var json = new JObject()
+                {
+                    { "cardTrack", card },
+                    { "cardNumber", card }
+                };
+                var response = await client.PostAsync(
+                    $"customers/{customerId}/add_card?access_token={token}&organization={ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}",
+                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.PostAsync(
+                    $"customers/{customerId}/add_card?access_token={token}&organization={ (organizationId is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organizationId)}",
+                    new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                }
+                
+
+                return response.StatusCode == HttpStatusCode.OK ?true : throw new Exception(GetErrorMessage(await response.Content.ReadAsStringAsync()));
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => CreateNewCardCustomer(card, customerId, organizationId)).Result;
+                }
+                return false;
+            }
+        }
+
+
         public async Task<Data.Biz.Customer> GetCustomerBizById(string idiikoBiz, string organizationId)
         {
             try

@@ -48,7 +48,7 @@ namespace iikoCardClients.SQL
 
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         public IEnumerable<IDataSql> Select(string conditions = null)
@@ -68,12 +68,12 @@ namespace iikoCardClients.SQL
                     data.Id = reader.GetString(reader.GetOrdinal("Id"));
                     data.Track = reader.GetString(reader.GetOrdinal("Track"));
                     data.IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"));
-                    data.Create = reader.GetDateTime(reader.GetOrdinal("DateCreate"));
+                    data.Create = Convert.ToDateTime(reader.GetString(reader.GetOrdinal("DateCreate")));
                     Cards.Add(data);
                 }
                 return Cards.ToList();
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return new List<Card>(); }
         }
 
         public override bool Insert(IDataSql data)
@@ -89,7 +89,7 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
     }
 }

@@ -90,7 +90,7 @@ namespace iikoCardClients.SQL
                 }
                 return Organizations.ToList();
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return new List<Organization>(); }
         }
 
 

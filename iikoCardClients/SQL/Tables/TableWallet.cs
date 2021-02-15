@@ -21,7 +21,7 @@ namespace iikoCardClients.SQL
             SetConnection(connection);
             try
             {
-                Select();
+                SelectWithName();
             }
             catch (Exception) { }
         }
@@ -52,7 +52,7 @@ namespace iikoCardClients.SQL
 
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         override public bool Insert(IDataSql data)
@@ -68,7 +68,7 @@ namespace iikoCardClients.SQL
                 new SQLiteCommand(q, connection).ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return false; }
         }
 
         
@@ -94,8 +94,33 @@ namespace iikoCardClients.SQL
                 }
                 return Wallets.ToList();
             }
-            catch (Exception ex) { connection.Close(); throw new Exception(ex.Message); }
+            catch (Exception) { return new List<Wallet>(); }
         }
-        
+
+
+        public IEnumerable<IDataSql> SelectWithName()
+        {
+            try
+            {
+                if (connection.State != System.Data.ConnectionState.Open)
+                    connection.Open();
+
+                var request = string.Format("select w.Id, w.Balance, w.IdName, wn.Name from Wallet as w inner join WalletName as wn on w.IdName = wn.IdWallet; ");
+                Wallets = new List<Wallet>();
+                var reader = new SQLiteCommand(request, connection).ExecuteReader();
+                while (reader.Read())
+                {
+                    var data = new Wallet();
+                    data.IdName = reader.GetString(reader.GetOrdinal("IdName"));
+                   
+                    data.Balance = Convert.ToDecimal(reader.GetString(reader.GetOrdinal("Balance")));
+                    data.Id = reader.GetString(reader.GetOrdinal("Id"));
+                    data.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    Wallets.Add(data);
+                }
+                return Wallets.ToList();
+            }
+            catch (Exception) { return new List<Wallet>(); }
+        }
     }
 }

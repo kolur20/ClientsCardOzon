@@ -33,5 +33,21 @@ namespace iikoCardClients.SQL
                 throw new Exception(ex.Message);
             }
         }
+        public void RefrashData()
+        {
+            try
+            {
+                Wallet.SelectWithName();
+                WalletName.Select();
+                Organization.Select();
+                Category.Select();
+                Card.Select();
+                Customer.Select();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

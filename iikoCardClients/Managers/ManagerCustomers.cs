@@ -55,6 +55,7 @@ namespace iikoCardClients.Managers
                 if (status != null)
                     ((System.Windows.Forms.Label)status?.Last()).Invoke(
                         new Action(() => ((System.Windows.Forms.Label)status?.Last()).Text = shortCustomers.Count().ToString()));
+                ManagerSQL.GetInstance.Tables.RefrashData();
                 foreach (var customer in shortCustomers)
                 {
                     CountAll++;
@@ -83,24 +84,38 @@ namespace iikoCardClients.Managers
                 //проверяем гостя в бд по таб номеру 
                 if (_customer.TabNumber != null && _customer.TabNumber != "")
                 {
-                    var customerSQL = ManagerSQL.GetInstance.Tables.Customer.Customers
-                        .Where(data => data.TabNumber == _customer.TabNumber)
-                        .FirstOrDefault();
-                    customer = Task.Run(() => deliveryAPI.GetCustomerBizById(customerSQL.IdiikoBiz, customerSQL.IdOrganization)).Result;
+                    var customerSQL = ManagerSQL.GetTables.Customer.Customers
+                        .FirstOrDefault(data => data.TabNumber == _customer.TabNumber);
+                    var cardSQL = ManagerSQL.GetTables.Card.Cards
+                        .FirstOrDefault(data => data.Track == _customer.Card);
 
                     //Проверяем карту которую получили на существование
                     //если она существует ничего не далаем
                     //если она новая, добавляем к гостю новую карту
-
-
+                    //если такого гостя нет, то упадем в ошибку при попытке достучаться в Xml
+                    if (cardSQL == null || !customerSQL.Xml.Card.Contains(cardSQL.Id))
+                    {
+                        var b = Task.Run(() => deliveryAPI.CreateNewCardCustomer(_customer.Card, customerSQL.Id, customerSQL.IdOrganization)).Result;
+                    }
+                    
 
                 }
                 else
                 {
-                    //если гость существует, то получаем его баланс по его карте
-                    //если же гостя нет, мы упадем в обработчик ошибки, где создаем правильную карточку гостя
-                    customer = Task.Run(() => deliveryAPI.GetCustomerBizByCard(_customer.Card, _organization.Id)).Result;
+                    //если у гостя нет таб номера в базе ищем по фио
+                    var customerSQL = ManagerSQL.GetTables.Customer.Customers
+                        .FirstOrDefault(data => data.Name == _customer.Name);
+                    var cardSQL = ManagerSQL.GetTables.Card.Cards
+                        .FirstOrDefault(data => data.Track == _customer.Card);
+                    if (cardSQL == null || !customerSQL.Xml.Card.Contains(cardSQL.Id))
+                    {
+                        var b = Task.Run(() => deliveryAPI.CreateNewCardCustomer(_customer.Card, customerSQL.Id, customerSQL.IdOrganization)).Result;
+                    }
                 }
+                //если гость существует, то получаем его баланс по его карте
+                //если же гостя нет, мы упадем в обработчик ошибки, где создаем правильную карточку гостя
+                customer = Task.Run(() => deliveryAPI.GetCustomerBizByCard(_customer.Card, _organization.Id)).Result;
+               
                 
                 balance = customer.walletBalances.Where(data => data.wallet.id == _corporateNutritions.IdWallet)
                     .FirstOrDefault()
@@ -114,10 +129,11 @@ namespace iikoCardClients.Managers
                     customer = new Data.Biz.Customer()
                     {
                         id = Task.Run(() => deliveryAPI.CreateCustomer(
-                            owerwriteName ? _customer.Name : null,
+                            _customer.Name,
                             _customer.Card,
                             _organization.Id)).Result
                     };
+                    ManagerSQL.GetTables.Customer.UpdateName(customer.id, _customer.Name);
                 }
                 
                 //падаем в ошибку для обработки категорий и корпоративного питания
@@ -146,25 +162,26 @@ namespace iikoCardClients.Managers
                 //заносим информацию в бд
                 customer.userData = _customer.TabNumber;
                 SaveCustomerDataBase(customer);
-
+                
                 //выходим если не нужно изменять баланс
                 if (Balance is null || Balance == "") return;
                 //выравниваем баланс в зависимости пополнить или списать нам нужно от текущего значения
                 if (((int)balance).ToString() != Balance)
                 {
+                    var boolBalance = false;
                     if (balance == 0 || balance < Convert.ToDecimal(Balance))
-                        Task.Run(() => deliveryAPI.AddBalanceByCustomer(
+                        boolBalance = Task.Run(() => deliveryAPI.AddBalanceByCustomer(
                             customer.id,
                             _corporateNutritions.IdWallet, 
-                            (Convert.ToDecimal(Balance) - balance).ToString(), 
-                            _organization.Id));
+                            (Convert.ToDecimal(Balance) - balance).ToString().Replace(',','.'), 
+                            _organization.Id)).Result;
                     else
-                        Task.Run(() => deliveryAPI.DelBalanceByCustomer(
+                        boolBalance = Task.Run(() => deliveryAPI.DelBalanceByCustomer(
                             customer.id, 
                             _corporateNutritions.IdWallet,
-                            (balance - Convert.ToDecimal(Balance)).ToString(),
-                            _organization.Id));
-                    CountBalance++;
+                            (balance - Convert.ToDecimal(Balance)).ToString().Replace(',', '.'),
+                            _organization.Id)).Result;
+                    if (boolBalance) CountBalance++;
                 }
 
                 
@@ -212,10 +229,10 @@ namespace iikoCardClients.Managers
                         Id = customer.id,
                         TabNumber = customer.userData
                     });
-                    //проверяем xml на актуальность данных
-                    var xml = new CustomerXml();
+                   
                     //категории перетираем на новые
-                    xml.Category.AddRange(customer.categories.Select(data => data.id));
+                    customerData.Xml.Category.Clear();
+                    customerData.Xml.Category.AddRange(customer.categories.Select(data => data.id));
                     //карты, если есть новые, добавляем
                     foreach (var i_card in customer.cards)
                     {
@@ -228,14 +245,19 @@ namespace iikoCardClients.Managers
                                 IsActive = i_card.IsActivated,
                                 Create = dateCreate
                             }))
-                                xml.Card.Add(i_card.Id);
+                                customerData.Xml.Card.Add(i_card.Id);
                         }
                     }
                     //обрабатываем кошельки
+                    var walletsData = ManagerSQL.GetTables.Wallet.Wallets
+                        .Where(data => customerData.Xml.Wallet.Contains(data.Id))
+                        .Select(data => data.Name)
+                        .ToList();
                     foreach (var i_wallet in customer.walletBalances)
                     {
                         var strGuid = string.Empty;
-                        if (!customerData.Xml.Wallet.Contains(i_wallet.wallet.id))
+                        
+                        if (!walletsData.Contains(i_wallet.wallet.name))
                         {
                             if (ManagerSQL.GetInstance.Tables.Wallet.Insert(new Wallet()
                             {
@@ -243,14 +265,14 @@ namespace iikoCardClients.Managers
                                 Id = strGuid = Guid.NewGuid().ToString(),
                                 Balance = i_wallet.balance
                             }))
-                                xml.Wallet.Add(strGuid);
+                                customerData.Xml.Wallet.Add(strGuid);
                         }
                     }
                     //обновление данных для данного гостя
                     ManagerSQL.GetInstance.Tables.Customer.UpdateXML(new Customer()
                     {
                         Id = customer.id,
-                        Xml = xml
+                        Xml = customerData.Xml
                     });
 
                 }
