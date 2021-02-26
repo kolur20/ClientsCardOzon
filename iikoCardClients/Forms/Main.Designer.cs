@@ -96,6 +96,15 @@
             this.tb_fileReport = new System.Windows.Forms.TextBox();
             this.btn_fileReport = new System.Windows.Forms.Button();
             this.btn_create = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.btn_Report_Create = new System.Windows.Forms.Button();
+            this.cb_Report_Organization = new System.Windows.Forms.ComboBox();
+            this.cb_Report_CorpNutritions = new System.Windows.Forms.ComboBox();
+            this.dtp_Report_From = new System.Windows.Forms.DateTimePicker();
+            this.dtp_Report_To = new System.Windows.Forms.DateTimePicker();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.l_UploadCustomers = new System.Windows.Forms.Label();
             this.l_AllCustomers = new System.Windows.Forms.Label();
@@ -331,7 +340,11 @@
             // 
             // cb_organizations
             // 
+            this.cb_organizations.BackColor = System.Drawing.SystemColors.Window;
             this.cb_organizations.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cb_organizations.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_organizations.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cb_organizations.ForeColor = System.Drawing.SystemColors.WindowText;
             this.cb_organizations.FormattingEnabled = true;
             this.cb_organizations.Location = new System.Drawing.Point(117, 3);
             this.cb_organizations.Name = "cb_organizations";
@@ -350,6 +363,8 @@
             // cb_CorporateNutritions
             // 
             this.cb_CorporateNutritions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cb_CorporateNutritions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_CorporateNutritions.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cb_CorporateNutritions.FormattingEnabled = true;
             this.cb_CorporateNutritions.Location = new System.Drawing.Point(117, 69);
             this.cb_CorporateNutritions.Name = "cb_CorporateNutritions";
@@ -367,6 +382,7 @@
             // 
             // tb_OpenFile
             // 
+            this.tb_OpenFile.BackColor = System.Drawing.SystemColors.Control;
             this.tb_OpenFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb_OpenFile.Location = new System.Drawing.Point(118, 135);
             this.tb_OpenFile.Margin = new System.Windows.Forms.Padding(4);
@@ -847,20 +863,36 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.Controls.Add(this.tb_fileTabNumber, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.btn_fileTabNumber, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btn_fileTabNumber, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.label11, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label12, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.tb_fileReport, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.btn_fileReport, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.btn_fileReport, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.btn_create, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label18, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.label19, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.label20, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.label21, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Report_Create, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.cb_Report_Organization, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.cb_Report_CorpNutritions, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.dtp_Report_From, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.dtp_Report_To, 1, 9);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowCount = 13;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -873,6 +905,7 @@
             // 
             // tb_fileTabNumber
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.tb_fileTabNumber, 2);
             this.tb_fileTabNumber.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb_fileTabNumber.Location = new System.Drawing.Point(3, 22);
             this.tb_fileTabNumber.Name = "tb_fileTabNumber";
@@ -894,6 +927,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.label11, 2);
             this.label11.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label11.Location = new System.Drawing.Point(3, 0);
             this.label11.Name = "label11";
@@ -904,6 +938,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.label12, 2);
             this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label12.Location = new System.Drawing.Point(3, 51);
             this.label12.Name = "label12";
@@ -913,6 +948,7 @@
             // 
             // tb_fileReport
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.tb_fileReport, 2);
             this.tb_fileReport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb_fileReport.Location = new System.Drawing.Point(3, 73);
             this.tb_fileReport.Name = "tb_fileReport";
@@ -934,14 +970,112 @@
             // btn_create
             // 
             this.btn_create.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.btn_create, 3);
             this.btn_create.Dock = System.Windows.Forms.DockStyle.Top;
             this.btn_create.Location = new System.Drawing.Point(3, 105);
             this.btn_create.Name = "btn_create";
-            this.btn_create.Size = new System.Drawing.Size(434, 29);
+            this.btn_create.Size = new System.Drawing.Size(544, 29);
             this.btn_create.TabIndex = 6;
             this.btn_create.Text = "Сформировать";
             this.btn_create.UseVisualStyleBackColor = true;
             this.btn_create.Click += new System.EventHandler(this.btn_create_Click);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label18.Location = new System.Drawing.Point(3, 147);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(159, 33);
+            this.label18.TabIndex = 7;
+            this.label18.Text = "Организация";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label19.Location = new System.Drawing.Point(3, 180);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(159, 33);
+            this.label19.TabIndex = 8;
+            this.label19.Text = "Программа";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label20.Location = new System.Drawing.Point(3, 213);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(159, 32);
+            this.label20.TabIndex = 9;
+            this.label20.Text = "Период с";
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label21.Location = new System.Drawing.Point(3, 245);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(159, 32);
+            this.label21.TabIndex = 10;
+            this.label21.Text = "Период по";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btn_Report_Create
+            // 
+            this.btn_Report_Create.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.btn_Report_Create, 3);
+            this.btn_Report_Create.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Report_Create.Location = new System.Drawing.Point(3, 280);
+            this.btn_Report_Create.Name = "btn_Report_Create";
+            this.btn_Report_Create.Size = new System.Drawing.Size(544, 29);
+            this.btn_Report_Create.TabIndex = 11;
+            this.btn_Report_Create.Text = "Сформировать";
+            this.btn_Report_Create.UseVisualStyleBackColor = true;
+            this.btn_Report_Create.Click += new System.EventHandler(this.btn_Report_Create_Click);
+            // 
+            // cb_Report_Organization
+            // 
+            this.cb_Report_Organization.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cb_Report_Organization.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_Report_Organization.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cb_Report_Organization.FormattingEnabled = true;
+            this.cb_Report_Organization.Location = new System.Drawing.Point(168, 150);
+            this.cb_Report_Organization.Name = "cb_Report_Organization";
+            this.cb_Report_Organization.Size = new System.Drawing.Size(269, 27);
+            this.cb_Report_Organization.TabIndex = 12;
+            // 
+            // cb_Report_CorpNutritions
+            // 
+            this.cb_Report_CorpNutritions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cb_Report_CorpNutritions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_Report_CorpNutritions.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cb_Report_CorpNutritions.FormattingEnabled = true;
+            this.cb_Report_CorpNutritions.Location = new System.Drawing.Point(168, 183);
+            this.cb_Report_CorpNutritions.Name = "cb_Report_CorpNutritions";
+            this.cb_Report_CorpNutritions.Size = new System.Drawing.Size(269, 27);
+            this.cb_Report_CorpNutritions.TabIndex = 13;
+            // 
+            // dtp_Report_From
+            // 
+            this.dtp_Report_From.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dtp_Report_From.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
+            this.dtp_Report_From.Location = new System.Drawing.Point(168, 216);
+            this.dtp_Report_From.Name = "dtp_Report_From";
+            this.dtp_Report_From.Size = new System.Drawing.Size(269, 26);
+            this.dtp_Report_From.TabIndex = 14;
+            // 
+            // dtp_Report_To
+            // 
+            this.dtp_Report_To.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dtp_Report_To.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
+            this.dtp_Report_To.Location = new System.Drawing.Point(168, 248);
+            this.dtp_Report_To.Name = "dtp_Report_To";
+            this.dtp_Report_To.Size = new System.Drawing.Size(269, 26);
+            this.dtp_Report_To.TabIndex = 15;
             // 
             // tableLayoutPanel5
             // 
@@ -1103,6 +1237,15 @@
         private System.Windows.Forms.TextBox tb_DataBase_Name;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox tb_DataBase_Folder;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button btn_Report_Create;
+        private System.Windows.Forms.ComboBox cb_Report_Organization;
+        private System.Windows.Forms.ComboBox cb_Report_CorpNutritions;
+        private System.Windows.Forms.DateTimePicker dtp_Report_From;
+        private System.Windows.Forms.DateTimePicker dtp_Report_To;
     }
 }
 

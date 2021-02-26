@@ -42,6 +42,11 @@ namespace iikoCardClients
                 cb_organizations.Items.Clear();
                 cb_organizations.Items.AddRange(managerSql.Tables.Organization.Organizations.Select(data => data.Name).ToArray());
                 cb_organizations.SelectedIndex = 0;
+
+                cb_Report_Organization.Items.Clear();
+                cb_Report_Organization.Items.AddRange(managerSql.Tables.Organization.Organizations.Select(data => data.Name).ToArray());
+                cb_Report_Organization.SelectedIndex = 0;
+                
             }
             if (managerSql.Tables.Category.Categories != null && managerSql.Tables.Category.Categories.Count > 0)
             {
@@ -55,11 +60,19 @@ namespace iikoCardClients
                 cb_CorporateNutritions.Items.Clear();
                 cb_CorporateNutritions.Items.AddRange(managerSql.Tables.WalletName.WalletsName.Select(data => data.Name).ToArray());
                 cb_CorporateNutritions.SelectedIndex = 0;
+
+                cb_Report_CorpNutritions.Items.Clear();
+                cb_Report_CorpNutritions.Items.AddRange(managerSql.Tables.WalletName.WalletsName.Select(data => data.Name).ToArray());
+                cb_Report_CorpNutritions.SelectedIndex = 0;
+                
             }
 
-               
-           
-            
+            //выставление периода отчета
+            var dateTime = DateTime.Now;
+            dtp_Report_From.Value = new DateTime(dateTime.Year, dateTime.Month, 1);
+            dtp_Report_To.Value = new DateTime(dateTime.Year, dateTime.Month + 1, 1).AddDays(-1);
+
+
 
 
 
@@ -613,6 +626,19 @@ namespace iikoCardClients
         {
 
         }
-       
+        /*------------------------------------------------------------------------------------------------------------------------------------------------------------
+                        ФОРМИРОВАНИЕ ОТЧЕТА С ТАБЕЛЬНЫМ НОМЕРОМ ЗАПРОСОМ ИЗ БИЗА
+          ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+
+        #region Отчет из биза
+
+        private void btn_Report_Create_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     }
 }
