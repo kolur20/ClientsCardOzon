@@ -24,6 +24,8 @@ namespace iikoCardClients.Managers
             offset = 0;
             logger = NLog.LogManager.GetCurrentClassLogger();
         }
+        
+        
         public IEnumerable<ShortCustomerInfo> GetClients()
         {
             try
@@ -136,7 +138,7 @@ namespace iikoCardClients.Managers
 
                     }
                 };
-                
+
                 var dataSet = reader.AsDataSet(conf).Tables[0];
                 foreach (DataRow row in dataSet.Rows)
                 {
@@ -170,7 +172,7 @@ namespace iikoCardClients.Managers
                     //    if (row[3].ToString().Length > 0)
                     //        row[8] = s;
                     //}
-                    
+
 
                     //4.3 полное совпадение полных данных фио
                     try
@@ -180,18 +182,18 @@ namespace iikoCardClients.Managers
                             .ToArray()
                             .Select(data => data.TabNumber).First();
                         if (row[3].ToString().Length > 0)
-                            row[row.ItemArray.Count()-1] = s;
+                            row[row.ItemArray.Count() - 1] = s;
                     }
                     catch (Exception)
                     {
 
                     }
                 }
-                
+
                 CreateWorkbook(saveFileName, dataSet.DataSet);
 
                 logger.Info($"Обработка завершена, результат сохранен в {saveFileName}");
-                
+
                 reader.Close();
 
             }
@@ -201,7 +203,7 @@ namespace iikoCardClients.Managers
 
         //////// экспорт в эксель
 
-    
+
         //export Excel from DataSet
         public static void CreateWorkbook(String filePath, DataSet dataset)
         {
@@ -225,6 +227,37 @@ namespace iikoCardClients.Managers
                 workbook.Worksheets.Add(worksheet);
             }
             workbook.Save(filePath);
+        }
+
+        public static DataSet ToDataSet<T>(IList<T> list)
+        {
+            Type elementType = typeof(T);
+            DataSet ds = new DataSet();
+            DataTable t = new DataTable();
+            ds.Tables.Add(t);
+
+            //add a column to table for each public property on T
+            foreach (var propInfo in elementType.GetProperties())
+            {
+                Type ColType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
+
+                t.Columns.Add(propInfo.Name, ColType);
+            }
+
+            //go through each property on T and add each value to the table
+            foreach (T item in list)
+            {
+                DataRow row = t.NewRow();
+
+                foreach (var propInfo in elementType.GetProperties())
+                {
+                    row[propInfo.Name] = propInfo.GetValue(item, null) ?? DBNull.Value;
+                }
+
+                t.Rows.Add(row);
+            }
+
+            return ds;
         }
         //********************************
         //DataGridView to DataTable
@@ -255,9 +288,11 @@ namespace iikoCardClients.Managers
 
         //    return table;
         //}
-
     }
-
+       
+    
+    
 
 }
+
 

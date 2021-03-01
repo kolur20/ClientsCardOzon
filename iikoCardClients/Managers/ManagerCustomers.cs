@@ -65,7 +65,7 @@ namespace iikoCardClients.Managers
                             new Action(() => ((System.Windows.Forms.Label)status?.First()).Text = CountAll.ToString()));
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 CountFail++;
                 if (CountAll != shortCustomers.Count())

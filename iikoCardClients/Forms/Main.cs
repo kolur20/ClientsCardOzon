@@ -75,7 +75,6 @@ namespace iikoCardClients
 
 
 
-
             logger.Info("Приложение запущено");
         }
         string strFilePath = "";
@@ -105,6 +104,11 @@ namespace iikoCardClients
         //формирование отчета биза с табельными
         delegate void DelegateReport(string tabNumberReport, string iikoBizReport, string currentReport);
         DelegateReport del_Report = new DelegateReport(CreateTabNumberReport);
+       
+        delegate void DelegateReportBiz(string api, string pass, string organizationName, string corpNutritions, string dateFrom, string dateTo, string currentReport);
+        DelegateReportBiz del_ReportBiz = new DelegateReportBiz(CreateTabNumberReportBiz);
+
+        
         void CallBackCreateReport(IAsyncResult aRes)
         {
             del_Report.EndInvoke(aRes);
@@ -274,6 +278,60 @@ namespace iikoCardClients
                 logger.Warn(ex.Message);
             }
         }
+
+
+        static void CreateTabNumberReportBiz(string api, string pass, string organizationName, string corpNutritions, string dateFrom, string dateTo, string currentReport)
+        {
+            try
+            {
+                if (api == "" || pass == "")
+                    throw new NullReferenceException(message: "Не заполнены данные пользователя API");
+                if (organizationName == "" || corpNutritions == "")
+                    throw new NullReferenceException(message: "Не заполнены данные для добавления гостей");
+
+                stopWatch.Restart();
+                ///1 делаем выборку id организации и программы на основании поступивших данных  +
+                ///2 получаем из биза отчет за указанный период                                 +
+                ///3 полученный отчет дополняем табелями из бд                                  
+                ///4 сохраняем массив данных в документ                                         
+                //1
+                logger.Info("Составления запроса на получения отчета");
+                var organizationId = ManagerSQL.GetTables.Organization.Organizations
+                    .FirstOrDefault(data => data.Name == organizationName).Id;
+                var corpNutritionsId = ManagerSQL.GetTables.WalletName.WalletsName
+                    .FirstOrDefault(data => data.Name == corpNutritions).Id;
+                //2
+                List<Data.Biz.ReportBiz> listReport = Task.Run(() => new ManagerAPI(api, pass)
+                        .GetReportCorporateNutrition(organizationId, corpNutritionsId, dateFrom, dateTo))
+                    .Result;
+                //3
+                logger.Info("Сопоставление отчета и табельных номеров");
+                var tabNumbers = ManagerSQL.GetTables.Customer.Customers
+                    .Select(data => new
+                    {
+                        id = data.IdiikoBiz,
+                        tabNumber = data.TabNumber
+                    }).ToList();
+                    
+                foreach (var r in listReport)
+                {
+                    r.TabNumber = tabNumbers.FirstOrDefault(item => item.id == r.guestId).tabNumber;
+                }
+                //4
+                logger.Info("Сохранение итогового отчета");
+                ManagerExcel.CreateWorkbook(currentReport, 
+                    ManagerExcel.ToDataSet<Data.Biz.ReportBiz>(listReport));
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+                logger.Warn(ex.Message);
+            }
+
+        }
+
         #endregion
 
         //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -634,7 +692,31 @@ namespace iikoCardClients
 
         private void btn_Report_Create_Click(object sender, EventArgs e)
         {
+            try
+            {
+                var save = new SaveFileDialog();
+                save.Filter = "xls files (*.xls)|*.xls|All files|*.*";
+                if (save.ShowDialog() == DialogResult.OK)
+                {
 
+
+                    pb_load.Enabled = pb_load.Visible = true;
+                    del_ReportBiz.BeginInvoke(
+                        tb_LoginAPI.Text,
+                        tb_PasswordAPI.Text,
+                        cb_Report_Organization.SelectedText,
+                        cb_Report_CorpNutritions.SelectedText,
+                        dtp_Report_From.Value.ToString("yyyy-MM-dd"),
+                        dtp_Report_To.Value.ToString("yyyy-MM-dd"),
+                        save.FileName,
+                        new AsyncCallback(CallBackCreateReport),
+                        null);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+            }
         }
 
         #endregion

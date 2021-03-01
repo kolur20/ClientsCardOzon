@@ -21,6 +21,8 @@ namespace iikoCardClients.Data.Biz
         public string guestPhone { get; set; }
         public int paidOrdersCount { get; set; }
         public decimal payFromWalletSum { get; set; }
+
+        public string TabNumber { get; set; }
     }
 
 }

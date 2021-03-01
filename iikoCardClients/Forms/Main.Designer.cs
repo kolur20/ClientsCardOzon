@@ -789,7 +789,7 @@
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(141, 32);
             this.label15.TabIndex = 13;
-            this.label15.Text = "Прорамма";
+            this.label15.Text = "Программа";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label16
@@ -1063,6 +1063,7 @@
             // 
             this.dtp_Report_From.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dtp_Report_From.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
+            this.dtp_Report_From.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.dtp_Report_From.Location = new System.Drawing.Point(168, 216);
             this.dtp_Report_From.Name = "dtp_Report_From";
             this.dtp_Report_From.Size = new System.Drawing.Size(269, 26);

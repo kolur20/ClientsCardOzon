@@ -355,6 +355,69 @@ namespace iikoCardClients.Managers
                 return null;
             }
         }
+        /// <summary>
+        /// получение отчета по корпиту
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <param name="corpNutritionsId"></param>
+        /// <param name="dateFrom"></param>
+        /// <param name="dateTo"></param>
+        /// <returns></returns>
+        public async Task<List<Data.Biz.ReportBiz>> GetReportCorporateNutrition(string organizationId, string corpNutritionsId, string dateFrom, string dateTo)
+        {
+            try
+            {
+                var response = await client.GetAsync(string.Format("organization/{0}/corporate_nutrition_report?corporate_nutrition_id={1}&date_from={2}&date_to={3}&access_token={4}",
+                    organizationId,
+                    corpNutritionsId,
+                    dateFrom,
+                    dateTo,
+                    token))
+                    .ConfigureAwait(false);
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    token = Task.Run(() => GetToken()).Result;
+                    response = await client.GetAsync(string.Format("organization/{0}/corporate_nutrition_report?corporate_nutrition_id={1}&date_from={2}&date_to={3}&access_token={4}",
+                       organizationId,
+                       corpNutritionsId,
+                       dateFrom,
+                       dateTo,
+                       token))
+                       .ConfigureAwait(false);
+                }
+
+                return JArray.Parse(await response.Content.ReadAsStringAsync())
+                    .Select(data => new Data.Biz.ReportBiz()
+                    {
+                        balanceOnPeriodEnd = (decimal)data["balanceOnPeriodEnd"],
+                        balanceOnPeriodStart = (decimal)data["balanceOnPeriodStart"],
+                        balanceRefillSum = (decimal)data["balanceRefillSum"],
+                        balanceResetSum = (decimal)data["balanceResetSum"],
+                        payFromWalletSum = (decimal)data["payFromWalletSum"],
+
+                        paidOrdersCount = (int)data["paidOrdersCount"],
+
+                        employeeNumber = (string)data["employeeNumber"],
+                        guestCardTrack = (string)data["guestCardTrack"],
+                        guestCategoryNames = (string)data["guestCategoryNames"],
+                        guestId = (string)data["guestId"],
+                        guestName = (string)data["guestName"],
+                        guestPhone = (string)data["guestPhone"],
+                        TabNumber = (string)data["TabNumber"]
+                    })
+                    .ToList();
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains(MessageTimeCollapse))
+                {
+                    Thread.Sleep(TimeDelayThread);
+                    return Task.Run(() => GetReportCorporateNutrition(organizationId, corpNutritionsId, dateFrom, dateTo)).Result;
+                }
+                return null;
+            }
+        }
 
         //public async Task<IEnumerable<ShortCustomerInfo>> SetCategoryGuest(IEnumerable<ShortCustomerInfo> guestInfos, Organization organization = null)
         //{
@@ -373,7 +436,7 @@ namespace iikoCardClients.Managers
         //                }
         //            }
         //        };
-               
+
 
         //        var response = await client.PostAsync(
         //            $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
@@ -385,7 +448,7 @@ namespace iikoCardClients.Managers
         //            $"customers/get_categories_by_guests?access_token={token}&organization={(organization is null ? Task.Run(() => GetOrganizations()).Result.First().Id : organization.Id)}",
         //            new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
         //        }
-              
+
         //        var guests = JArray.Parse(await response.Content.ReadAsStringAsync())
         //            .Select(data => new
         //            {
