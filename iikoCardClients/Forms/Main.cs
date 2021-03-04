@@ -111,8 +111,13 @@ namespace iikoCardClients
         
         void CallBackCreateReport(IAsyncResult aRes)
         {
-            del_Report.EndInvoke(aRes);
+            try
+            {
+                del_Report.EndInvoke(aRes);
+            }
+            catch (Exception) { }
             CallBackFucnReport();
+            
         }
 
 
@@ -147,6 +152,7 @@ namespace iikoCardClients
             var info = $"Файл успешно создан, затрачено {stopWatch.ElapsedMilliseconds / 1000.0f} сек.";
             MessageBox.Show(info, "Успешно");
             logger.Info(info);
+
         }
 
         #endregion
@@ -293,7 +299,8 @@ namespace iikoCardClients
                 ///1 делаем выборку id организации и программы на основании поступивших данных  +
                 ///2 получаем из биза отчет за указанный период                                 +
                 ///3 полученный отчет дополняем табелями из бд                                  
-                ///4 сохраняем массив данных в документ                                         
+                ///4 сохраняем массив данных в документ    
+                ///5 открываем полученный документ
                 //1
                 logger.Info("Составления запроса на получения отчета");
                 var organizationId = ManagerSQL.GetTables.Organization.Organizations
@@ -307,22 +314,27 @@ namespace iikoCardClients
                 //3
                 logger.Info("Сопоставление отчета и табельных номеров");
                 var tabNumbers = ManagerSQL.GetTables.Customer.Customers
+                    .Where(data => data.TabNumber != string.Empty)
                     .Select(data => new
                     {
-                        id = data.IdiikoBiz,
+                        id = data.IdiikoBiz.Split('-').Last(),
                         tabNumber = data.TabNumber
                     }).ToList();
                     
                 foreach (var r in listReport)
                 {
-                    r.TabNumber = tabNumbers.FirstOrDefault(item => item.id == r.guestId).tabNumber;
+                    
+                    r.employeeNumber = tabNumbers.FirstOrDefault(item => item.id == r.guestId.Split('-').Last())?.tabNumber;
                 }
                 //4
                 logger.Info("Сохранение итогового отчета");
-                ManagerExcel.CreateWorkbook(currentReport, 
-                    ManagerExcel.ToDataSet<Data.Biz.ReportBiz>(listReport));
-
-
+                ManagerExcel.CreateWorkbook(
+                    currentReport, 
+                    ManagerExcel.ToDataSet<Data.Biz.ReportBiz>(listReport),
+                    $"Отчет по организации '{organizationName}' за период с {dateFrom} по {dateTo} по программе '{corpNutritions}'");
+                //5
+                Process.Start(currentReport);
+                
             }
             catch (Exception ex)
             {
@@ -704,13 +716,14 @@ namespace iikoCardClients
                     del_ReportBiz.BeginInvoke(
                         tb_LoginAPI.Text,
                         tb_PasswordAPI.Text,
-                        cb_Report_Organization.SelectedText,
-                        cb_Report_CorpNutritions.SelectedText,
+                        cb_Report_Organization.SelectedItem.ToString(),
+                        cb_Report_CorpNutritions.SelectedItem.ToString(),
                         dtp_Report_From.Value.ToString("yyyy-MM-dd"),
                         dtp_Report_To.Value.ToString("yyyy-MM-dd"),
                         save.FileName,
                         new AsyncCallback(CallBackCreateReport),
                         null);
+                    
                 }
             }
             catch (Exception ex)

@@ -402,8 +402,7 @@ namespace iikoCardClients.Managers
                         guestCategoryNames = (string)data["guestCategoryNames"],
                         guestId = (string)data["guestId"],
                         guestName = (string)data["guestName"],
-                        guestPhone = (string)data["guestPhone"],
-                        TabNumber = (string)data["TabNumber"]
+                        guestPhone = (string)data["guestPhone"]
                     })
                     .ToList();
 

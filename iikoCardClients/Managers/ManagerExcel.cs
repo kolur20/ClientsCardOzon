@@ -205,7 +205,7 @@ namespace iikoCardClients.Managers
 
 
         //export Excel from DataSet
-        public static void CreateWorkbook(String filePath, DataSet dataset)
+        public static void CreateWorkbook(String filePath, DataSet dataset, string title = null)
         {
             if (dataset.Tables.Count == 0)
                 throw new ArgumentException("DataSet needs to have at least one DataTable", "dataset");
@@ -214,11 +214,15 @@ namespace iikoCardClients.Managers
             foreach (DataTable dt in dataset.Tables)
             {
                 Worksheet worksheet = new Worksheet(dt.TableName);
+                if (title != null)
+                {
+                    worksheet.Cells[0, 0] = new Cell(title);
+                }
                 for (int i = 0; i < dt.Columns.Count; i++)
                 {
                     // Add column header
                     //worksheet.Cells[0, i] = new Cell(dt.Columns[i].ColumnName);
-
+                    
                     // Populate row data
                     for (int j = 0; j < dt.Rows.Count; j++)
                         //Если нулевые значения, заменяем на пустые строки
@@ -236,18 +240,25 @@ namespace iikoCardClients.Managers
             DataTable t = new DataTable();
             ds.Tables.Add(t);
 
+            DataRow row = t.NewRow();
             //add a column to table for each public property on T
             foreach (var propInfo in elementType.GetProperties())
             {
-                Type ColType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
+                //Type ColType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
 
-                t.Columns.Add(propInfo.Name, ColType);
+                t.Columns.Add(propInfo.Name, typeof(object));//ColType);
+                row[propInfo.Name] = ((CsvHelper.Configuration.Attributes.NameAttribute)propInfo.GetCustomAttributes(true).First())
+                    .Names
+                    .FirstOrDefault()
+                    .ToString();
+
             }
-
+            t.Rows.Add(row);
+           
             //go through each property on T and add each value to the table
             foreach (T item in list)
             {
-                DataRow row = t.NewRow();
+                row = t.NewRow();
 
                 foreach (var propInfo in elementType.GetProperties())
                 {
@@ -256,7 +267,10 @@ namespace iikoCardClients.Managers
 
                 t.Rows.Add(row);
             }
-
+            var n = 13;
+            if (list.Count < n)
+                for (var i = 0; i < n; i++)
+                    t.Rows.Add(t.NewRow());
             return ds;
         }
         //********************************

@@ -878,15 +878,15 @@
             this.tableLayoutPanel1.Controls.Add(this.label19, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.label20, 0, 8);
             this.tableLayoutPanel1.Controls.Add(this.label21, 0, 9);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Report_Create, 0, 10);
             this.tableLayoutPanel1.Controls.Add(this.cb_Report_Organization, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.cb_Report_CorpNutritions, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.dtp_Report_From, 1, 8);
             this.tableLayoutPanel1.Controls.Add(this.dtp_Report_To, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Report_Create, 0, 10);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 13;
+            this.tableLayoutPanel1.RowCount = 12;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -899,7 +899,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(550, 455);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
